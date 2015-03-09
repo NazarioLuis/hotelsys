@@ -1,9 +1,5 @@
 package py.com.hotelsys.Test;
 
-import java.util.List;
-
-import py.com.hotelsys.dao.ClienteDao;
-import py.com.hotelsys.modelo.Cliente;
 
 
 
@@ -32,12 +28,12 @@ public class Test {
 //		Cliente c = cDao.encontrarPorId(1);
 //		System.out.println("Nombre="+c.getNombre());
 		
-		ClienteDao cDao = new ClienteDao();
-		List<Cliente> lista = cDao.recuperaTodo();
-		
-		for (Cliente c : lista) {
-			System.out.println("Nombre="+c.getNombre());
-		}
+//		ClienteDao cDao = new ClienteDao();
+//		List<Cliente> lista = cDao.recuperaTodo();
+//		
+//		for (Cliente c : lista) {
+//			System.out.println("Nombre="+c.getNombre());
+//		}
 	}
 
 }

@@ -1,13 +1,11 @@
 package py.com.hotelsys.modelo;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Habitacion implements Serializable{
+public class Habitacion{
 
 
 	@Id

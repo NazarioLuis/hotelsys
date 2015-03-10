@@ -9,7 +9,7 @@ public class Habitacion{
 
 
 	@Id
-	@Column(name="hab_columna")
+	@Column(name="hab_codigo")
 	private int id;
 	@Column(name="hab_descripcion")
 	private String descripcion;

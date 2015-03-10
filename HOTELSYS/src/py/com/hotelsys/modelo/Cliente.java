@@ -13,6 +13,8 @@ public class Cliente {
 	private String nombre;
 	@Column(name="cli_documento")
 	private String documento;
+	@Column(name="cli_email")
+	private String email;
 	@Column(name="cli_telefono")
 	private String telefono;
 	@Column(name="cli_direccion")

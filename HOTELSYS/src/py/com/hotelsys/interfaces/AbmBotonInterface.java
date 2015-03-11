@@ -1,6 +1,6 @@
 package py.com.hotelsys.interfaces;
 
-public interface AbmBotonInterface {
+public interface AbmBotonInterface extends VentanaGenerica{
 	public void nuevo();
 	public void modificar();
 	public void eliminar();

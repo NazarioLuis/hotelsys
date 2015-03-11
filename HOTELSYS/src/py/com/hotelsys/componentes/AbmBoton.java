@@ -83,8 +83,18 @@ public class AbmBoton extends JPanel {
 		add(btnSalir);
 	}
 	
-	public void etitable(){
-		
+	public void botones(boolean b,String accion){
+		btnNuevo.setEnabled(!b);
+		btnSalir.setEnabled(!b);
+		btnGuardar.setEnabled(b);
+		btnCancelar.setEnabled(b);
+		if(accion.equals("LECTURA")){
+			btnModificar.setEnabled(true);
+			btnEliminar.setEnabled(true);
+		}else{
+			btnModificar.setEnabled(false);
+			btnEliminar.setEnabled(false);
+		}
 	}
 
 }

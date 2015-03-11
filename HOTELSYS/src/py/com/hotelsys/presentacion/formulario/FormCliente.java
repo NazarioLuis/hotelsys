@@ -43,10 +43,21 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		});
 	}
 
-	private ClienteDao clienteDao;
+	private ClienteDao clienteDao = new ClienteDao();;
 	private List<Cliente> listaCliente;
 	private CustomTable tabla;
 	private Object[] fila;
+	private AbmBoton abmBoton;
+	private String accion = "";
+	private PlaceholderTextField tNombre;
+	private PlaceholderTextField tDocumento;
+	private PlaceholderTextField tTelefono;
+	private PlaceholderTextField tDireccion;
+	private PlaceholderTextField tEmail;
+	private JTextArea tObservacin;
+	private PlaceholderTextField tBuscar;
+	private JPanel panel;
+	private Cliente cliente;
 
 
 	/**
@@ -56,74 +67,83 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		setBounds(100, 100, 900, 410);
 		getContentPane().setLayout(null);
 		
-		JPanel panel = new JPanel();
+		
+		
+		panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.GRAY));
 		panel.setBounds(10, 11, 388, 302);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		PlaceholderTextField tfNombre = new PlaceholderTextField();
-		tfNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tfNombre.setPlaceholder("Nombre del Cliente");
-		tfNombre.setBounds(25, 24, 301, 20);
-		panel.add(tfNombre);
+		tNombre = new PlaceholderTextField();
+		tNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tNombre.setPlaceholder("Nombre del Cliente");
+		tNombre.setBounds(25, 24, 301, 20);
+		panel.add(tNombre);
 		
-		PlaceholderTextField tfDocumento = new PlaceholderTextField();
-		tfDocumento.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tfDocumento.setPlaceholder("Nro de Documento");
-		tfDocumento.setBounds(25, 55, 173, 20);
-		panel.add(tfDocumento);
+		tDocumento = new PlaceholderTextField();
+		tDocumento.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tDocumento.setPlaceholder("Nro de Documento");
+		tDocumento.setBounds(25, 55, 173, 20);
+		panel.add(tDocumento);
 		
-		PlaceholderTextField tfTelefono = new PlaceholderTextField();
-		tfTelefono.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tfTelefono.setPlaceholder("Nro de Tel\u00E9fono");
-		tfTelefono.setBounds(25, 86, 173, 20);
-		panel.add(tfTelefono);
+		tTelefono = new PlaceholderTextField();
+		tTelefono.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tTelefono.setPlaceholder("Nro de Tel\u00E9fono");
+		tTelefono.setBounds(25, 86, 173, 20);
+		panel.add(tTelefono);
 		
-		PlaceholderTextField tfDireccion = new PlaceholderTextField();
-		tfDireccion.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tfDireccion.setPlaceholder("Direcci\u00F3n");
-		tfDireccion.setBounds(25, 148, 334, 20);
-		panel.add(tfDireccion);
+		tDireccion = new PlaceholderTextField();
+		tDireccion.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tDireccion.setPlaceholder("Direcci\u00F3n");
+		tDireccion.setBounds(25, 148, 334, 20);
+		panel.add(tDireccion);
 		
-		PlaceholderTextField tfEmail = new PlaceholderTextField();
-		tfEmail.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tfEmail.setPlaceholder("Correo Electr\u00F3nico");
-		tfEmail.setBounds(25, 117, 301, 20);
-		panel.add(tfEmail);
+		tEmail = new PlaceholderTextField();
+		tEmail.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tEmail.setPlaceholder("Correo Electr\u00F3nico");
+		tEmail.setBounds(25, 117, 301, 20);
+		panel.add(tEmail);
 		
-		JTextArea txtrObservacin = new JTextArea("Observaci\u00F3n:");
-		txtrObservacin.setFont(new Font("Monospaced", Font.BOLD, 13));
+		tObservacin = new JTextArea("Observaci\u00F3n:");
+		tObservacin.setFont(new Font("Monospaced", Font.BOLD, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
-		txtrObservacin.setBorder(BorderFactory.createCompoundBorder(border, 
+		tObservacin.setBorder(BorderFactory.createCompoundBorder(border, 
 		            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		
-		txtrObservacin.setRows(10);
-		txtrObservacin.setLineWrap(true);
-		txtrObservacin.setBounds(25, 195, 334, 77);
-		panel.add(txtrObservacin);
+		tObservacin.setRows(10);
+		tObservacin.setLineWrap(true);
+		tObservacin.setBounds(25, 195, 334, 77);
+		panel.add(tObservacin);
 		
-		AbmBoton abmBoton = new AbmBoton();
-		abmBoton.setAbi(this);
+		abmBoton = new AbmBoton();
 		abmBoton.setBounds(10, 324, 647, 33);
 		getContentPane().add(abmBoton);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(408, 11, 465, 302);
+		scrollPane.setBounds(408, 11, 465, 277);
 		getContentPane().add(scrollPane);
+		
+		
+		tBuscar = new PlaceholderTextField();
+		tBuscar.setPlaceholder("Criterio de Busqueda");
+		tBuscar.setBounds(523, 293, 350, 20);
+		getContentPane().add(tBuscar);
+		
 		
 		tabla = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
 		scrollPane.setViewportView(tabla);
 		
+		abmBoton.botones(false, accion);
+		abmBoton.setAbi(this);
 		
-		recuperaDatos();
 		
-
+		habilitarCampos(false);
+		recuperaDatos();		
 	}
 
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
-		clienteDao = new ClienteDao();
 		listaCliente = clienteDao.recuperaTodo();
 		
 		if (listaCliente.size()>0) {
@@ -148,36 +168,64 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void nuevo() {
-		JOptionPane.showMessageDialog(null, "hola");
+		accion = "AGREGAR";
+		habilitarCampos(true);
+		abmBoton.botones(true, accion);
 	}
 
 	
 	@Override
 	public void modificar() {
-		// TODO Auto-generated method stub
-		
+		accion = "MODIFICAR";
+		habilitarCampos(true);
+		abmBoton.botones(true, accion);
 	}
 
 	@Override
 	public void eliminar() {
-		// TODO Auto-generated method stub
-		
+		cliente = new Cliente();
+		cliente.setId((int) tabla.getValueAt(tabla.getSelectedRow(), 0));
+		clienteDao.eliminar(cliente);
 	}
 
 	@Override
 	public void salir() {
-		// TODO Auto-generated method stub
-		
+		dispose();
 	}
 
 	@Override
 	public void guardar() {
-		// TODO Auto-generated method stub
-		
+		cargarAtributos();
+		if(accion.equals("AGREGAR"))
+			clienteDao.insertar(cliente);
+		if (accion.equals("MODIFICAR")) 
+			clienteDao.actualizar(cliente);
 	}
 
 	@Override
 	public void cancelar() {
+		accion = "";
+		habilitarCampos(false);
+		abmBoton.botones(false, accion);
+	}
+
+	@Override
+	public void habilitarCampos(boolean b) {
+		tNombre.setEnabled(b);
+		tDocumento.setEnabled(b);
+		tDireccion.setEnabled(b);
+		tTelefono.setEnabled(b);
+		tEmail.setEnabled(b);
+		tObservacin.setEnabled(b);
+		tBuscar.setEnabled(!b);
+		if(b==false)
+			tBuscar.requestFocus();
+		else
+			tNombre.requestFocus();
+	}
+
+	@Override
+	public void cargarAtributos() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -3,6 +3,7 @@ package py.com.hotelsys.presentacion.formulario;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -16,7 +17,9 @@ import javax.swing.border.LineBorder;
 import py.com.hotelsys.componentes.AbmBoton;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
+import py.com.hotelsys.modelo.Cliente;
 
 
 
@@ -39,6 +42,11 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 			}
 		});
 	}
+
+	private ClienteDao clienteDao;
+	private List<Cliente> listaCliente;
+	private CustomTable tabla;
+	private Object[] fila;
 
 
 	/**
@@ -104,13 +112,38 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		scrollPane.setBounds(408, 11, 465, 302);
 		getContentPane().add(scrollPane);
 		
-		CustomTable customTable = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
-		scrollPane.setViewportView(customTable);
+		tabla = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
+		scrollPane.setViewportView(tabla);
 		
 		
-		
+		recuperaDatos();
 		
 
+	}
+
+	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
+	private void recuperaDatos() {
+		clienteDao = new ClienteDao();
+		listaCliente = clienteDao.recuperaTodo();
+		
+		if (listaCliente.size()>0) {
+			cargarGrilla();
+		}
+	}
+
+	//Metodo que rellena la tabla con los datos obtenidos
+	private void cargarGrilla() {
+		while (tabla.getRowCount()>0) {
+			tabla.getModelo().removeRow(0);
+		}
+		fila = new Object[tabla.getColumnCount()];
+		for (Cliente c:listaCliente) {
+			fila[0] = c.getId();
+			fila[1] = c.getNombre();
+			fila[2] = c.getDocumento();
+			fila[3] = c.getTelefono();
+			tabla.getModelo().addRow(fila);
+ 		}
 	}
 
 	@Override
@@ -118,6 +151,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		JOptionPane.showMessageDialog(null, "hola");
 	}
 
+	
 	@Override
 	public void modificar() {
 		// TODO Auto-generated method stub

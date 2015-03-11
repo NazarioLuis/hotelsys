@@ -14,6 +14,12 @@ import java.awt.Font;
 @SuppressWarnings("serial")
 public class AbmBoton extends JPanel {
 	AbmBotonInterface abi;
+	private JButton btnModificar;
+	private JButton btnGuardar;
+	private JButton btnNuevo;
+	private JButton btnCancelar;
+	private JButton btnEliminar;
+	private JButton btnSalir;
 
 	public void setAbi(AbmBotonInterface abi) {
 		this.abi = abi;
@@ -22,7 +28,7 @@ public class AbmBoton extends JPanel {
 	public AbmBoton() {
 		setLayout(new GridLayout(0, 6, 5, 0));
 		
-		JButton btnModificar = new JButton("Modificar");
+		btnModificar = new JButton("Modificar");
 		btnModificar.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -30,7 +36,7 @@ public class AbmBoton extends JPanel {
 			}
 		});
 		
-		JButton btnGuardar = new JButton("Guardar");
+		btnGuardar = new JButton("Guardar");
 		btnGuardar.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -38,7 +44,7 @@ public class AbmBoton extends JPanel {
 			}
 		});
 		
-		JButton btnNuevo = new JButton("Nuevo");
+		btnNuevo = new JButton("Nuevo");
 		btnNuevo.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -48,7 +54,7 @@ public class AbmBoton extends JPanel {
 		add(btnNuevo);
 		add(btnGuardar);
 		
-		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -58,7 +64,7 @@ public class AbmBoton extends JPanel {
 		add(btnCancelar);
 		add(btnModificar);
 		
-		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar = new JButton("Eliminar");
 		btnEliminar.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -67,7 +73,7 @@ public class AbmBoton extends JPanel {
 		});
 		add(btnEliminar);
 		
-		JButton btnSalir = new JButton("Salir");
+		btnSalir = new JButton("Salir");
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -75,6 +81,10 @@ public class AbmBoton extends JPanel {
 			}
 		});
 		add(btnSalir);
+	}
+	
+	public void etitable(){
+		
 	}
 
 }

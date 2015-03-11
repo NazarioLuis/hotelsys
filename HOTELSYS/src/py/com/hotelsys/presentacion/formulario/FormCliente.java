@@ -9,13 +9,12 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 
 import py.com.hotelsys.componentes.AbmBoton;
+import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 
@@ -41,11 +40,6 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		});
 	}
 
-	@SuppressWarnings("serial")
-	private DefaultTableModel modelo = new DefaultTableModel(null,new String[] {"Id", "Nombre", "Documento", "Tel\u00E9fono"}){
-		public boolean isCellEditable(int row, int column) {return false;};
-	};
-	private JTable table;
 
 	/**
 	 * Create the dialog.
@@ -107,11 +101,12 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		getContentPane().add(abmBoton);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(408, 11, 466, 302);
+		scrollPane.setBounds(408, 11, 465, 302);
 		getContentPane().add(scrollPane);
 		
-		table = new JTable(modelo);
-		scrollPane.setViewportView(table);
+		CustomTable customTable = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
+		scrollPane.setViewportView(customTable);
+		
 		
 		
 		

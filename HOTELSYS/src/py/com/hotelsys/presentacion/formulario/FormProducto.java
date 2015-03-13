@@ -22,8 +22,10 @@ import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ClienteDao;
+import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Cliente;
+import py.com.hotelsys.modelo.Producto;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,7 +34,7 @@ import javax.swing.JLabel;
 
 
 @SuppressWarnings("serial")
-public class FormCliente extends JDialog implements AbmBotonInterface {
+public class FormProducto extends JDialog implements AbmBotonInterface {
 
 	/**
 	 * Launch the application.
@@ -41,7 +43,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FormCliente dialog = new FormCliente();
+					FormProducto dialog = new FormProducto();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -51,69 +53,40 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		});
 	}
 
-	private ClienteDao clienteDao;
-	private List<Cliente> listaCliente;
+	private ProductoDao productoDao;
+	private List<Producto> listaCliente;
 	private CustomTable tabla;
 	private Object[] fila;
 	private BotonGrup abmBoton;
 	private String accion = "";
-	private PlaceholderTextField tNombre;
-	private PlaceholderTextField tDocumento;
-	private PlaceholderTextField tTelefono;
-	private PlaceholderTextField tDireccion;
-	private PlaceholderTextField tEmail;
+	private PlaceholderTextField tDescri;
 	private JTextArea tObservacin;
 	private PlaceholderTextField tBuscar;
 	private JPanel panel;
-	private Cliente cliente;
-	private JLabel label;
+	private Producto producto;
 
 
 	/**
 	 * Create the dialog.
 	 */
-	public FormCliente() {
-		setTitle("Archivo de Cliente");
-		setBounds(100, 100, 900, 410);
+	public FormProducto() {
+		setTitle("Archivo de Producto");
+		setBounds(100, 100, 900, 356);
 		getContentPane().setLayout(null);
 		
 		setLocationRelativeTo(null);
 		
 		panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.GRAY));
-		panel.setBounds(10, 11, 388, 302);
+		panel.setBounds(10, 11, 388, 225);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		tNombre = new PlaceholderTextField();
-		tNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tNombre.setPlaceholder("Nombre del Cliente");
-		tNombre.setBounds(25, 24, 301, 20);
-		panel.add(tNombre);
-		
-		tDocumento = new PlaceholderTextField();
-		tDocumento.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tDocumento.setPlaceholder("Nro de Documento");
-		tDocumento.setBounds(25, 55, 173, 20);
-		panel.add(tDocumento);
-		
-		tTelefono = new PlaceholderTextField();
-		tTelefono.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tTelefono.setPlaceholder("Nro de Tel\u00E9fono");
-		tTelefono.setBounds(25, 86, 173, 20);
-		panel.add(tTelefono);
-		
-		tDireccion = new PlaceholderTextField();
-		tDireccion.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tDireccion.setPlaceholder("Direcci\u00F3n");
-		tDireccion.setBounds(25, 148, 334, 20);
-		panel.add(tDireccion);
-		
-		tEmail = new PlaceholderTextField();
-		tEmail.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tEmail.setPlaceholder("Correo Electr\u00F3nico");
-		tEmail.setBounds(25, 117, 301, 20);
-		panel.add(tEmail);
+		tDescri = new PlaceholderTextField();
+		tDescri.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tDescri.setPlaceholder("Descripci\u00F3n del Producto");
+		tDescri.setBounds(25, 24, 301, 20);
+		panel.add(tDescri);
 		
 		tObservacin = new JTextArea("");
 		tObservacin.setFont(new Font("Monospaced", Font.BOLD, 13));
@@ -123,30 +96,30 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		
 		tObservacin.setRows(10);
 		tObservacin.setLineWrap(true);
-		tObservacin.setBounds(25, 195, 334, 77);
+		tObservacin.setBounds(25, 78, 334, 77);
 		panel.add(tObservacin);
 		
-		label = new JLabel("Observaci\u00F3n:");
-		label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		label.setBounds(25, 179, 107, 14);
-		panel.add(label);
+		JLabel lblObservacin = new JLabel("Observaci\u00F3n:");
+		lblObservacin.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		lblObservacin.setBounds(24, 62, 107, 14);
+		panel.add(lblObservacin);
 		
 		abmBoton = new BotonGrup();
-		abmBoton.setBounds(10, 324, 647, 33);
+		abmBoton.setBounds(10, 281, 647, 33);
 		getContentPane().add(abmBoton);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(408, 11, 465, 277);
+		scrollPane.setBounds(408, 11, 465, 225);
 		getContentPane().add(scrollPane);
 		
 		
 		tBuscar = new PlaceholderTextField();
 		tBuscar.setPlaceholder("Criterio de Busqueda");
-		tBuscar.setBounds(523, 293, 350, 20);
+		tBuscar.setBounds(524, 247, 350, 20);
 		getContentPane().add(tBuscar);
 		
 		
-		tabla = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
+		tabla = new CustomTable(new String[] {"#", "Descripcion"}, new int[] {10, 250});
 		
 		//Carga el formulario al cambiar la seleccion de la tabla
 		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -168,8 +141,8 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
-		clienteDao = new ClienteDao();
-		listaCliente = clienteDao.recuperaTodo();
+		productoDao = new ProductoDao();
+		listaCliente = productoDao.recuperaTodo();
 		
 		cargarGrilla();
 		
@@ -181,11 +154,9 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		
 		
 		fila = new Object[tabla.getColumnCount()];
-		for (Cliente c:listaCliente) {
-			fila[0] = c.getId();
-			fila[1] = c.getNombre();
-			fila[2] = c.getDocumento();
-			fila[3] = c.getTelefono();
+		for (Producto p:listaCliente) {
+			fila[0] = p.getId();
+			fila[1] = p.getDescripcion();
 			tabla.agregar(fila);
  		}
 		
@@ -212,16 +183,16 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void eliminar() {
-		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Cliente: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
+		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Producto: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
 		if (si==JOptionPane.YES_OPTION) {
-			cliente = new Cliente();
-			clienteDao = new ClienteDao();
-			cliente.setId((int) tabla.campo(0));
+			producto = new Producto();
+			productoDao = new ProductoDao();
+			producto.setId((int) tabla.campo(0));
 			try {
-				clienteDao.eliminar(cliente);
+				productoDao.eliminar(producto);
 			} catch (Exception e) {
-				clienteDao.rollback();
-				advertencia("No se eliminar el Cliente "+tabla.campo(1)+". Esta en uso!",2);
+				productoDao.rollback();
+				advertencia("No se eliminar el Producto "+tabla.campo(1)+". Esta en uso!",2);
 			}
 			inicializar();
 		}
@@ -236,21 +207,21 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	@Override
 	public void guardar() {
 		cargarAtributos();
-		clienteDao = new ClienteDao();
+		productoDao = new ProductoDao();
 		
 		if(accion.equals("AGREGAR"))
 			try {
-				clienteDao.insertar(cliente);
+				productoDao.insertar(producto);
 			} catch (Exception e) {
-				clienteDao.rollback();
-				advertencia("No se puede guardar el Cliente. Los campos con * son obligatorios",2);
+				productoDao.rollback();
+				advertencia("No se puede guardar el Producto. Los campos con * son obligatorios",2);
 			}
 		if (accion.equals("MODIFICAR"))
 			try {
-				clienteDao.actualizar(cliente);
+				productoDao.actualizar(producto);
 			} catch (Exception e) {
-				clienteDao.rollback();
-				advertencia("No se puede actualizar el Cliente. Los campos con * son obligatorios",2);
+				productoDao.rollback();
+				advertencia("No se puede actualizar el Producto. Los campos con * son obligatorios",2);
 			}
 		
 		
@@ -265,35 +236,28 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void habilitarCampos(boolean b) {
-		tNombre.setEnabled(b);
-		tDocumento.setEnabled(b);
-		tDireccion.setEnabled(b);
-		tTelefono.setEnabled(b);
-		tEmail.setEnabled(b);
+		tDescri.setEnabled(b);
 		tObservacin.setEnabled(b);
 		tBuscar.setEnabled(!b);
 		tabla.setEnabled(!b);
 		if(b==false)
 			tabla.requestFocus();
 		else
-			tNombre.requestFocus();
+			tDescri.requestFocus();
 	}
 
 	//carga los atributos del objeto al ser persistido
 	@Override
 	public void cargarAtributos() {
 		
-		cliente = new Cliente();
+		producto = new Producto();
 		if(accion.equals("AGREGAR")){
-			clienteDao = new ClienteDao();
-			cliente.setId(clienteDao.recuperMaxId()+1);
+			productoDao = new ProductoDao();
+			producto.setId(productoDao.recuperMaxId()+1);
 		}else
-			cliente.setId((int) tabla.campo(0));		
-		cliente.setNombre(tNombre.getText());
-		cliente.setDocumento(tDocumento.getText());
-		cliente.setTelefono(tTelefono.getText());
-		cliente.setDireccion(tDireccion.getText());
-		cliente.setObservacion(tObservacin.getText());
+			producto.setId((int) tabla.campo(0));		
+		producto.setDescripcion(tDescri.getText());
+		producto.setObservacion(tObservacin.getText());
 	}
 
 	//deja la pantallaen su estado inicial
@@ -319,16 +283,13 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		if (tabla.getSelectedRow()>=0) {
 			accion = "DATOS";
 			abmBoton.botones(false, accion);
-			clienteDao = new ClienteDao();
+			productoDao = new ProductoDao();
 			System.out.println((int) tabla.campo(0));
-			cliente = clienteDao.recuperarPorId((int) tabla.campo(0));
-			if (cliente!=null) {
-				tNombre.setText(cliente.getNombre());
-				tDocumento.setText(cliente.getDocumento());
-				tDireccion.setText(cliente.getDireccion());
-				tEmail.setText(cliente.getEmail());
-				tTelefono.setText(cliente.getTelefono());
-				tObservacin.setText(cliente.getObservacion());
+			producto = productoDao.recuperarPorId((int) tabla.campo(0));
+			if (producto!=null) {
+				tDescri.setText(producto.getDescripcion());
+				
+				tObservacin.setText(producto.getObservacion());
 			}
 			
 		}
@@ -337,13 +298,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void limpiarCampos() {
-		tNombre.setText("");
-		tDocumento.setText("");
-		tDireccion.setText("");
-		tEmail.setText("");
-		tTelefono.setText("");
+		tDescri.setText("");
 		tObservacin.setText("");
 	}
-	
-	
 }

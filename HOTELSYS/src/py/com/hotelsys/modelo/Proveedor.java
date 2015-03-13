@@ -15,6 +15,8 @@ public class Proveedor {
 	private String documento;
 	@Column(name="pro_telefono")
 	private String telefono;
+	@Column(name="pro_email")
+	private String email;
 	@Column(name="pro_direccion")
 	private String direccion;
 	@Column(name="pro_observacion")
@@ -54,6 +56,12 @@ public class Proveedor {
 	}
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }

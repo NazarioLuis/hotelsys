@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Font;
 
 @SuppressWarnings("serial")
-public class AbmBoton extends JPanel {
+public class BotonGrup extends JPanel {
 	AbmBotonInterface abi;
 	private JButton btnModificar;
 	private JButton btnGuardar;
@@ -25,7 +25,7 @@ public class AbmBoton extends JPanel {
 		this.abi = abi;
 	}
 
-	public AbmBoton() {
+	public BotonGrup() {
 		setLayout(new GridLayout(0, 6, 5, 0));
 		
 		btnModificar = new JButton("Modificar");

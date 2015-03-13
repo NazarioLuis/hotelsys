@@ -18,7 +18,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import py.com.hotelsys.componentes.AbmBoton;
+import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ClienteDao;
@@ -54,7 +54,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	private List<Cliente> listaCliente;
 	private CustomTable tabla;
 	private Object[] fila;
-	private AbmBoton abmBoton;
+	private BotonGrup abmBoton;
 	private String accion = "";
 	private PlaceholderTextField tNombre;
 	private PlaceholderTextField tDocumento;
@@ -123,7 +123,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		tObservacin.setBounds(25, 195, 334, 77);
 		panel.add(tObservacin);
 		
-		abmBoton = new AbmBoton();
+		abmBoton = new BotonGrup();
 		abmBoton.setBounds(10, 324, 647, 33);
 		getContentPane().add(abmBoton);
 		

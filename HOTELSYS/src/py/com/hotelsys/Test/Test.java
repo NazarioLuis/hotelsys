@@ -10,11 +10,11 @@ import py.com.hotelsys.modelo.Cliente;
 public class Test {
 
 	public static void main(String[] args) {
-		Cliente c = new Cliente();
-		c.setId(1);
-		c.setNombre("Nombre");
-		ClienteDao cDao = new ClienteDao();
-		cDao.insertar(c);
+//		Cliente c = new Cliente();
+//		c.setId(1);
+//		c.setNombre("Nombre");
+//		ClienteDao cDao = new ClienteDao();
+//		cDao.insertar(c);
 		
 //		Habitacion h = new Habitacion();
 //		h.setId(2);

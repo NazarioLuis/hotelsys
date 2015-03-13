@@ -6,6 +6,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Cliente {
+	
 	@Id
 	@Column(name="cli_codigo")
 	private int id;
@@ -56,6 +57,12 @@ public class Cliente {
 	}
 	public void setObservacion(String observacion) {
 		this.observacion = observacion;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }

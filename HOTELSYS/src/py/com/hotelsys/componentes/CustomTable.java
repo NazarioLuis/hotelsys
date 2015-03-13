@@ -1,6 +1,7 @@
 package py.com.hotelsys.componentes;
 
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
@@ -13,7 +14,7 @@ public class CustomTable extends JTable {
 		if (anchos != null) {
 			ajusrtarAnchoColumnas(anchos);
 		}
-		
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
 	private void configurarModelo(String[] modelo) {
@@ -38,5 +39,28 @@ public class CustomTable extends JTable {
 
 	public DefaultTableModel getModelo() {
 		return this.modelo;
+	}
+
+	public void setSeleccion() {
+		if (getRowCount()>0) {
+			int select = getRowCount()-1;
+			changeSelection(select,select,false,false);
+		}
+		
+	}
+
+	public void vaciar() {
+		while (getRowCount()>0) {
+			getModelo().removeRow(0);
+		}
+	}
+
+	public void agregar(Object[] fila) {
+		getModelo().addRow(fila);
+		
+	}
+
+	public Object campo(int i) {
+		return getModelo().getValueAt(getSelectedRow(), i);
 	}
 }

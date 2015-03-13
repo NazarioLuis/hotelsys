@@ -88,7 +88,7 @@ public class AbmBoton extends JPanel {
 		btnSalir.setEnabled(!b);
 		btnGuardar.setEnabled(b);
 		btnCancelar.setEnabled(b);
-		if(accion.equals("LECTURA")){
+		if(accion.equals("DATOS")){
 			btnModificar.setEnabled(true);
 			btnEliminar.setEnabled(true);
 		}else{

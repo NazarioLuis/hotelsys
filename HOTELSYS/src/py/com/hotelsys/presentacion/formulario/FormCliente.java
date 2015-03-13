@@ -13,6 +13,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import py.com.hotelsys.componentes.AbmBoton;
 import py.com.hotelsys.componentes.CustomTable;
@@ -20,6 +24,9 @@ import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Cliente;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 
@@ -43,7 +50,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		});
 	}
 
-	private ClienteDao clienteDao = new ClienteDao();;
+	private ClienteDao clienteDao;
 	private List<Cliente> listaCliente;
 	private CustomTable tabla;
 	private Object[] fila;
@@ -67,7 +74,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		setBounds(100, 100, 900, 410);
 		getContentPane().setLayout(null);
 		
-		
+		setLocationRelativeTo(null);
 		
 		panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.GRAY));
@@ -132,43 +139,57 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		
 		
 		tabla = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
+		
+		//Carga el formulario al cambiar la seleccion de la tabla
+		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				cargarFormulario();
+			}
+		});
 		scrollPane.setViewportView(tabla);
 		
 		abmBoton.botones(false, accion);
 		abmBoton.setAbi(this);
 		
-		
+		//Al iniciar deshavilita los campos y recupera los registros para la tabla
 		habilitarCampos(false);
 		recuperaDatos();		
 	}
 
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
+		clienteDao = new ClienteDao();
 		listaCliente = clienteDao.recuperaTodo();
 		
-		if (listaCliente.size()>0) {
-			cargarGrilla();
-		}
+		cargarGrilla();
+		
 	}
 
 	//Metodo que rellena la tabla con los datos obtenidos
 	private void cargarGrilla() {
-		while (tabla.getRowCount()>0) {
-			tabla.getModelo().removeRow(0);
-		}
+		tabla.vaciar();
+		
+		
 		fila = new Object[tabla.getColumnCount()];
 		for (Cliente c:listaCliente) {
 			fila[0] = c.getId();
 			fila[1] = c.getNombre();
 			fila[2] = c.getDocumento();
 			fila[3] = c.getTelefono();
-			tabla.getModelo().addRow(fila);
+			tabla.agregar(fila);
  		}
+		
+		//mantiene el foco en el ultimo registro cargado
+		tabla.setSeleccion();
+		
 	}
 
 	@Override
 	public void nuevo() {
 		accion = "AGREGAR";
+		limpiarCampos();
 		habilitarCampos(true);
 		abmBoton.botones(true, accion);
 	}
@@ -183,9 +204,20 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void eliminar() {
-		cliente = new Cliente();
-		cliente.setId((int) tabla.getValueAt(tabla.getSelectedRow(), 0));
-		clienteDao.eliminar(cliente);
+		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Cliente: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
+		if (si==JOptionPane.YES_OPTION) {
+			cliente = new Cliente();
+			clienteDao = new ClienteDao();
+			cliente.setId((int) tabla.campo(0));
+			try {
+				clienteDao.eliminar(cliente);
+			} catch (Exception e) {
+				clienteDao.rollback();
+				advertencia("No se eliminar el Cliente "+tabla.campo(1)+". Esta en uso!",2);
+			}
+			inicializar();
+		}
+		
 	}
 
 	@Override
@@ -196,17 +228,31 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	@Override
 	public void guardar() {
 		cargarAtributos();
+		clienteDao = new ClienteDao();
+		
 		if(accion.equals("AGREGAR"))
-			clienteDao.insertar(cliente);
-		if (accion.equals("MODIFICAR")) 
-			clienteDao.actualizar(cliente);
+			try {
+				clienteDao.insertar(cliente);
+			} catch (Exception e) {
+				clienteDao.rollback();
+				advertencia("No se puede guardar el Cliente. Los campos con * son obligatorios",2);
+			}
+		if (accion.equals("MODIFICAR"))
+			try {
+				clienteDao.actualizar(cliente);
+			} catch (Exception e) {
+				clienteDao.rollback();
+				advertencia("No se puede actualizar el Cliente. Los campos con * son obligatorios",2);
+			}
+		
+		
+		inicializar();
+		
 	}
 
 	@Override
 	public void cancelar() {
-		accion = "";
-		habilitarCampos(false);
-		abmBoton.botones(false, accion);
+		inicializar();
 	}
 
 	@Override
@@ -218,15 +264,78 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		tEmail.setEnabled(b);
 		tObservacin.setEnabled(b);
 		tBuscar.setEnabled(!b);
+		tabla.setEnabled(!b);
 		if(b==false)
-			tBuscar.requestFocus();
+			tabla.requestFocus();
 		else
 			tNombre.requestFocus();
 	}
 
+	//carga los atributos del objeto al ser persistido
 	@Override
 	public void cargarAtributos() {
-		// TODO Auto-generated method stub
+		
+		cliente = new Cliente();
+		if(accion.equals("AGREGAR")){
+			clienteDao = new ClienteDao();
+			cliente.setId(clienteDao.recuperMaxId()+1);
+		}else
+			cliente.setId((int) tabla.campo(0));		
+		cliente.setNombre(tNombre.getText());
+		cliente.setDocumento(tDocumento.getText());
+		cliente.setTelefono(tTelefono.getText());
+		cliente.setDireccion(tDireccion.getText());
+		cliente.setObservacion(tObservacin.getText());
+	}
+
+	//deja la pantallaen su estado inicial
+	@Override
+	public void inicializar() {
+		accion = "";
+		limpiarCampos();
+		habilitarCampos(false);
+		recuperaDatos();
+		abmBoton.botones(false, accion);
+			
+	}
+
+	
+	//emite mensajes de forma dinamica de acuerdo al texto que se le envie
+	@Override
+	public void advertencia(String texto,int t) {
+		JOptionPane.showMessageDialog(null, texto, "Atención", t);
+	}
+
+	@Override
+	public void cargarFormulario() {
+		if (tabla.getSelectedRow()>=0) {
+			accion = "DATOS";
+			abmBoton.botones(false, accion);
+			clienteDao = new ClienteDao();
+			System.out.println((int) tabla.campo(0));
+			cliente = clienteDao.recuperarPorId((int) tabla.campo(0));
+			if (cliente!=null) {
+				tNombre.setText(cliente.getNombre());
+				tDocumento.setText(cliente.getDocumento());
+				tDireccion.setText(cliente.getDireccion());
+				tEmail.setText(cliente.getEmail());
+				tTelefono.setText(cliente.getTelefono());
+				tObservacin.setText(cliente.getObservacion());
+			}
+			
+		}
 		
 	}
+
+	@Override
+	public void limpiarCampos() {
+		tNombre.setText("");
+		tDocumento.setText("");
+		tDireccion.setText("");
+		tEmail.setText("");
+		tTelefono.setText("");
+		tObservacin.setText("");
+	}
+	
+	
 }

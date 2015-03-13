@@ -2,7 +2,11 @@ package py.com.hotelsys.dao;
 
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 
 import py.com.hotelsys.util.HibernateUtil;
 
@@ -10,6 +14,9 @@ import py.com.hotelsys.util.HibernateUtil;
 public class GenericGao <T>{
 	private Session session;
 	private Class<?> entity;
+	private Object id;
+	Criteria criteria;
+	private List<T> list;
 
 	GenericGao(Class<?> entity){
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -17,27 +24,54 @@ public class GenericGao <T>{
 		this.entity = entity;
 	}
 	//Metodo Generico para Insertar, para todas las entidades
-	public void insertar(T entity){
+	public void insertar(T entity) throws Exception{
 		session.save(entity);
-		session.getTransaction().commit();
+		commit();
 	}
 	//Metodo Generico para Actualizar, para todas las entidades
-	public void actualizar(T entity){
+	public void actualizar(T entity) throws Exception{
 		session.merge(entity);
-		session.getTransaction().commit();
+		commit();
 	}
 	//Metodo Generico para Eliminar, para todas las entidades
-	public void eliminar(T entity){
+	public void eliminar(T entity) throws Exception{
 		session.delete(entity);
 		session.getTransaction().commit();
 	}
 	//Metodo Generico para Recuperar por Id todas las entidades
 	@SuppressWarnings("unchecked")
-	public T encontrarPorId(int id){
-		return (T) session.get(this.entity, id);
+	public T recuperarPorId(int id){
+		 T entity = (T) session.get(this.entity, id);
+		 commit();
+		 return entity;
 	}
+	
 	@SuppressWarnings("unchecked")
 	public List<T> recuperaTodo(){
-		return (List<T>) session.createCriteria(entity).list();
+		list = session.createCriteria(entity).list();
+		cerrar();
+		return list;
+	}
+	
+	public int recuperMaxId(){
+		id = session.createCriteria(entity)
+			    .setProjection(Projections.max("id")).uniqueResult();
+		cerrar();
+		if (id == null){
+			return 0;
+			
+		}
+		else
+			return (int) id;
+	}
+	
+	public void cerrar() {
+		session.close();
+	}
+	private void commit() {
+		session.getTransaction().commit();
+	}
+	public void rollback() {
+		session.getTransaction().rollback();
 	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,21 +16,13 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
-import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.dao.ProveedorDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
-import py.com.hotelsys.modelo.Cliente;
 import py.com.hotelsys.modelo.Proveedor;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
 
 
 

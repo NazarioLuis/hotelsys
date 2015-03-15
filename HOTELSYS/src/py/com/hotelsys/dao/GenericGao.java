@@ -2,8 +2,6 @@ package py.com.hotelsys.dao;
 
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
@@ -11,7 +9,7 @@ import org.hibernate.criterion.Projections;
 import py.com.hotelsys.util.HibernateUtil;
 
 
-public class GenericGao <T>{
+public abstract class GenericGao <T>{
 	private Session session;
 	private Class<?> entity;
 	private Object id;
@@ -64,6 +62,9 @@ public class GenericGao <T>{
 		else
 			return (int) id;
 	}
+	
+	
+	public abstract List<T> cosultarPorFiltros(String filtro);
 	
 	public void cerrar() {
 		session.close();

@@ -28,6 +28,7 @@ import py.com.hotelsys.componentes.VisorFechaHora;
 import py.com.hotelsys.presentacion.formulario.FormCliente;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
 import py.com.hotelsys.presentacion.formulario.FormProveedor;
+import py.com.hotelsys.util.HibernateUtil;
 
 @SuppressWarnings("serial")
 public class Principal extends JFrame {
@@ -41,6 +42,7 @@ public class Principal extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					HibernateUtil.buildIfNeeded();
 					Principal frame = new Principal();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -72,11 +74,11 @@ public class Principal extends JFrame {
 				fc.setVisible(true);
 			}
 		});
-		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
+		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0));
 		mnGral.add(mntmCliente);
 		
 		JMenuItem mntmProveedor = new JMenuItem("Proveedor");
-		mntmProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_MASK));
+		mntmProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0));
 		mntmProveedor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				FormProveedor fp = new FormProveedor();
@@ -86,7 +88,7 @@ public class Principal extends JFrame {
 		mnGral.add(mntmProveedor);
 		
 		JMenuItem mntmProductos = new JMenuItem("Producto");
-		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
+		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
 		mntmProductos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				FormProducto fp = new FormProducto();
@@ -96,52 +98,52 @@ public class Principal extends JFrame {
 		mnGral.add(mntmProductos);
 		
 		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3n");
-		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.ALT_MASK));
+		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
 		mnGral.add(mntmHabitacin);
 		
 		JMenuItem mntmServicio = new JMenuItem("Servicio");
-		mntmServicio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
+		mntmServicio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
 		mnGral.add(mntmServicio);
 		
 		JMenuItem mntmMoneda = new JMenuItem("Moneda");
-		mntmMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_MASK));
+		mntmMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0));
 		mnGral.add(mntmMoneda);
 		
 		JMenu mnEstada = new JMenu("Estad\u00EDa");
 		menuBar.add(mnEstada);
 		
 		JMenuItem mntmReservar = new JMenuItem("Reservar");
-		mntmReservar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK));
+		mntmReservar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
 		mnEstada.add(mntmReservar);
 		
 		JMenuItem mntmRegistrar = new JMenuItem("Registrar");
-		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
+		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
 		mnEstada.add(mntmRegistrar);
 		
 		JMenuItem mntmGenerarInformes = new JMenuItem("Generar Informe");
-		mntmGenerarInformes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mntmGenerarInformes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_MASK));
 		mnEstada.add(mntmGenerarInformes);
 		
 		JMenu mnStock = new JMenu("Stock");
 		menuBar.add(mnStock);
 		
 		JMenuItem mntmAjusteDeStock = new JMenuItem("Ajuste de Stock");
-		mntmAjusteDeStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_MASK));
+		mntmAjusteDeStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0));
 		mnStock.add(mntmAjusteDeStock);
 		
 		JMenuItem mntmImprimirInforme = new JMenuItem("Imprimir Informe");
-		mntmImprimirInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mntmImprimirInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
 		mnStock.add(mntmImprimirInforme);
 		
 		JMenu mnCompras = new JMenu("Compras");
 		menuBar.add(mnCompras);
 		
 		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar");
-		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.ALT_MASK));
+		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
 		mnCompras.add(mntmRegistrar_1);
 		
 		JMenuItem mntmGenerarInforme = new JMenuItem("Generar Informe");
-		mntmGenerarInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mntmGenerarInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
 		mnCompras.add(mntmGenerarInforme);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));

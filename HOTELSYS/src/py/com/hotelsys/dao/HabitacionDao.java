@@ -11,7 +11,7 @@ public class HabitacionDao extends GenericGao<Habitacion>{
 	}
 
 	@Override
-	public List<Habitacion> cosultarPorFiltros(String filtro) {
+	public List<Habitacion> cosultarPorFiltros(String [] filtro) {
 		// TODO Auto-generated method stub
 		return null;
 	}

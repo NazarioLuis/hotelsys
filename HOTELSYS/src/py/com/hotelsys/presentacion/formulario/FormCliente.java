@@ -3,7 +3,11 @@ package py.com.hotelsys.presentacion.formulario;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -62,6 +66,9 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	private JPanel panel;
 	private Cliente cliente;
 	private JLabel label;
+	private Timer timer;
+	private TimerTask task;
+	private int ultimaFila;
 
 
 	/**
@@ -136,14 +143,19 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		
 		
 		tBuscar = new PlaceholderTextField();
+		tBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				buscar();
+			}
+		});
 		tBuscar.setPlaceholder("Criterio de Busqueda");
 		tBuscar.setBounds(523, 293, 350, 20);
 		getContentPane().add(tBuscar);
 		
 		
 		tabla = new CustomTable(new String[] {"#", "Nombre", "Documento", "Telefono"}, new int[] {5, 190, 30, 40});
-		
-		//Carga el formulario al cambiar la seleccion de la tabla
+		scrollPane.setViewportView(tabla);
 		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
 			@Override
@@ -151,7 +163,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 				cargarFormulario();
 			}
 		});
-		scrollPane.setViewportView(tabla);
+		
 		
 		abmBoton.botones(false, accion);
 		abmBoton.setAbi(this);
@@ -172,7 +184,9 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	//Metodo que rellena la tabla con los datos obtenidos
 	private void cargarGrilla() {
+		
 		tabla.vaciar();
+		
 		
 		
 		fila = new Object[tabla.getColumnCount()];
@@ -184,8 +198,10 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 			tabla.agregar(fila);
  		}
 		
+		
 		//mantiene el foco en el ultimo registro cargado
 		tabla.setSeleccion();
+		
 		
 	}
 
@@ -311,12 +327,12 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void cargarFormulario() {
-		if (tabla.getSelectedRow()>=0) {
+		if (tabla.getSelectedRow()>=0 && tabla.getSelectedRow()!=ultimaFila) {
+			ultimaFila=tabla.getSelectedRow();
 			accion = "DATOS";
 			abmBoton.botones(false, accion);
 			clienteDao = new ClienteDao();
-			System.out.println((int) tabla.campo(0));
-			cliente = clienteDao.recuperarPorId((int) tabla.campo(0));
+			cliente = clienteDao.recuperarPorId((int) tabla.getValueAt(tabla.getSelectedRow(), 0));
 			if (cliente!=null) {
 				tNombre.setText(cliente.getNombre());
 				tDocumento.setText(cliente.getDocumento());
@@ -339,6 +355,29 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		tTelefono.setText("");
 		tObservacin.setText("");
 	}
+
+	@Override
+	public void buscar() {
+		if (timer==null&&task==null) {
+			timer = new Timer();
+			task = new TimerTask() {
+				@Override
+				public void run() {
+					clienteDao = new ClienteDao();
+					listaCliente = clienteDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					cargarGrilla();
+					timer.cancel();
+					timer=null;
+					task=null;
+				}
+			};
+						
+			timer.schedule(task, 1000);		
+		}
+		
+	}
+		
+	
 	
 	
 }

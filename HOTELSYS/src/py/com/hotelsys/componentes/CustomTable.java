@@ -50,9 +50,7 @@ public class CustomTable extends JTable {
 	}
 
 	public void vaciar() {
-		while (getRowCount()>0) {
-			getModelo().removeRow(0);
-		}
+		getModelo().setRowCount(0);
 	}
 
 	public void agregar(Object[] fila) {

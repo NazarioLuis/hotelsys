@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -23,6 +25,9 @@ import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Producto;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 
@@ -57,6 +62,9 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	private PlaceholderTextField tBuscar;
 	private JPanel panel;
 	private Producto producto;
+	private int ultimaFila;
+	private Timer timer;
+	private TimerTask task;
 
 
 	/**
@@ -107,14 +115,19 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		
 		tBuscar = new PlaceholderTextField();
+		tBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				buscar();
+			}
+		});
 		tBuscar.setPlaceholder("Criterio de Busqueda");
 		tBuscar.setBounds(524, 247, 350, 20);
 		getContentPane().add(tBuscar);
 		
 		
 		tabla = new CustomTable(new String[] {"#", "Descripcion"}, new int[] {10, 250});
-		
-		//Carga el formulario al cambiar la seleccion de la tabla
+		scrollPane.setViewportView(tabla);
 		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
 			@Override
@@ -122,7 +135,6 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 				cargarFormulario();
 			}
 		});
-		scrollPane.setViewportView(tabla);
 		
 		abmBoton.botones(false, accion);
 		abmBoton.setAbi(this);
@@ -153,8 +165,12 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			tabla.agregar(fila);
  		}
 		
+		
+				
+				
 		//mantiene el foco en el ultimo registro cargado
 		tabla.setSeleccion();
+		
 		
 	}
 
@@ -273,11 +289,11 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void cargarFormulario() {
-		if (tabla.getSelectedRow()>=0) {
+		if (tabla.getSelectedRow()>=0 && tabla.getSelectedRow()!=ultimaFila) {
+			ultimaFila=tabla.getSelectedRow();
 			accion = "DATOS";
 			abmBoton.botones(false, accion);
 			productoDao = new ProductoDao();
-			System.out.println((int) tabla.campo(0));
 			producto = productoDao.recuperarPorId((int) tabla.campo(0));
 			if (producto!=null) {
 				tDescri.setText(producto.getDescripcion());
@@ -293,5 +309,26 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void limpiarCampos() {
 		tDescri.setText("");
 		tObservacin.setText("");
+	}
+
+	@Override
+	public void buscar() {
+		if (timer==null&&task==null) {
+			timer = new Timer();
+			task = new TimerTask() {
+				@Override
+				public void run() {
+					productoDao = new ProductoDao();
+					listaCliente = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					cargarGrilla();
+					timer.cancel();
+					timer=null;
+					task=null;
+				}
+			};
+						
+			timer.schedule(task, 1000);		
+		}
+		
 	}
 }

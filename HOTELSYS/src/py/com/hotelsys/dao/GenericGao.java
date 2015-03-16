@@ -10,11 +10,12 @@ import py.com.hotelsys.util.HibernateUtil;
 
 
 public abstract class GenericGao <T>{
-	private Session session;
-	private Class<?> entity;
-	private Object id;
+	Session session;
+	Class<?> entity;
+	Object id;
 	Criteria criteria;
-	private List<T> list;
+	List<T> list;
+	public String[] filtros;
 
 	GenericGao(Class<?> entity){
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -64,7 +65,8 @@ public abstract class GenericGao <T>{
 	}
 	
 	
-	public abstract List<T> cosultarPorFiltros(String filtro);
+	
+	public abstract List<T> cosultarPorFiltros(String [] filtro);
 	
 	public void cerrar() {
 		session.close();

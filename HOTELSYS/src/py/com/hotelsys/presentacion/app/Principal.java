@@ -26,6 +26,8 @@ import javax.swing.border.LineBorder;
 import py.com.hotelsys.componentes.FondoPrincipal;
 import py.com.hotelsys.componentes.VisorFechaHora;
 import py.com.hotelsys.presentacion.formulario.FormCliente;
+import py.com.hotelsys.presentacion.formulario.FormProducto;
+import py.com.hotelsys.presentacion.formulario.FormProveedor;
 
 @SuppressWarnings("serial")
 public class Principal extends JFrame {
@@ -60,8 +62,8 @@ public class Principal extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnProcesos = new JMenu("Procesos");
-		menuBar.add(mnProcesos);
+		JMenu mnGral = new JMenu("General");
+		menuBar.add(mnGral);
 		
 		JMenuItem mntmCliente = new JMenuItem("Cliente");
 		mntmCliente.addActionListener(new ActionListener() {
@@ -70,8 +72,77 @@ public class Principal extends JFrame {
 				fc.setVisible(true);
 			}
 		});
-		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
-		mnProcesos.add(mntmCliente);
+		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
+		mnGral.add(mntmCliente);
+		
+		JMenuItem mntmProveedor = new JMenuItem("Proveedor");
+		mntmProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_MASK));
+		mntmProveedor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FormProveedor fp = new FormProveedor();
+				fp.setVisible(true);
+			}
+		});
+		mnGral.add(mntmProveedor);
+		
+		JMenuItem mntmProductos = new JMenuItem("Producto");
+		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
+		mntmProductos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FormProducto fp = new FormProducto();
+				fp.setVisible(true);
+			}
+		});
+		mnGral.add(mntmProductos);
+		
+		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3n");
+		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.ALT_MASK));
+		mnGral.add(mntmHabitacin);
+		
+		JMenuItem mntmServicio = new JMenuItem("Servicio");
+		mntmServicio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
+		mnGral.add(mntmServicio);
+		
+		JMenuItem mntmMoneda = new JMenuItem("Moneda");
+		mntmMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_MASK));
+		mnGral.add(mntmMoneda);
+		
+		JMenu mnEstada = new JMenu("Estad\u00EDa");
+		menuBar.add(mnEstada);
+		
+		JMenuItem mntmReservar = new JMenuItem("Reservar");
+		mntmReservar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK));
+		mnEstada.add(mntmReservar);
+		
+		JMenuItem mntmRegistrar = new JMenuItem("Registrar");
+		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
+		mnEstada.add(mntmRegistrar);
+		
+		JMenuItem mntmGenerarInformes = new JMenuItem("Generar Informe");
+		mntmGenerarInformes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mnEstada.add(mntmGenerarInformes);
+		
+		JMenu mnStock = new JMenu("Stock");
+		menuBar.add(mnStock);
+		
+		JMenuItem mntmAjusteDeStock = new JMenuItem("Ajuste de Stock");
+		mntmAjusteDeStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_MASK));
+		mnStock.add(mntmAjusteDeStock);
+		
+		JMenuItem mntmImprimirInforme = new JMenuItem("Imprimir Informe");
+		mntmImprimirInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mnStock.add(mntmImprimirInforme);
+		
+		JMenu mnCompras = new JMenu("Compras");
+		menuBar.add(mnCompras);
+		
+		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar");
+		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.ALT_MASK));
+		mnCompras.add(mntmRegistrar_1);
+		
+		JMenuItem mntmGenerarInforme = new JMenuItem("Generar Informe");
+		mntmGenerarInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		mnCompras.add(mntmGenerarInforme);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);

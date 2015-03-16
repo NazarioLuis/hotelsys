@@ -11,7 +11,7 @@ public class ServicioDao extends GenericGao<Servicio>{
 	}
 
 	@Override
-	public List<Servicio> cosultarPorFiltros(String filtro) {
+	public List<Servicio> cosultarPorFiltros(String [] filtro) {
 		// TODO Auto-generated method stub
 		return null;
 	}

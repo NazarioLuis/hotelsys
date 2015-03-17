@@ -38,6 +38,11 @@
         <mapping class="py.com.hotelsys.modelo.Cliente"/>
         <mapping class="py.com.hotelsys.modelo.Habitacion"/>
 		<mapping class="py.com.hotelsys.modelo.Proveedor"/>
+		<mapping class="py.com.hotelsys.modelo.Stock"/>
+		<mapping class="py.com.hotelsys.modelo.Compra"/>
+		<mapping class="py.com.hotelsys.modelo.CompraItem"/>
     </session-factory>
+    
+   
 
 </hibernate-configuration>

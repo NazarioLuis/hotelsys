@@ -1,7 +1,6 @@
 package py.com.hotelsys.presentacion.formulario;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -11,6 +10,7 @@ import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,22 +33,7 @@ import py.com.hotelsys.modelo.Cliente;
 @SuppressWarnings("serial")
 public class FormCliente extends JDialog implements AbmBotonInterface {
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FormCliente dialog = new FormCliente();
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	private ClienteDao clienteDao;
 	private List<Cliente> listaCliente;
@@ -74,11 +59,12 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	/**
 	 * Create the dialog.
 	 */
-	public FormCliente() {
+	public FormCliente(JFrame frame) {
+		super(frame);
 		setTitle("Archivo de Cliente");
 		setBounds(100, 100, 900, 410);
 		getContentPane().setLayout(null);
-		
+		setResizable(false);
 		setLocationRelativeTo(null);
 		
 		panel = new JPanel();
@@ -169,8 +155,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		abmBoton.setAbi(this);
 		
 		//Al iniciar deshavilita los campos y recupera los registros para la tabla
-		habilitarCampos(false);
-		recuperaDatos();		
+		inicializar();		
 	}
 
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
@@ -179,7 +164,10 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		listaCliente = clienteDao.recuperaTodo();
 		
 		cargarGrilla();
-		
+		if (listaCliente.size()>0)
+			accion = "DATOS";
+		else
+			accion = "";
 	}
 
 	//Metodo que rellena la tabla con los datos obtenidos
@@ -225,12 +213,11 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	public void eliminar() {
 		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Cliente: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
 		if (si==JOptionPane.YES_OPTION) {
-			cliente = new Cliente();
 			clienteDao = new ClienteDao();
-			cliente.setId((int) tabla.campo(0));
 			try {
-				clienteDao.eliminar(cliente);
+				clienteDao.eliminar((int) tabla.campo(0));
 			} catch (Exception e) {
+				e.printStackTrace();
 				clienteDao.rollback();
 				advertencia("No se eliminar el Cliente "+tabla.campo(1)+". Esta en uso!",2);
 			}
@@ -252,6 +239,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		if(accion.equals("AGREGAR"))
 			try {
 				clienteDao.insertar(cliente);
+				inicializar();
 			} catch (Exception e) {
 				clienteDao.rollback();
 				advertencia("No se puede guardar el Cliente. Los campos con * son obligatorios",2);
@@ -259,13 +247,14 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		if (accion.equals("MODIFICAR"))
 			try {
 				clienteDao.actualizar(cliente);
+				inicializar();
 			} catch (Exception e) {
 				clienteDao.rollback();
 				advertencia("No se puede actualizar el Cliente. Los campos con * son obligatorios",2);
 			}
 		
 		
-		inicializar();
+		
 		
 	}
 
@@ -299,23 +288,24 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 			clienteDao = new ClienteDao();
 			cliente.setId(clienteDao.recuperMaxId()+1);
 		}else
-			cliente.setId((int) tabla.campo(0));		
-		cliente.setNombre(tNombre.getText());
-		cliente.setDocumento(tDocumento.getText());
+			cliente.setId((int) tabla.campo(0));
+		if(!tNombre.getText().equals(""))
+			cliente.setNombre(tNombre.getText());
+		if(!tDocumento.getText().equals(""))
+			cliente.setDocumento(tDocumento.getText());
 		cliente.setTelefono(tTelefono.getText());
 		cliente.setDireccion(tDireccion.getText());
+		cliente.setEmail(tEmail.getText());
 		cliente.setObservacion(tObservacin.getText());
 	}
 
 	//deja la pantallaen su estado inicial
 	@Override
 	public void inicializar() {
-		accion = "";
 		limpiarCampos();
 		habilitarCampos(false);
 		recuperaDatos();
 		abmBoton.botones(false, accion);
-			
 	}
 
 	
@@ -327,12 +317,13 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void cargarFormulario() {
+		if(tabla.getRowCount()==1)
+			ultimaFila = -1;
 		if (tabla.getSelectedRow()>=0 && tabla.getSelectedRow()!=ultimaFila) {
 			ultimaFila=tabla.getSelectedRow();
-			accion = "DATOS";
 			abmBoton.botones(false, accion);
 			clienteDao = new ClienteDao();
-			cliente = clienteDao.recuperarPorId((int) tabla.getValueAt(tabla.getSelectedRow(), 0));
+			cliente = clienteDao.recuperarPorId((int) tabla.campo(0));
 			if (cliente!=null) {
 				tNombre.setText(cliente.getNombre());
 				tDocumento.setText(cliente.getDocumento());
@@ -372,7 +363,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 				}
 			};
 						
-			timer.schedule(task, 1000);		
+			timer.schedule(task, 1000);
 		}
 		
 	}

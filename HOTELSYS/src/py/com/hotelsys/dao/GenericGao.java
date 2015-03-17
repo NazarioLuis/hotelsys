@@ -33,7 +33,9 @@ public abstract class GenericGao <T>{
 		commit();
 	}
 	//Metodo Generico para Eliminar, para todas las entidades
-	public void eliminar(T entity) throws Exception{
+	public void eliminar(int id) throws Exception{
+		@SuppressWarnings("unchecked")
+		T entity = (T) session.get(this.entity, id);
 		session.delete(entity);
 		session.getTransaction().commit();
 	}

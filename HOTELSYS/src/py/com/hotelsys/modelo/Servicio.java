@@ -3,18 +3,19 @@ package py.com.hotelsys.modelo;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 @Entity
 public class Servicio{
 	
 	@Id
 	@Column(name="ser_codigo")
 	private int id;
-	@Column(name="ser_descripcion")
+	@Column(name="ser_descripcion",nullable=false)
 	private String descripcion;
 	@Column(name="ser_observacion")
 	private String observacion;
-	@Column(name="ser_precio")
-	private Double precio;
+	@Column(name="ser_precio",nullable=false)
+	private double precio;
 	
 	public int getId() {
 		return id;
@@ -36,10 +37,10 @@ public class Servicio{
 	}
 	
 	
-	public Double getPrecio() {
+	public double getPrecio() {
 		return precio;
 	}
-	public void setPrecio(Double precio) {
+	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
 }

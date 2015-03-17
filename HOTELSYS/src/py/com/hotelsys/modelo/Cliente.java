@@ -10,9 +10,9 @@ public class Cliente {
 	@Id
 	@Column(name="cli_codigo")
 	private int id;
-	@Column(name="cli_nombre")
+	@Column(name="cli_nombre",nullable=false)
 	private String nombre;
-	@Column(name="cli_documento")
+	@Column(name="cli_documento",nullable=false)
 	private String documento;
 	@Column(name="cli_email")
 	private String email;

@@ -1,14 +1,16 @@
 package py.com.hotelsys.presentacion.formulario;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,34 +27,21 @@ import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Producto;
+import py.com.hotelsys.modelo.Stock;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import javax.swing.JRadioButton;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 
 
 @SuppressWarnings("serial")
 public class FormProducto extends JDialog implements AbmBotonInterface {
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FormProducto dialog = new FormProducto();
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	private ProductoDao productoDao;
-	private List<Producto> listaCliente;
+	private List<Producto> listaProducto;
 	private CustomTable tabla;
 	private Object[] fila;
 	private BotonGrup abmBoton;
@@ -62,31 +51,37 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	private PlaceholderTextField tBuscar;
 	private JPanel panel;
 	private Producto producto;
+	private Stock stock;
+	
 	private int ultimaFila;
 	private Timer timer;
 	private TimerTask task;
+	private JRadioButton rdbtnTieneStockAnterior;
+	private PlaceholderTextField tPrecio;
+	private PlaceholderTextField tStock;
 
 
 	/**
 	 * Create the dialog.
 	 */
-	public FormProducto() {
+	public FormProducto(JFrame frame) {
+		super(frame);
 		setTitle("Archivo de Producto");
-		setBounds(100, 100, 900, 356);
+		setBounds(100, 100, 900, 385);
 		getContentPane().setLayout(null);
 		
 		setLocationRelativeTo(null);
 		
 		panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.GRAY));
-		panel.setBounds(10, 11, 388, 225);
+		panel.setBounds(10, 11, 388, 280);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		tDescri = new PlaceholderTextField();
 		tDescri.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDescri.setPlaceholder("Descripci\u00F3n del Producto");
-		tDescri.setBounds(25, 24, 301, 20);
+		tDescri.setBounds(25, 11, 301, 20);
 		panel.add(tDescri);
 		
 		tObservacin = new JTextArea("");
@@ -97,20 +92,68 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		tObservacin.setRows(10);
 		tObservacin.setLineWrap(true);
-		tObservacin.setBounds(25, 78, 334, 77);
+		tObservacin.setBounds(24, 151, 334, 77);
 		panel.add(tObservacin);
 		
 		JLabel lblObservacin = new JLabel("Observaci\u00F3n:");
 		lblObservacin.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		lblObservacin.setBounds(24, 62, 107, 14);
+		lblObservacin.setBounds(25, 135, 107, 14);
 		panel.add(lblObservacin);
 		
+		rdbtnTieneStockAnterior = new JRadioButton("Tiene Stock anterior");
+		rdbtnTieneStockAnterior.setVisible(false);
+		rdbtnTieneStockAnterior.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				if(rdbtnTieneStockAnterior.isSelected()){
+					tStock.setVisible(true);
+					
+				}else{
+					tStock.setVisible(false);
+					
+				}
+					
+			}
+		});
+		rdbtnTieneStockAnterior.setBounds(25, 72, 190, 23);
+		panel.add(rdbtnTieneStockAnterior);
+		
+		tStock = new PlaceholderTextField();
+		tStock.setVisible(false);
+		tStock.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if ((e.getKeyChar()<'0' || e.getKeyChar()>'9') && e.getKeyCode() != KeyEvent.VK_BACK_SPACE && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+					e.consume();
+				}
+			}
+		});
+		
+		tStock.setPlaceholder("Stock anterior");
+		tStock.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tStock.setBounds(25, 102, 147, 20);
+		panel.add(tStock);
+		
+		tPrecio = new PlaceholderTextField();
+		tPrecio.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if ((e.getKeyChar()<'0' || e.getKeyChar()>'9') && e.getKeyCode() != KeyEvent.VK_BACK_SPACE && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+					e.consume();
+				}
+			}
+		});
+		
+		tPrecio.setPlaceholder("Precio");
+		tPrecio.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tPrecio.setBounds(25, 42, 133, 20);
+		panel.add(tPrecio);
+		
 		abmBoton = new BotonGrup();
-		abmBoton.setBounds(10, 281, 647, 33);
+		abmBoton.setBounds(10, 302, 647, 33);
 		getContentPane().add(abmBoton);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(408, 11, 465, 225);
+		scrollPane.setBounds(408, 11, 465, 249);
 		getContentPane().add(scrollPane);
 		
 		
@@ -122,11 +165,11 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			}
 		});
 		tBuscar.setPlaceholder("Criterio de Busqueda");
-		tBuscar.setBounds(524, 247, 350, 20);
+		tBuscar.setBounds(523, 271, 350, 20);
 		getContentPane().add(tBuscar);
 		
 		
-		tabla = new CustomTable(new String[] {"#", "Descripcion"}, new int[] {10, 250});
+		tabla = new CustomTable(new String[] {"#", "Descripcion","Stock","Costo Medio","Precio Venta"}, new int[] {5, 155,15,45,45});
 		scrollPane.setViewportView(tabla);
 		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -140,16 +183,20 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		abmBoton.setAbi(this);
 		
 		//Al iniciar deshavilita los campos y recupera los registros para la tabla
-		habilitarCampos(false);
-		recuperaDatos();		
+		inicializar();	
 	}
 
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		productoDao = new ProductoDao();
-		listaCliente = productoDao.recuperaTodo();
+		listaProducto = productoDao.recuperaTodo();
 		
 		cargarGrilla();
+		
+		if (listaProducto.size()>0)
+			accion = "DATOS";
+		else
+			accion = "";
 		
 	}
 
@@ -159,9 +206,13 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		
 		fila = new Object[tabla.getColumnCount()];
-		for (Producto p:listaCliente) {
+		for (Producto p:listaProducto) {
 			fila[0] = p.getId();
 			fila[1] = p.getDescripcion();
+			fila[2] = p.getStock().getCantidad();
+			fila[3] = "";
+			fila[4] = (int)p.getStock().getPrecio();
+			
 			tabla.agregar(fila);
  		}
 		
@@ -194,11 +245,9 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void eliminar() {
 		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Producto: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
 		if (si==JOptionPane.YES_OPTION) {
-			producto = new Producto();
 			productoDao = new ProductoDao();
-			producto.setId((int) tabla.campo(0));
 			try {
-				productoDao.eliminar(producto);
+				productoDao.eliminar((int) tabla.campo(0));
 			} catch (Exception e) {
 				productoDao.rollback();
 				advertencia("No se eliminar el Producto "+tabla.campo(1)+". Esta en uso!",2);
@@ -221,20 +270,23 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		if(accion.equals("AGREGAR"))
 			try {
 				productoDao.insertar(producto);
+				inicializar();
 			} catch (Exception e) {
+				e.printStackTrace();
 				productoDao.rollback();
 				advertencia("No se puede guardar el Producto. Los campos con * son obligatorios",2);
 			}
 		if (accion.equals("MODIFICAR"))
 			try {
 				productoDao.actualizar(producto);
+				inicializar();
 			} catch (Exception e) {
 				productoDao.rollback();
 				advertencia("No se puede actualizar el Producto. Los campos con * son obligatorios",2);
 			}
 		
 		
-		inicializar();
+		
 		
 	}
 
@@ -247,12 +299,21 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void habilitarCampos(boolean b) {
 		tDescri.setEnabled(b);
 		tObservacin.setEnabled(b);
+		
+		
+		tPrecio.setEnabled(b);
+		
 		tBuscar.setEnabled(!b);
 		tabla.setEnabled(!b);
+		
 		if(b==false)
 			tabla.requestFocus();
 		else
 			tDescri.requestFocus();
+		
+		if (accion=="AGREGAR")
+			rdbtnTieneStockAnterior.setVisible(b);
+		
 	}
 
 	//carga los atributos del objeto al ser persistido
@@ -263,21 +324,38 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		if(accion.equals("AGREGAR")){
 			productoDao = new ProductoDao();
 			producto.setId(productoDao.recuperMaxId()+1);
+			
+			stock = new Stock();
+			if (!tStock.getText().equals(""))
+				stock.setCantidad(Integer.parseInt(tStock.getText()));
+			else
+				stock.setCantidad(0);
+			
+			
 		}else
-			producto.setId((int) tabla.campo(0));		
-		producto.setDescripcion(tDescri.getText());
+			producto.setId((int) tabla.campo(0));	
+		if (!tDescri.getText().equals(""))
+			producto.setDescripcion(tDescri.getText());
 		producto.setObservacion(tObservacin.getText());
+		
+		if (!tPrecio.getText().equals(""))
+			stock.setPrecio(Integer.parseInt(tPrecio.getText()));
+		else
+			stock.setPrecio(0);
+		
+		producto.setStock(stock);
 	}
 
 	//deja la pantallaen su estado inicial
 	@Override
 	public void inicializar() {
-		accion = "";
 		limpiarCampos();
 		habilitarCampos(false);
 		recuperaDatos();
 		abmBoton.botones(false, accion);
-			
+		ultimaFila=-1;
+		rdbtnTieneStockAnterior.setSelected(false);
+		
 	}
 
 	
@@ -289,16 +367,19 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void cargarFormulario() {
+		if(tabla.getRowCount()==1)
+			ultimaFila = -1;
 		if (tabla.getSelectedRow()>=0 && tabla.getSelectedRow()!=ultimaFila) {
 			ultimaFila=tabla.getSelectedRow();
-			accion = "DATOS";
 			abmBoton.botones(false, accion);
 			productoDao = new ProductoDao();
 			producto = productoDao.recuperarPorId((int) tabla.campo(0));
 			if (producto!=null) {
 				tDescri.setText(producto.getDescripcion());
-				
 				tObservacin.setText(producto.getObservacion());
+				tPrecio.setText((int)producto.getStock().getPrecio()+"");
+				stock = producto.getStock();
+				
 			}
 			
 		}
@@ -309,6 +390,9 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void limpiarCampos() {
 		tDescri.setText("");
 		tObservacin.setText("");
+		tPrecio.setText("");
+		tStock.setText("");
+		
 	}
 
 	@Override
@@ -319,7 +403,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 				@Override
 				public void run() {
 					productoDao = new ProductoDao();
-					listaCliente = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

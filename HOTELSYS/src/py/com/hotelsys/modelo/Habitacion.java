@@ -11,12 +11,12 @@ public class Habitacion{
 	@Id
 	@Column(name="hab_codigo")
 	private int id;
-	@Column(name="hab_descripcion")
+	@Column(name="hab_descripcion",nullable=false)
 	private String descripcion;
 	@Column(name="hab_observacion")
 	private String observacion;
-	@Column(name="hab_precio")
-	private Double precio;
+	@Column(name="hab_precio",nullable=false)
+	private double precio;
 	
 	public int getId() {
 		return id;
@@ -38,10 +38,10 @@ public class Habitacion{
 	}
 	
 	
-	public Double getPrecio() {
+	public double getPrecio() {
 		return precio;
 	}
-	public void setPrecio(Double precio) {
+	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
 	

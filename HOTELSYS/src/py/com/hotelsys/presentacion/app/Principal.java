@@ -8,6 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -56,6 +60,12 @@ public class Principal extends JFrame {
 	 * Create the frame.
 	 */
 	public Principal() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				HibernateUtil.cerrar();
+			}
+		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		setExtendedState(MAXIMIZED_BOTH);
@@ -70,36 +80,11 @@ public class Principal extends JFrame {
 		JMenuItem mntmCliente = new JMenuItem("Cliente");
 		mntmCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				FormCliente fc = new FormCliente();
-				fc.setVisible(true);
+				verFormCliente();
 			}
 		});
 		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0));
 		mnGral.add(mntmCliente);
-		
-		JMenuItem mntmProveedor = new JMenuItem("Proveedor");
-		mntmProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0));
-		mntmProveedor.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				FormProveedor fp = new FormProveedor();
-				fp.setVisible(true);
-			}
-		});
-		mnGral.add(mntmProveedor);
-		
-		JMenuItem mntmProductos = new JMenuItem("Producto");
-		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
-		mntmProductos.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				FormProducto fp = new FormProducto();
-				fp.setVisible(true);
-			}
-		});
-		mnGral.add(mntmProductos);
-		
-		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3n");
-		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
-		mnGral.add(mntmHabitacin);
 		
 		JMenuItem mntmServicio = new JMenuItem("Servicio");
 		mntmServicio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
@@ -112,12 +97,16 @@ public class Principal extends JFrame {
 		JMenu mnEstada = new JMenu("Estad\u00EDa");
 		menuBar.add(mnEstada);
 		
+		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3n");
+		mnEstada.add(mntmHabitacin);
+		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
+		
 		JMenuItem mntmReservar = new JMenuItem("Reservar");
-		mntmReservar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
+		mntmReservar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
 		mnEstada.add(mntmReservar);
 		
-		JMenuItem mntmRegistrar = new JMenuItem("Registrar");
-		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
+		JMenuItem mntmRegistrar = new JMenuItem("Hospedar");
+		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
 		mnEstada.add(mntmRegistrar);
 		
 		JMenuItem mntmGenerarInformes = new JMenuItem("Generar Informe");
@@ -127,7 +116,16 @@ public class Principal extends JFrame {
 		JMenu mnStock = new JMenu("Stock");
 		menuBar.add(mnStock);
 		
-		JMenuItem mntmAjusteDeStock = new JMenuItem("Ajuste de Stock");
+		JMenuItem mntmProductos = new JMenuItem("Producto");
+		mnStock.add(mntmProductos);
+		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
+		mntmProductos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				verFormProducto();
+			}
+		});
+		
+		JMenuItem mntmAjusteDeStock = new JMenuItem("Importar Stock");
 		mntmAjusteDeStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0));
 		mnStock.add(mntmAjusteDeStock);
 		
@@ -138,13 +136,32 @@ public class Principal extends JFrame {
 		JMenu mnCompras = new JMenu("Compras");
 		menuBar.add(mnCompras);
 		
-		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar");
+		JMenuItem mntmProveedor = new JMenuItem("Proveedor");
+		mnCompras.add(mntmProveedor);
+		mntmProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0));
+		mntmProveedor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				verFormProveedor();
+			}
+		});
+		
+		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar Compra");
 		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
 		mnCompras.add(mntmRegistrar_1);
 		
 		JMenuItem mntmGenerarInforme = new JMenuItem("Generar Informe");
 		mntmGenerarInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
 		mnCompras.add(mntmGenerarInforme);
+		
+		JMenu mnSalir = new JMenu("Salir");
+		mnSalir.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				HibernateUtil.cerrar();
+				System.exit(0);
+			}
+		});
+		menuBar.add(mnSalir);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
@@ -172,7 +189,7 @@ public class Principal extends JFrame {
 				.addGroup(gl_fondoPrincipal.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_fondoPrincipal.createParallelGroup(Alignment.LEADING)
-						.addComponent(vsrfchrHoy, GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
+						.addComponent(vsrfchrHoy, GroupLayout.DEFAULT_SIZE, 1330, Short.MAX_VALUE)
 						.addComponent(label, GroupLayout.PREFERRED_SIZE, 257, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblSistemaDeGestin, GroupLayout.PREFERRED_SIZE, 409, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
@@ -182,12 +199,25 @@ public class Principal extends JFrame {
 				.addGroup(gl_fondoPrincipal.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(label, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblSistemaDeGestin)
-					.addPreferredGap(ComponentPlacement.RELATED, 517, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 518, Short.MAX_VALUE)
 					.addComponent(vsrfchrHoy, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		fondoPrincipal.setLayout(gl_fondoPrincipal);
+	}
+
+	private void verFormCliente() {
+		FormCliente fc = new FormCliente(this);
+		fc.setVisible(true);
+	}
+	private void verFormProveedor() {
+		FormProveedor fp = new FormProveedor(this);
+		fp.setVisible(true);
+	}
+	private void verFormProducto() {
+		FormProducto fp = new FormProducto(this);
+		fp.setVisible(true);
 	}
 }

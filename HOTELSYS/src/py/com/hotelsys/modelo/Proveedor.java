@@ -9,15 +9,15 @@ public class Proveedor {
 	@Id
 	@Column(name="pro_codigo")
 	private int id;
-	@Column(name="pro_nombre")
+	@Column(name="pro_nombre",nullable=false)
 	private String nombre;
-	@Column(name="pro_documento")
+	@Column(name="pro_documento",nullable=false)
 	private String documento;
-	@Column(name="pro_telefono")
+	@Column(name="pro_telefono",nullable=false)
 	private String telefono;
 	@Column(name="pro_email")
 	private String email;
-	@Column(name="pro_direccion")
+	@Column(name="pro_direccion",nullable=false)
 	private String direccion;
 	@Column(name="pro_observacion")
 	private String observacion;

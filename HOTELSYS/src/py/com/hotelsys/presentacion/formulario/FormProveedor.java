@@ -1,14 +1,16 @@
 package py.com.hotelsys.presentacion.formulario;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,30 +27,13 @@ import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProveedorDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Proveedor;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 
 
 @SuppressWarnings("serial")
 public class FormProveedor extends JDialog implements AbmBotonInterface {
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FormProveedor dialog = new FormProveedor();
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	private ProveedorDao proveedorDao;
 	private List<Proveedor> listaProveedor;
@@ -74,7 +59,8 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 	/**
 	 * Create the dialog.
 	 */
-	public FormProveedor() {
+	public FormProveedor(JFrame frame) {
+		super(frame);
 		setTitle("Archivo de Proveedor");
 		setBounds(100, 100, 900, 410);
 		getContentPane().setLayout(null);
@@ -170,8 +156,7 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		abmBoton.setAbi(this);
 		
 		//Al iniciar deshavilita los campos y recupera los registros para la tabla
-		habilitarCampos(false);
-		recuperaDatos();		
+		inicializar();	
 	}
 
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
@@ -180,7 +165,10 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		listaProveedor = proveedorDao.recuperaTodo();
 		
 		cargarGrilla();
-		
+		if (listaProveedor.size()>0)
+			accion = "DATOS";
+		else
+			accion = "";
 	}
 
 	//Metodo que rellena la tabla con los datos obtenidos
@@ -224,11 +212,9 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 	public void eliminar() {
 		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Proveedor: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
 		if (si==JOptionPane.YES_OPTION) {
-			proveedor = new Proveedor();
 			proveedorDao = new ProveedorDao();
-			proveedor.setId((int) tabla.campo(0));
 			try {
-				proveedorDao.eliminar(proveedor);
+				proveedorDao.eliminar((int) tabla.campo(0));
 			} catch (Exception e) {
 				proveedorDao.rollback();
 				advertencia("No se eliminar el Proveedor "+tabla.campo(1)+". Esta en uso!",2);
@@ -248,9 +234,11 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		cargarAtributos();
 		proveedorDao = new ProveedorDao();
 		
+		
 		if(accion.equals("AGREGAR"))
 			try {
 				proveedorDao.insertar(proveedor);
+				inicializar();
 			} catch (Exception e) {
 				proveedorDao.rollback();
 				advertencia("No se puede guardar el Proveedor. Los campos con * son obligatorios",2);
@@ -258,13 +246,14 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		if (accion.equals("MODIFICAR"))
 			try {
 				proveedorDao.actualizar(proveedor);
+				inicializar();
 			} catch (Exception e) {
 				proveedorDao.rollback();
 				advertencia("No se puede actualizar el Proveedor. Los campos con * son obligatorios",2);
 			}
 		
 		
-		inicializar();
+		
 		
 	}
 
@@ -298,18 +287,22 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 			proveedorDao = new ProveedorDao();
 			proveedor.setId(proveedorDao.recuperMaxId()+1);
 		}else
-			proveedor.setId((int) tabla.campo(0));		
-		proveedor.setNombre(tNombre.getText());
-		proveedor.setDocumento(tDocumento.getText());
-		proveedor.setTelefono(tTelefono.getText());
-		proveedor.setDireccion(tDireccion.getText());
+			proveedor.setId((int) tabla.campo(0));	
+		if (!tNombre.getText().equals(""))
+			proveedor.setNombre(tNombre.getText());
+		if (!tDocumento.getText().equals(""))
+			proveedor.setDocumento(tDocumento.getText());
+		if (!tTelefono.getText().equals(""))
+			proveedor.setTelefono(tTelefono.getText());
+		if (!tDireccion.getText().equals(""))
+			proveedor.setDireccion(tDireccion.getText());
+		proveedor.setEmail(tEmail.getText());
 		proveedor.setObservacion(tObservacin.getText());
 	}
 
 	//deja la pantallaen su estado inicial
 	@Override
 	public void inicializar() {
-		accion = "";
 		limpiarCampos();
 		habilitarCampos(false);
 		recuperaDatos();
@@ -326,6 +319,8 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void cargarFormulario() {
+		if(tabla.getRowCount()==1)
+			ultimaFila = -1;
 		if (tabla.getSelectedRow()>=0 && tabla.getSelectedRow()!=ultimaFila) {
 			ultimaFila=tabla.getSelectedRow();
 			accion = "DATOS";

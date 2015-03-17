@@ -125,10 +125,6 @@ public class Principal extends JFrame {
 			}
 		});
 		
-		JMenuItem mntmAjusteDeStock = new JMenuItem("Importar Stock");
-		mntmAjusteDeStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0));
-		mnStock.add(mntmAjusteDeStock);
-		
 		JMenuItem mntmImprimirInforme = new JMenuItem("Imprimir Informe");
 		mntmImprimirInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
 		mnStock.add(mntmImprimirInforme);

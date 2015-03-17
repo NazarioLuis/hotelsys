@@ -78,23 +78,26 @@ public class Test {
 		compraItem.setCosto(3000);
 		compraItem.setCostoPromedio(3000);
 		compraItem.setProducto(producto);
-		compraItem.setCompra(compra);
+		
 		
 		CompraItem compraItem2 = new CompraItem();
 		compraItem.setCantidad(4);
 		compraItem.setCosto(4000);
 		compraItem.setCostoPromedio(4000);
 		compraItem.setProducto(producto2);
-		compraItem.setCompra(compra);
+		
 		
 		
 		
 		compra.getCompraItems().add(compraItem);
 		compra.getCompraItems().add(compraItem2);
 		
+		compraItem.setCompra(compra);
+		compraItem.setCompra(compra);
 		
 		CompraDao compraDao = new CompraDao();
 		try {
+			
 			compraDao.insertar(compra);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

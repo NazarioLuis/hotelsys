@@ -1,5 +1,6 @@
 package py.com.hotelsys.componentes;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,6 +17,7 @@ public class PlaceholderTextField extends JTextField {
 
     public PlaceholderTextField() {
     	this.placeholder="placeholder";
+    	setDisabledTextColor(Color.gray);
     }
 
     public PlaceholderTextField(

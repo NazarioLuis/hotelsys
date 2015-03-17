@@ -30,6 +30,7 @@ import javax.swing.border.LineBorder;
 import py.com.hotelsys.componentes.FondoPrincipal;
 import py.com.hotelsys.componentes.VisorFechaHora;
 import py.com.hotelsys.presentacion.formulario.FormCliente;
+import py.com.hotelsys.presentacion.formulario.FormHabitacion;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
 import py.com.hotelsys.presentacion.formulario.FormProveedor;
 import py.com.hotelsys.util.HibernateUtil;
@@ -98,6 +99,11 @@ public class Principal extends JFrame {
 		menuBar.add(mnEstada);
 		
 		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3n");
+		mntmHabitacin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				verFormHabitacion();	
+			}
+		});
 		mnEstada.add(mntmHabitacin);
 		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
 		
@@ -215,5 +221,9 @@ public class Principal extends JFrame {
 	private void verFormProducto() {
 		FormProducto fp = new FormProducto(this);
 		fp.setVisible(true);
+	}
+	private void verFormHabitacion() {
+		FormHabitacion fh = new FormHabitacion(this);
+		fh.setVisible(true);
 	}
 }

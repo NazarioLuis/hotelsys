@@ -306,6 +306,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		habilitarCampos(false);
 		recuperaDatos();
 		abmBoton.botones(false, accion);
+		ultimaFila = -1;
 	}
 
 	

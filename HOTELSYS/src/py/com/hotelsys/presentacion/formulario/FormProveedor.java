@@ -307,6 +307,7 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		habilitarCampos(false);
 		recuperaDatos();
 		abmBoton.botones(false, accion);
+		ultimaFila = -1;
 			
 	}
 

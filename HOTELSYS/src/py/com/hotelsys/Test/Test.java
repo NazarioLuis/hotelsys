@@ -67,11 +67,11 @@ public class Test {
 		producto.getStock().setCantidad(0);
 		producto.getStock().setPrecio(0);
 		Producto producto2 = new Producto();
-		producto.setId(2);
-		producto.setDescripcion("pro2");
-		producto.setStock(new Stock());
-		producto.getStock().setCantidad(0);
-		producto.getStock().setPrecio(0);
+		producto2.setId(2);
+		producto2.setDescripcion("pro2");
+		producto2.setStock(new Stock());
+		producto2.getStock().setCantidad(0);
+		producto2.getStock().setPrecio(0);
 		
 		CompraItem compraItem = new CompraItem();
 		compraItem.setCantidad(3);
@@ -81,10 +81,10 @@ public class Test {
 		
 		
 		CompraItem compraItem2 = new CompraItem();
-		compraItem.setCantidad(4);
-		compraItem.setCosto(4000);
-		compraItem.setCostoPromedio(4000);
-		compraItem.setProducto(producto2);
+		compraItem2.setCantidad(4);
+		compraItem2.setCosto(4000);
+		compraItem2.setCostoPromedio(4000);
+		compraItem2.setProducto(producto2);
 		
 		
 		
@@ -93,7 +93,7 @@ public class Test {
 		compra.getCompraItems().add(compraItem2);
 		
 		compraItem.setCompra(compra);
-		compraItem.setCompra(compra);
+		compraItem2.setCompra(compra);
 		
 		CompraDao compraDao = new CompraDao();
 		try {

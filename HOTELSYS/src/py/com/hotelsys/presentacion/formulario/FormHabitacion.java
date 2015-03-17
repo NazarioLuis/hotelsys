@@ -24,10 +24,8 @@ import javax.swing.event.ListSelectionListener;
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
-import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.dao.HabitacionDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
-import py.com.hotelsys.modelo.Cliente;
 import py.com.hotelsys.modelo.Habitacion;
 
 
@@ -162,7 +160,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		for (Habitacion h:listaHabitacion) {
 			fila[0] = h.getId();
 			fila[1] = h.getDescripcion();
-			fila[2] = h.getPrecio();
+			fila[2] = (int)h.getPrecio();
 			tabla.agregar(fila);
  		}
 		
@@ -278,8 +276,9 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 	public void inicializar() {
 		limpiarCampos();
 		habilitarCampos(false);
-		//recuperaDatos();
+		recuperaDatos();
 		abmBoton.botones(false, accion);
+		ultimaFila = -1;
 	}
 
 	
@@ -300,7 +299,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 			habitacion = habitacionDao.recuperarPorId((int) tabla.campo(0));
 			if (habitacion!=null) {
 				tDescripcion.setText(habitacion.getDescripcion());
-				tPrecio.setText(String.valueOf(habitacion.getPrecio()));
+				tPrecio.setText((int)habitacion.getPrecio()+"");
 				tObservacion.setText(habitacion.getObservacion());
 			}
 			

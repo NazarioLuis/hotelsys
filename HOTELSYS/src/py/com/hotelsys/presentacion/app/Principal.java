@@ -33,6 +33,7 @@ import py.com.hotelsys.presentacion.formulario.FormCliente;
 import py.com.hotelsys.presentacion.formulario.FormHabitacion;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
 import py.com.hotelsys.presentacion.formulario.FormProveedor;
+import py.com.hotelsys.presentacion.formulario.FormServicio;
 import py.com.hotelsys.util.HibernateUtil;
 
 @SuppressWarnings("serial")
@@ -88,6 +89,11 @@ public class Principal extends JFrame {
 		mnGral.add(mntmCliente);
 		
 		JMenuItem mntmServicio = new JMenuItem("Servicio");
+		mntmServicio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				verForServicio();
+			}
+		});
 		mntmServicio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
 		mnGral.add(mntmServicio);
 		
@@ -225,5 +231,10 @@ public class Principal extends JFrame {
 	private void verFormHabitacion() {
 		FormHabitacion fh = new FormHabitacion(this);
 		fh.setVisible(true);
+	}
+	private void verForServicio() {
+		FormServicio fs = new FormServicio(this);
+		fs.setVisible(true);
+
 	}
 }

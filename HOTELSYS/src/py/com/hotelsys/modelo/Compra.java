@@ -24,6 +24,8 @@ public class Compra {
 	private Date fecha;
 	@Column(name = "com_total")
 	private double total;
+	@Column(name = "com_estado")
+	private boolean estado;
 	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="com_proveedor_fk")
 	private Proveedor proveedor;
@@ -40,6 +42,12 @@ public class Compra {
 	}
 	public void setFactura(int factura) {
 		this.factura = factura;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 	public Date getFecha() {
 		return fecha;

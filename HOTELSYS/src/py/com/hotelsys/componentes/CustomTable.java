@@ -1,5 +1,7 @@
 package py.com.hotelsys.componentes;
 
+import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -7,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class CustomTable extends JTable {
 	private DefaultTableModel modelo;
-	
+	private boolean esEditable=false;
 	
 	public CustomTable(String[] modelo,int[] anchos) {
 		configurarModelo(modelo);
@@ -17,11 +19,16 @@ public class CustomTable extends JTable {
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	
+	public void esEditable(Boolean esEditable) {
+		this.esEditable = esEditable;
+		getModelo().addRow(new Vector<>());
+	}
+	
 	private void configurarModelo(String[] modelo) {
 		this.modelo = new DefaultTableModel(null,modelo){
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false;
+				return esEditable;
 			}
 		};
 		setModel(this.modelo);
@@ -60,5 +67,13 @@ public class CustomTable extends JTable {
 
 	public Object campo(int i) {
 		return getModelo().getValueAt(getSelectedRow(), i);
+	}
+
+	public void cambiarFoco() {
+		
+		if (getSelectedColumn() == getModelo().getColumnCount()-1) {
+			getModelo().addRow(new Vector<>());
+			changeSelection(getSelectedRow()+1, 0, true, false);
+		}
 	}
 }

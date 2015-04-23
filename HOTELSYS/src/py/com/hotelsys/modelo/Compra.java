@@ -1,5 +1,6 @@
 package py.com.hotelsys.modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,12 +15,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Compra {
-	@Id
+public class Compra implements Serializable{
+	
 	@Column(name = "com_numero")
 	private int id;
+	@Id
 	@Column(name = "com_factura")
-	private int factura;
+	private String factura;
+	@Id
+	@Column(name = "com_timbrado")
+	private String timbrado;
+	@Column(name = "com_ven_tim")
+	private Date vencimientoTimbrado;
 	@Column(name = "com_fecha")
 	private Date fecha;
 	@Column(name = "com_total")
@@ -37,12 +44,7 @@ public class Compra {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getFactura() {
-		return factura;
-	}
-	public void setFactura(int factura) {
-		this.factura = factura;
-	}
+	
 	public boolean isEstado() {
 		return estado;
 	}
@@ -72,6 +74,24 @@ public class Compra {
 	}
 	public void setCompraItems(List<CompraItem> compraItems) {
 		this.compraItems = compraItems;
+	}
+	public String getFactura() {
+		return factura;
+	}
+	public void setFactura(String factura) {
+		this.factura = factura;
+	}
+	public String getTimbrado() {
+		return timbrado;
+	}
+	public void setTimbrado(String timbrado) {
+		this.timbrado = timbrado;
+	}
+	public Date getVencimientoTimbrado() {
+		return vencimientoTimbrado;
+	}
+	public void setVencimientoTimbrado(Date vencimientoTimbrado) {
+		this.vencimientoTimbrado = vencimientoTimbrado;
 	}
 	
 	

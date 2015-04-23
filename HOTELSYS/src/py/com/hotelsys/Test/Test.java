@@ -54,8 +54,10 @@ public class Test {
 		proveedor.setTelefono("666");
 		
 		Compra compra= new Compra();
-		compra.setId(1);
-		compra.setFactura(444);
+		compra.setId(2);
+		compra.setFactura("4444");
+		compra.setTimbrado("44444");
+		compra.setVencimientoTimbrado(new Date());
 		compra.setFecha(new Date());
 		compra.setTotal((double) 10000);
 		compra.setProveedor(proveedor);

@@ -25,7 +25,7 @@ public class CompraItem {
 	@JoinColumn(name="cit_producto_fk")
 	private Producto producto;
 	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="cit_compra_fk")
+	@JoinColumn(name="cit_compra_fk",referencedColumnName="com_numero")
 	private Compra compra;
 	public int getId() {
 		return id;
@@ -36,6 +36,7 @@ public class CompraItem {
 	public int getCantidad() {
 		return cantidad;
 	}
+	
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}

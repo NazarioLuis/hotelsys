@@ -25,7 +25,11 @@ public class FormatoFecha {
 		return date;
 	}
 
-	public static Object dateAString(Date date2) {
-		return df.format(date2);
+	public static String dateAString(Date date2) {
+		try {
+			return df.format(date2);
+		} catch (Exception e) {
+			return "";
+		}
 	}
 }

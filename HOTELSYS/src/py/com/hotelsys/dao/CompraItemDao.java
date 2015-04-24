@@ -19,16 +19,21 @@ public class CompraItemDao extends GenericGao<CompraItem>{
 
 	
 	public int cosultarPromedio(Producto producto) {
-		DetachedCriteria maxId = DetachedCriteria.forClass(Compra.class)
-			    .setProjection( Projections.max("fecha") );
+		DetachedCriteria max = DetachedCriteria.forClass(Compra.class)
+			    .setProjection( Projections.max("id"));
 		criteria = session.createCriteria(entity);
 		criteria.createAlias("compra", "c");
 		criteria.createAlias("producto", "p");
-		criteria.add(Property.forName("c.fecha").eq(maxId));
+		criteria.add(Property.forName("c.id").eq(max));
+		criteria.add(Property.forName("c.id").eq(max));
 		criteria.add(Restrictions.eq("p.id", producto.getId()));
 		CompraItem item=(CompraItem) criteria.uniqueResult();
 		
-		return (int) item.getCostoPromedio();
+		try {
+			return (int) item.getCostoPromedio();
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 

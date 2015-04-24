@@ -1,7 +1,7 @@
 package py.com.hotelsys.presentacion.transacciones;
 
 import java.awt.Color;
-import java.awt.Container;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -36,28 +36,14 @@ import py.com.hotelsys.modelo.Compra;
 import py.com.hotelsys.modelo.CompraItem;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Proveedor;
-import py.com.hotelsys.modelo.Stock;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProveedor;
 import py.com.hotelsys.util.FormatoFecha;
 
-import java.awt.Font;
-
 public class TransCompra extends JDialog 
 	implements InterfaceBusquedaProveedor,InterfaceBusquedaProducto{
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			TransCompra dialog = new TransCompra();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
 	private JTextField tfId;
 	private JFormattedTextField tfFactura;
 	private MaskFormatter maskFactura;
@@ -92,10 +78,14 @@ public class TransCompra extends JDialog
 	private Compra compra;
 	private CompraItem compraItem;
 	private List<CompraItem> compraItems = new ArrayList<>();
+	private String promedio;
 	/**
 	 * Create the dialog.
+	 * @param accion 
+	 * @param  
 	 */
-	public TransCompra() {
+	public TransCompra(JDialog d, Compra c, String accion) {
+		super(d,false);
 		
 		
 		setBounds(100, 100, 837, 471);
@@ -319,7 +309,7 @@ public class TransCompra extends JDialog
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(table.getSelectedRow()>=0){
-					tfTotal.setText(Integer.parseInt(tfTotal.getText())-Integer.parseInt((String)table.getModelo().getValueAt(table.getSelectedRow(), 7))+"");
+					tfTotal.setText(Integer.parseInt(tfTotal.getText())-(int)table.getModelo().getValueAt(table.getSelectedRow(), 7)+"");
 					table.getModelo().removeRow(table.getSelectedRow());
 				}
 				
@@ -357,19 +347,51 @@ public class TransCompra extends JDialog
 		lblProveedor.setBounds(458, 7, 76, 14);
 		getContentPane().add(lblProveedor);
 		
-		JButton button_1 = new JButton("");
-		button_1.addActionListener(new ActionListener() {
+		JButton btnConfirmar = new JButton("");
+		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cargarAtributos();
+				confirmar();
 			}
 		});
-		button_1.setIcon(new ImageIcon(TransCompra.class.getResource("/img/1428454811_button_ok.png")));
-		button_1.setBounds(710, 390, 46, 32);
-		getContentPane().add(button_1);
+		btnConfirmar.setIcon(new ImageIcon(TransCompra.class.getResource("/img/1428454811_button_ok.png")));
+		btnConfirmar.setBounds(710, 390, 46, 32);
+		getContentPane().add(btnConfirmar);
 		
-		nuevo();
+		
+		if (accion.equals("AGREGAR")) {
+			nuevo();
+		}else {
+			compra = c;
+
+			cargarDatos();
+		}
 	}
 	
+	private void cargarDatos() {
+		tfId.setText(compra.getId()+"");
+		tfFactura.setText(compra.getFactura());
+		tfFecha.setText(FormatoFecha.dateAString(compra.getFecha()));
+		tfTimbrado.setText(compra.getTimbrado());
+		tfVencimientoTimbrado.setText(FormatoFecha.dateAString(compra.getVencimientoTimbrado()));
+		tfIdProveedor.setText(compra.getProveedor().getId()+"");
+		tfProveedor.setText(compra.getProveedor().getNombre());
+		tfRuc.setText(compra.getProveedor().getDocumento());
+		tfTotal.setText(compra.getTotal()+"");
+		
+		for (CompraItem ci: compra.getCompraItems()) {
+			Object[] fila = new Object[8];
+			fila[0] = ci.getProducto().getId();
+			fila[1] = ci.getProducto().getDescripcion();
+			fila[2] = ci.getCantidad();
+			fila[3] = ci.getCosto();
+			fila[4] = ci.getCostoPromedio();
+			fila[5] = "---";
+			fila[6] = "---";
+			fila[7] = ci.getCantidad()*ci.getCosto();
+			table.getModelo().addRow(fila);
+		}
+	}
+
 	private boolean verificarRepetidos() {
 		for (int i = 0; i < table.getRowCount(); i++) {
 			if (tfIdProducto.getText().equals((String)table.getModelo().getValueAt(i, 0))) {
@@ -399,15 +421,21 @@ public class TransCompra extends JDialog
 			compraItem.setCantidad(Integer.parseInt((String)table.getModelo().getValueAt(i, 2)));
 			compraItem.setCosto(Integer.parseInt((String)table.getModelo().getValueAt(i, 3)));
 			compraItem.setCostoPromedio(Integer.parseInt((String) table.getModelo().getValueAt(i, 4)));
+			compraItem.setCompra(compra);
 			
 			compraItems.add(compraItem);
 			
-			actualizarStock(Integer.parseInt((String)table.getModelo().getValueAt(i, 2)),Integer.parseInt((String)table.getModelo().getValueAt(i, 6)));
+			actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""),Integer.parseInt(table.getModelo().getValueAt(i, 6)+""));
 		}
 		
 		compra.setCompraItems(compraItems);
 		compra.setEstado(true);
 		
+		
+	}
+	
+	private void confirmar() {
+		cargarAtributos();
 		compraDao = new CompraDao();
 		try {
 			compraDao.insertar(compra);
@@ -418,7 +446,8 @@ public class TransCompra extends JDialog
 
 	private void actualizarStock(int cantidad,int precio) {
 		p.getStock().setCantidad(p.getStock().getCantidad()+cantidad);
-		p.getStock().setPrecio(precio);
+		if (precio != 0) 
+			p.getStock().setPrecio(precio);
 	}
 
 	private void agregarProducto() {
@@ -430,7 +459,10 @@ public class TransCompra extends JDialog
 			object[3] = tfCosto.getText();
 			object[4] = tfPromedio.getText();
 			object[5] = tfPrecioVenta.getText();
-			object[6] = tfNuevoPrecio.getText();
+			if (tfNuevoPrecio.getText().isEmpty()) {
+				object[6] = 0;
+			}else
+				object[6] = tfNuevoPrecio.getText();
 			object[7] = Integer.parseInt(tfCosto.getText())*Integer.parseInt(tfCantidad.getText());
 			table.getModelo().addRow(object);
 			p=null;
@@ -472,8 +504,17 @@ public class TransCompra extends JDialog
 	private void calcularPromedioDeCosto() {
 		compraItemDao = new CompraItemDao();
 		if (!tfIdProducto.getText().isEmpty()) {
-			tfPromedio.setText((((p.getStock().getCantidad()*compraItemDao.cosultarPromedio(p))+(Integer.parseInt(tfCosto.getText())*Integer.parseInt(tfCantidad.getText())))/
-				(p.getStock().getCantidad()+Integer.parseInt(tfCantidad.getText())))+"");
+			if (compraItemDao.cosultarPromedio(p)!=0) {
+				promedio = (((p.getStock().getCantidad()*compraItemDao.cosultarPromedio(p))+(Integer.parseInt(tfCosto.getText())*Integer.parseInt(tfCantidad.getText())))/
+				(p.getStock().getCantidad()+Integer.parseInt(tfCantidad.getText())))+"";
+				tfPromedio.setText(promedio);
+			}else{
+				tfPromedio.setText((int)p.getStock().getPrecio()+"");
+			}
+			
+			
+				
+			
 			compraItemDao.cerrar();
 		}
 		

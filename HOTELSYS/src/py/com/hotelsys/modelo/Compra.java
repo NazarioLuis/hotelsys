@@ -33,10 +33,10 @@ public class Compra implements Serializable{
 	private double total;
 	@Column(name = "com_estado")
 	private boolean estado;
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="com_proveedor_fk")
 	private Proveedor proveedor;
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="compra")
+	@OneToMany(cascade=CascadeType.ALL,mappedBy="compra",fetch = FetchType.EAGER)
 	private List<CompraItem> compraItems = new ArrayList<CompraItem>();
 	public int getId() {
 		return id;

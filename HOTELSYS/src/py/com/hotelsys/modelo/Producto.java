@@ -16,7 +16,7 @@ public class Producto{
 	private String descripcion;
 	@Column(name="pro_observacion")
 	private String observacion;
-	@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="pro_stock_fk",unique=true)
 	private Stock stock;
 	

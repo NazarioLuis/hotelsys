@@ -21,10 +21,10 @@ public class CompraItem {
 	private double costo;
 	@Column(name="cit_costo_promedio",nullable=false)
 	private double costoPromedio;
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="cit_producto_fk")
 	private Producto producto;
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="cit_compra_fk",referencedColumnName="com_numero")
 	private Compra compra;
 	public int getId() {

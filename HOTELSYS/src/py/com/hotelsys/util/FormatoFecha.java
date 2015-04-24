@@ -24,4 +24,8 @@ public class FormatoFecha {
 		}
 		return date;
 	}
+
+	public static Object dateAString(Date date2) {
+		return df.format(date2);
+	}
 }

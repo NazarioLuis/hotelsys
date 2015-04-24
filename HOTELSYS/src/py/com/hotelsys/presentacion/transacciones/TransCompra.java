@@ -8,6 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -494,6 +495,7 @@ public class TransCompra extends JDialog
 	private void nuevo() {
 		compraDao = new CompraDao();
 		tfId.setText((compraDao.recuperMaxId()+1)+"");
+		tfFecha.setValue(FormatoFecha.dateAString(new Date()));
 	}
 
 	@Override

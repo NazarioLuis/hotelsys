@@ -14,34 +14,36 @@ import javax.swing.JScrollPane;
 
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.dao.HabitacionDao;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.dao.ProveedorDao;
+import py.com.hotelsys.interfaces.InterfaceBusquedaHabitacion;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProveedor;
+import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Proveedor;
-import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 
-public class BusqudaProducto extends JDialog {
+public class BusqudaHabitacion extends JDialog {
 
 
 	private Timer timer;
 	private TimerTask task;
 	private PlaceholderTextField tBuscar;
-	private ProductoDao productoDao;
-	private List<Producto> listaProducto;
+	private HabitacionDao habitacionDao;
+	private List<Habitacion> listaHabitacions;
 	private CustomTable table;
 	private Object[] fila;
-	private InterfaceBusquedaProducto ibp;
+	private InterfaceBusquedaHabitacion ibh;
 
-	public void setIbp(InterfaceBusquedaProducto ibp) {
-		this.ibp = ibp;
+	public void setIbh(InterfaceBusquedaHabitacion ibh) {
+		this.ibh = ibh;
 	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public BusqudaProducto(JDialog dialog) {
+	public BusqudaHabitacion(JDialog dialog) {
 		super(dialog,false);
 		setBounds(100, 100, 540, 296);
 		getContentPane().setLayout(null);
@@ -56,7 +58,7 @@ public class BusqudaProducto extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					ibp.cargar(listaProducto.get(table.getSelectedRow()));
+					ibh.cargar(listaHabitacions.get(table.getSelectedRow()));
 					dispose();
 				}
 			}
@@ -75,8 +77,8 @@ public class BusqudaProducto extends JDialog {
 		tBuscar.setBounds(10, 11, 408, 26);
 		getContentPane().add(tBuscar);
 		
-		productoDao = new ProductoDao();
-		listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		habitacionDao = new HabitacionDao();
+		listaHabitacions = habitacionDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -89,8 +91,8 @@ public class BusqudaProducto extends JDialog {
 
 				@Override
 				public void run() {
-					productoDao = new ProductoDao();
-					listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					habitacionDao = new HabitacionDao();
+					listaHabitacions = habitacionDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;
@@ -108,10 +110,10 @@ public class BusqudaProducto extends JDialog {
 		
 		
 		fila = new Object[table.getColumnCount()];
-		for (Producto p:listaProducto) {
-			fila[0] = p.getId();
-			fila[1] = p.getDescripcion();
-			fila[2] = p.getStock().getPrecio();
+		for (Habitacion h:listaHabitacions) {
+			fila[0] = h.getId();
+			fila[1] = h.getDescripcion();
+			fila[2] = h.getPrecio();
 			table.agregar(fila);
  		}
 		

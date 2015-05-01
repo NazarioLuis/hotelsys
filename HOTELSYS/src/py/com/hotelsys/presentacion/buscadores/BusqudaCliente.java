@@ -14,34 +14,29 @@ import javax.swing.JScrollPane;
 
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
-import py.com.hotelsys.dao.ProductoDao;
-import py.com.hotelsys.dao.ProveedorDao;
-import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
-import py.com.hotelsys.interfaces.InterfaceBusquedaProveedor;
-import py.com.hotelsys.modelo.Producto;
-import py.com.hotelsys.modelo.Proveedor;
-import py.com.hotelsys.presentacion.transacciones.TransEstadia;
+import py.com.hotelsys.dao.ClienteDao;
+import py.com.hotelsys.interfaces.InterfaceBusquedaCliente;
+import py.com.hotelsys.modelo.Cliente;
 
-public class BusqudaProducto extends JDialog {
+
+public class BusqudaCliente extends JDialog {
 
 
 	private Timer timer;
 	private TimerTask task;
 	private PlaceholderTextField tBuscar;
-	private ProductoDao productoDao;
-	private List<Producto> listaProducto;
+	private ClienteDao clienteDao;
+	private List<Cliente> listaClientes;
 	private CustomTable table;
 	private Object[] fila;
-	private InterfaceBusquedaProducto ibp;
+	private InterfaceBusquedaCliente ibc;
 
-	public void setIbp(InterfaceBusquedaProducto ibp) {
-		this.ibp = ibp;
+	public void setIbc(InterfaceBusquedaCliente ibc) {
+		this.ibc = ibc;
 	}
 
-	/**
-	 * Create the dialog.
-	 */
-	public BusqudaProducto(JDialog dialog) {
+	
+	public BusqudaCliente(JDialog dialog) {
 		super(dialog,false);
 		setBounds(100, 100, 540, 296);
 		getContentPane().setLayout(null);
@@ -51,12 +46,12 @@ public class BusqudaProducto extends JDialog {
 		scrollPane.setBounds(10, 42, 504, 204);
 		getContentPane().add(scrollPane);
 		
-		table = new CustomTable(new String[] {"#", "Descripcion", "Precio"}, new int[] {100, 200, 200});
+		table = new CustomTable(new String[] {"#", "Descripcion", "Nro cedula"}, new int[] {100, 200, 200});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					ibp.cargar(listaProducto.get(table.getSelectedRow()));
+					ibc.cargar(listaClientes.get(table.getSelectedRow()));
 					dispose();
 				}
 			}
@@ -75,8 +70,8 @@ public class BusqudaProducto extends JDialog {
 		tBuscar.setBounds(10, 11, 408, 26);
 		getContentPane().add(tBuscar);
 		
-		productoDao = new ProductoDao();
-		listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		clienteDao = new ClienteDao();
+		listaClientes = clienteDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -89,8 +84,8 @@ public class BusqudaProducto extends JDialog {
 
 				@Override
 				public void run() {
-					productoDao = new ProductoDao();
-					listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					clienteDao = new ClienteDao();
+					listaClientes = clienteDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;
@@ -108,10 +103,10 @@ public class BusqudaProducto extends JDialog {
 		
 		
 		fila = new Object[table.getColumnCount()];
-		for (Producto p:listaProducto) {
-			fila[0] = p.getId();
-			fila[1] = p.getDescripcion();
-			fila[2] = p.getStock().getPrecio();
+		for (Cliente h:listaClientes) {
+			fila[0] = h.getId();
+			fila[1] = h.getNombre();
+			fila[2] = h.getDocumento();
 			table.agregar(fila);
  		}
 		

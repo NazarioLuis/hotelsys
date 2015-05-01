@@ -34,16 +34,14 @@ import py.com.hotelsys.presentacion.formulario.FormHabitacion;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
 import py.com.hotelsys.presentacion.formulario.FormProveedor;
 import py.com.hotelsys.presentacion.formulario.FormServicio;
+import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 import py.com.hotelsys.util.HibernateUtil;
 
 @SuppressWarnings("serial")
-public class Principal extends JFrame {
+public class Principal extends JFrame  {
 
 	private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -58,9 +56,8 @@ public class Principal extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
+
+
 	public Principal() {
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -118,6 +115,11 @@ public class Principal extends JFrame {
 		mnEstada.add(mntmReservar);
 		
 		JMenuItem mntmRegistrar = new JMenuItem("Hospedar");
+		mntmRegistrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mostrarEstadia();
+			}
+		});
 		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
 		mnEstada.add(mntmRegistrar);
 		
@@ -154,6 +156,11 @@ public class Principal extends JFrame {
 		});
 		
 		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar Compra");
+		mntmRegistrar_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mostrarCompras();
+			}
+		});
 		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
 		mnCompras.add(mntmRegistrar_1);
 		
@@ -235,6 +242,15 @@ public class Principal extends JFrame {
 	private void verForServicio() {
 		FormServicio fs = new FormServicio(this);
 		fs.setVisible(true);
+
+	}
+	private void mostrarEstadia() {
+		TransEstadia te= new TransEstadia(this);
+		te.setVisible(true);
+		
+	}
+	private void mostrarCompras() {
+		//TransCompra tc = new TransCompra(d, c, this);
 
 	}
 }

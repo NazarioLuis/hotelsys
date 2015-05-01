@@ -31,8 +31,7 @@
 
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
-        
-        
+         
 		<mapping class="py.com.hotelsys.modelo.Producto"/>
         <mapping class="py.com.hotelsys.modelo.Servicio"/>
         <mapping class="py.com.hotelsys.modelo.Cliente"/>
@@ -41,6 +40,8 @@
 		<mapping class="py.com.hotelsys.modelo.Stock"/>
 		<mapping class="py.com.hotelsys.modelo.Compra"/>
 		<mapping class="py.com.hotelsys.modelo.CompraItem"/>
+		<mapping class="py.com.hotelsys.modelo.Estadia"/>
+	
     </session-factory>
     
    

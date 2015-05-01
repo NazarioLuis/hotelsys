@@ -56,9 +56,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	private int ultimaFila;
 
 
-	/**
-	 * Create the dialog.
-	 */
+
 	public FormCliente(JFrame frame) {
 		super(frame);
 		setTitle("Archivo de Cliente");

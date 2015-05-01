@@ -7,6 +7,7 @@ import py.com.hotelsys.dao.CompraDao;
 import py.com.hotelsys.modelo.Cliente;
 import py.com.hotelsys.modelo.Compra;
 import py.com.hotelsys.modelo.CompraItem;
+import py.com.hotelsys.modelo.Estadia;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Proveedor;
 import py.com.hotelsys.modelo.Stock;
@@ -74,6 +75,9 @@ public class Test {
 		producto2.setStock(new Stock());
 		producto2.getStock().setCantidad(0);
 		producto2.getStock().setPrecio(0);
+		
+	
+		
 		
 		CompraItem compraItem = new CompraItem();
 		compraItem.setCantidad(3);

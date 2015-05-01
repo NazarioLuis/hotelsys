@@ -11,8 +11,10 @@ public class Stock {
 	@GeneratedValue
 	@Column(name="stk_codigo")
 	private int id;
+	
 	@Column(name="stk_cantidad",nullable=false)
 	private int cantidad;
+	
 	@Column(name="stk_precio",nullable=false)
 	private double precio;
 	

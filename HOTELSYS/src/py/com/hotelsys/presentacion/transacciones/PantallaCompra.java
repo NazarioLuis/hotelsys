@@ -23,6 +23,7 @@ import py.com.hotelsys.modelo.Compra;
 import py.com.hotelsys.util.FormatoFecha;
 
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -48,14 +49,9 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	private JFormattedTextField tFecha1;
 
 	
-	public static void main(String[] args) {
-		PantallaCompra compra = new PantallaCompra(null);
-		compra.setVisible(true);
-	}
-	/**
-	 * Create the dialog.
-	 */
-	public PantallaCompra(JDialog dialog) {
+	
+	
+	public PantallaCompra(JFrame dialog) {
 		super(dialog,false);
 		setBounds(100, 100, 917, 431);
 		getContentPane().setLayout(null);

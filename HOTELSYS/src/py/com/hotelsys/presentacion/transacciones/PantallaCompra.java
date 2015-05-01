@@ -5,6 +5,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,11 +22,21 @@ import py.com.hotelsys.interfaces.TranBotonInterface;
 import py.com.hotelsys.modelo.Compra;
 import py.com.hotelsys.util.FormatoFecha;
 
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.text.MaskFormatter;
+
+import java.awt.SystemColor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 public class PantallaCompra extends JDialog implements TranBotonInterface{
 
 
-	private Timer timer;
-	private TimerTask task;
+	private MaskFormatter Maskfecha;
 	private PlaceholderTextField tBuscar;
 	private CompraDao compraDao;
 	private List<Compra> listaCompra;
@@ -32,6 +44,8 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	private Object[] fila;
 	private TransCompra transCompra;
 	private String accion;
+	private JFormattedTextField tFecha2;
+	private JFormattedTextField tFecha1;
 
 	
 	public static void main(String[] args) {
@@ -43,12 +57,12 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	 */
 	public PantallaCompra(JDialog dialog) {
 		super(dialog,false);
-		setBounds(100, 100, 935, 501);
+		setBounds(100, 100, 917, 431);
 		getContentPane().setLayout(null);
 		
 		setLocationRelativeTo(null);
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 141, 763, 294);
+		scrollPane.setBounds(10, 84, 763, 294);
 		getContentPane().add(scrollPane);
 		
 		table = new CustomTable(new String[] {"#", "Factura", "Timbrado", "Proveedor", "Fecha", "Monto", "Estado"}, new int[] {40, 50, 100, 100, 50, 50, 50});
@@ -60,49 +74,84 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		});
 		scrollPane.setViewportView(table);
 		
+		BotonGrup2 botonGrup2 = new BotonGrup2();
+		botonGrup2.setTbi(this);
+		botonGrup2.setBounds(783, 84, 111, 193);
+		getContentPane().add(botonGrup2);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(SystemColor.inactiveCaption);
+		panel.setBounds(10, 11, 763, 67);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
 		tBuscar = new PlaceholderTextField();
-		tBuscar.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
+		tBuscar.setBounds(10, 11, 408, 24);
+		panel.add(tBuscar);
+		
+		tBuscar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		tBuscar.setPlaceholder("Buscar");
+		
+		JLabel lblFechaDeCompra = new JLabel("Fecha de Compra");
+		lblFechaDeCompra.setBounds(59, 45, 118, 14);
+		panel.add(lblFechaDeCompra);
+		lblFechaDeCompra.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		try {
+			Maskfecha = new MaskFormatter("##/##/####");
+			Maskfecha.setPlaceholderCharacter('_');
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		tFecha1 = new JFormattedTextField(Maskfecha);
+		
+		tFecha1.setBounds(187, 39, 103, 26);
+		panel.add(tFecha1);
+		
+		JLabel lblA = new JLabel("a");
+		lblA.setBounds(293, 45, 12, 14);
+		panel.add(lblA);
+		lblA.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		tFecha2 = new JFormattedTextField(Maskfecha);
+		tFecha2.setBounds(315, 39, 103, 26);
+		panel.add(tFecha2);
+		
+		JButton btnConfirmar = new JButton("Confirmar");
+		btnConfirmar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				buscar();
 			}
 		});
-		tBuscar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		tBuscar.setPlaceholder("Buscar");
-		tBuscar.setBounds(10, 11, 408, 26);
-		getContentPane().add(tBuscar);
+		btnConfirmar.setBounds(642, 11, 111, 35);
+		panel.add(btnConfirmar);
 		
-		BotonGrup2 botonGrup2 = new BotonGrup2();
-		botonGrup2.setTbi(this);
-		botonGrup2.setBounds(798, 141, 111, 294);
-		getContentPane().add(botonGrup2);
-		
-		compraDao = new CompraDao();
-		listaCompra = compraDao.recuperaTodo();
-		cargarGrilla();
+		buscar();
 
 	}
 	
+	
+	
 	public void buscar() {
-		if (timer==null&&task==null) {
-			timer = new Timer();
-			task = new TimerTask() {
-				
-
-				@Override
-				public void run() {
+		String fecha1;
+		String fecha2;
+					if (tFecha1.getText().equals("__/__/____")) {
+						fecha1 = "01/01/2001";
+					}else{
+						fecha1 = tFecha1.getText();
+					}
+					if (tFecha2.getText().equals("__/__/____")) {
+						fecha2 = "01/01/2090";
+					}else{
+						fecha2 = tFecha2.getText();
+					}
 					compraDao = new CompraDao();
-					listaCompra = compraDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaCompra = compraDao.cosultarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
 					cargarGrilla();
-					timer.cancel();
-					timer=null;
-					task=null;
-				}
-			};
-						
-			timer.schedule(task, 1000);		
-		}
-		
+					
+			
 	}
 	
 	private void cargarGrilla() {
@@ -168,6 +217,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	public void nuevo() {
 		accion = "AGREGAR";
 		transCompra = new TransCompra(this,null,accion);
+		transCompra.setTbi(this);
 		transCompra.setVisible(true);
 	}
 
@@ -176,6 +226,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		if (table.getSelectedRow() >= 0) {
 			accion = "VER";
 			transCompra = new TransCompra(this,listaCompra.get(table.getSelectedRow()),accion);
+			transCompra.setTbi(this);
 			transCompra.setVisible(true);
 		}
 		
@@ -186,6 +237,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		if (table.getSelectedRow() >= 0) {
 			accion = "ANULAR";
 			transCompra = new TransCompra(this,listaCompra.get(table.getSelectedRow()),accion);
+			transCompra.setTbi(this);
 			transCompra.setVisible(true);
 		}
 	}
@@ -194,8 +246,4 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	public void salir() {
 		dispose();
 	}
-
-	
-
-	
 }

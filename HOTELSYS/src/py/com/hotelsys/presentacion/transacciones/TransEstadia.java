@@ -38,20 +38,21 @@ import py.com.hotelsys.componentes.BotonGrup3;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ClienteDao;
+import py.com.hotelsys.dao.DetalleDao;
 import py.com.hotelsys.dao.EstadiaDao;
-import py.com.hotelsys.dao.HabitacionDao;
 import py.com.hotelsys.dao.ProductoDao;
-import py.com.hotelsys.dao.ServicioDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaCliente;
 import py.com.hotelsys.interfaces.InterfaceBusquedaHabitacion;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
 import py.com.hotelsys.interfaces.InterfaceBusquedaServicio;
 import py.com.hotelsys.interfaces.TranBotonInterface2;
 import py.com.hotelsys.modelo.Cliente;
+import py.com.hotelsys.modelo.Detalle;
 import py.com.hotelsys.modelo.Estadia;
 import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Servicio;
+import py.com.hotelsys.modelo.Stock;
 import py.com.hotelsys.presentacion.buscadores.BusqudaCliente;
 import py.com.hotelsys.presentacion.buscadores.BusqudaHabitacion;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
@@ -68,18 +69,22 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	
 	private Producto producto;
 	private ProductoDao productoDao;
+	private List<Producto> listaProductos;
 	
-	private Servicio servicio;
-	private ServicioDao servicioDao;
+	private Detalle detalle;
+	private DetalleDao detalleDao;
+	private List<Detalle> listaDetalles;
+	
+	
+	
 	
 	private Habitacion habitacion;
-	private HabitacionDao habitacionDao;
 	
 	private EstadiaDao estadiaDao;
 	private MaskFormatter maskFecha;
 
 	private List<Estadia> listaEstadias;
-	private CustomTable tabla;
+	private CustomTable tablaEstadia;
 	private Object[] fila;
 	private String accion = "";
 	private PlaceholderTextField tCodHabitacion;
@@ -89,22 +94,17 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private PlaceholderTextField tBuscar;
 	private JPanel panel;
 	private Estadia estadia;
+	
+	
 	private JLabel label;
 	private Timer timer;
 	private TimerTask task;
 	private int ultimaFila;
-	private JLabel label_1;
-	private JLabel label_2;
-	private JLabel label_3;
-	private JLabel label_4;
-	private JLabel label_5;
-	private JLabel label_6;
 	private JButton button_2;
-	private JList list_1;
+
 	private JScrollPane scrollPane_1;
-	private JTable table;
-	private JTable tableServicio;
-	private JTable tableProductos;
+	private CustomTable tableServicio;
+	private CustomTable tablaProductos;
 	private JPanel panel_1;
 	private PlaceholderTextField placeholderTextField_5;
 	private JButton button_5;
@@ -118,15 +118,9 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private JTextField textField_4;
 	private JLabel lblMontoTotal;
 	private JTextField textField_5;
-	private JTextField textField_6;
-	private JPanel panel_3;
-	private PlaceholderTextField tPrecioServicio;
-	private PlaceholderTextField tCodServicio;
-	private JButton button_3;
-	private InterfaceBusquedaCliente ibc;
+	private JTextField tTotalDetalle;
+	//private InterfaceBusquedaCliente ibc;
 	private JPanel panelProducto;
-	private JPanel panelServicio;
-	private JTextField textField_7;
 	private JFormattedTextField tFecha;
 	private BotonGrup3 botonGrup3;
 	
@@ -134,6 +128,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private PlaceholderTextField tCodProducto;
 	private PlaceholderTextField tPrecioProducto;
 	private PlaceholderTextField tCantidadProducto;
+	
 
 	public TransEstadia(JFrame frame) {
 		super(frame);
@@ -144,17 +139,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
-		label_1 = new JLabel("");
 		
-		label_2 = new JLabel("");
-		
-		label_3 = new JLabel("");
-		
-		label_4 = new JLabel("");
-		
-		label_5 = new JLabel("");
-		
-		label_6 = new JLabel("");
 		getContentPane().setLayout(null);
 		
 		panel = new JPanel();
@@ -252,17 +237,17 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		getContentPane().add(tBuscar);
 		
 		
-		tabla = new CustomTable(new String[] {"#", "Cliente", "Habitación","Precio"}, new int[] {75, 200, 200,100});
-		scrollPane.setViewportView(tabla);
+		tablaEstadia = new CustomTable(new String[] {"#", "Cliente", "Habitación","Precio"}, new int[] {75, 200, 200,100});
+		scrollPane.setViewportView(tablaEstadia);
 		
-		JList list = new JList();
-		list.setBounds(356, 232, 538, 2);
-		getContentPane().add(list);
-		
-		list_1 = new JList();
-		list_1.setBounds(89, 393, 162, 0);
-		list_1.setForeground(Color.BLACK);
-		getContentPane().add(list_1);
+//		JList list = new JList();
+//		list.setBounds(356, 232, 538, 2);
+//		getContentPane().add(list);
+//		
+//		list_1 = new JList();
+//		list_1.setBounds(89, 393, 162, 0);
+//		list_1.setForeground(Color.BLACK);
+//		getContentPane().add(list_1);
 		
 		JButton btnAbierto = new JButton("Abierto");
 		btnAbierto.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
@@ -386,89 +371,24 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tpServicios.setBounds(346, 234, 537, 271);
 		getContentPane().add(tpServicios);
 		
-	
-		panelServicio = new JPanel();
-		tpServicios.addTab("Servicios", null, panelServicio, null);
-		panelServicio.setLayout(null);
-		
-		panel_3 = new JPanel();
-		panel_3.setBounds(10, 11, 254, 66);
-		panelServicio.add(panel_3);
-		panel_3.setLayout(null);
-		panel_3.setBorder(new LineBorder(Color.GRAY));
-		panel_3.setBackground(SystemColor.inactiveCaption);
-		
-		tPrecioServicio = new PlaceholderTextField();
-		tPrecioServicio.setPlaceholder("Precio servicio");
-		tPrecioServicio.setBounds(156, 11, 94, 20);
-		panel_3.add(tPrecioServicio);
-		
-		tCodServicio = new PlaceholderTextField();
-		tCodServicio.setPlaceholder("C\u00F3d. servicio");
-		tCodServicio.setBounds(22, 11, 82, 20);
-		panel_3.add(tCodServicio);
-		
-		button_3 = new JButton("#");
-		button_3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				mostrarBuscadorServicio();
-			}
-		});
-		button_3.setBounds(105, 11, 41, 20);
-		panel_3.add(button_3);
-		
-		JButton button_6 = new JButton("Guardar");
-		button_6.setForeground(Color.BLACK);
-		button_6.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		button_6.setBounds(313, 11, 89, 23);
-		panelServicio.add(button_6);
-		
-		JButton button_7 = new JButton("C\u00E1ncelar");
-		button_7.setForeground(Color.BLACK);
-		button_7.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		button_7.setBounds(313, 33, 89, 23);
-		panelServicio.add(button_7);
-		
-		JButton button_8 = new JButton("Eliminar");
-		button_8.setForeground(Color.BLACK);
-		button_8.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		button_8.setBounds(313, 56, 89, 23);
-		panelServicio.add(button_8);
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 89, 512, 124);
-		panelServicio.add(scrollPane_2);
-		
-		tableProductos = new CustomTable(new String[] {"#", "Descripción servicio","Monto",}, new int[] {85, 200,130});
-		scrollPane_2.setViewportView(tableProductos);
-		
-		JLabel label_7 = new JLabel("Monto Total");
-		label_7.setBounds(249, 218, 71, 14);
-		panelServicio.add(label_7);
-		
-		textField_7 = new JTextField();
-		textField_7.setColumns(10);
-		textField_7.setBounds(323, 212, 199, 20);
-		panelServicio.add(textField_7);
-		
 		panelProducto = new JPanel();
 		tpServicios.addTab("Productos", null, panelProducto, null);
 		panelProducto.setLayout(null);
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(20, 11, 268, 66);
+		panel_2.setBounds(20, 6, 331, 77);
 		panelProducto.add(panel_2);
 		panel_2.setBackground(SystemColor.activeCaption);
 		panel_2.setLayout(null);
 		panel_2.setBorder(new LineBorder(Color.GRAY));
 		
 		tPrecioProducto = new PlaceholderTextField();
-		tPrecioProducto.setBounds(145, 11, 94, 20);
+		tPrecioProducto.setBounds(7, 29, 104, 20);
 		panel_2.add(tPrecioProducto);
 		tPrecioProducto.setPlaceholder("Precio producto");
 		
 		tCodProducto = new PlaceholderTextField();
-		tCodProducto.setBounds(7, 11, 85, 20);
+		tCodProducto.setBounds(7, 7, 263, 20);
 		panel_2.add(tCodProducto);
 		tCodProducto.setPlaceholder("C\u00F3d. producto");
 		
@@ -478,22 +398,28 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				mostrarBuscadorProducto();
 			}
 		});
-		button_2.setBounds(96, 11, 41, 20);
+		button_2.setBounds(280, 7, 41, 20);
 		panel_2.add(button_2);
 		
 		tCantidadProducto = new PlaceholderTextField();
 		tCantidadProducto.setPlaceholder("Cantidad");
-		tCantidadProducto.setBounds(145, 40, 94, 20);
+		tCantidadProducto.setBounds(7, 52, 104, 20);
 		panel_2.add(tCantidadProducto);
 		
 		JButton btnEliminar_1 = new JButton("Eliminar");
-		btnEliminar_1.setBounds(313, 56, 89, 23);
+		btnEliminar_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				eliminarProducto();
+			}
+		});
+		btnEliminar_1.setBounds(361, 60, 89, 23);
 		panelProducto.add(btnEliminar_1);
 		btnEliminar_1.setForeground(new Color(0, 0, 0));
 		btnEliminar_1.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		
 		JButton btnCncelar_2 = new JButton("C\u00E1ncelar");
-		btnCncelar_2.setBounds(313, 33, 89, 23);
+		
+		btnCncelar_2.setBounds(361, 34, 89, 23);
 		panelProducto.add(btnCncelar_2);
 		btnCncelar_2.setForeground(new Color(0, 0, 0));
 		btnCncelar_2.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
@@ -503,22 +429,30 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		panelProducto.add(scrollPane_1);
 		
 		
-		tableServicio = new CustomTable(new String[] {"#", "Descripción producto","Monto",}, new int[] {85, 200,130});
-		scrollPane_1.setViewportView(tableServicio);
+		tablaProductos = new CustomTable(new String[] {"#","Descripción producto","Cant.","Precio","Subtotal"}, new int[] {0,100,20,30});
+		tablaProductos.getColumnModel().getColumn(0).setMaxWidth(0);
+		tablaProductos.getColumnModel().getColumn(0).setMinWidth(0);
+		tablaProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
+		scrollPane_1.setViewportView(tablaProductos);
 		
-		textField_6 = new JTextField();
-		textField_6.setBounds(323, 212, 199, 20);
-		panelProducto.add(textField_6);
-		textField_6.setColumns(10);
+		tTotalDetalle = new JTextField();
+		tTotalDetalle.setBounds(323, 212, 199, 20);
+		panelProducto.add(tTotalDetalle);
+		tTotalDetalle.setColumns(10);
 		
 		JLabel lblMontoTotal_1 = new JLabel("Monto Total");
 		lblMontoTotal_1.setBounds(249, 218, 71, 14);
 		panelProducto.add(lblMontoTotal_1);
 		
 		JButton button_4 = new JButton("Guardar");
+		button_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				guardarProducto();
+			}
+		});
 		button_4.setForeground(Color.BLACK);
 		button_4.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		button_4.setBounds(313, 11, 89, 23);
+		button_4.setBounds(361, 8, 89, 23);
 		panelProducto.add(button_4);
 		
 		botonGrup3 = new BotonGrup3();
@@ -527,7 +461,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		getContentPane().add(botonGrup3);
 		
-		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+		tablaEstadia.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -543,12 +477,29 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	}
 	
 
+	private void eliminarProducto() {
+		if (tablaProductos.getSelectedRow()>=0) {
+			id=(int) tablaProductos.getValueAt(tablaProductos.getSelectedRow(), 0);
+			detalleDao = new DetalleDao();
+			detalle = detalleDao.recuperarPorId(id);
+			try {
+				detalleDao = new DetalleDao();
+				detalleDao.eliminar(detalle.getId());
+				sumarStock(detalle);
+				inicializarDetalle();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
 	//Metodo que recupera todos los registros de estadia para cargarlos a la tabla
 	private void recuperaDatos() {
 		estadiaDao = new EstadiaDao();
 		listaEstadias = estadiaDao.recuperaTodo();
 		
-		cargarGrilla();
+		cargarGrillaEstadia();
 		if (listaEstadias.size()>0)
 			accion = "DATOS";
 		else
@@ -556,41 +507,25 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	}
 
 	//Metodo que rellena la tabla con los datos obtenidos
-	private void cargarGrilla() {
+	private void cargarGrillaEstadia() {
 		
-		tabla.vaciar();
+		tablaEstadia.vaciar();
 		
-		fila = new Object[tabla.getColumnCount()];
+		fila = new Object[tablaEstadia.getColumnCount()];
 		for (Estadia e:listaEstadias) {
 			fila[0] = e.getId();
 			fila[1] = e.getCliente().getNombre();
 			fila[2] = e.getHabitacion().getDescripcion();
 			fila[3] = e.getHabitacion().getPrecio();
-			tabla.agregar(fila);
+			tablaEstadia.agregar(fila);
  		}
 		//mantiene el foco en el ultimo registro cargado
-		tabla.setSeleccion();
+		tablaEstadia.setSeleccion();
 		
 		
 	}
 	
-	//metodos para seleccionar la tabla o la gralla producto
-	private void seleccionarRegistroTablaDetalle( String abrir ){
-		
-		Integer fila = this.table.getSelectedRow();
-		String dato = String.valueOf(this.tableProductos.getValueAt( fila, 0 ));
-		
-			//tfNroDetalle.setText(dato);
-			Producto pro = new Producto();
-			
-			try {
-				//pro = ProductoDao
-			
-			
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	}
+	
 
 	@Override
 	public void nuevo() {
@@ -604,9 +539,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	
 	@Override
 	public void guardar() {
-		cargarAtributos();
+		cargarAtributosEstadia();
 		estadiaDao = new EstadiaDao();
-			
 		
 		if(accion.equals("AGREGAR"))
 			try {
@@ -616,10 +550,10 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				inicializar();
 				limpiarCampos();
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 				estadiaDao.rollback();
 				
-				advertencia("No se guardar estadia---: "+tabla.campo(2)+". Esta en uso!",2);
+				advertencia("No se guardar estadia---: "+tablaEstadia.campo(2)+". Esta en uso!",2);
 				advertencia("No se puede guardar el Estadia. Los campos con * son obligatorios",2);
 			}
 		if (accion.equals("MODIFICAR"))
@@ -647,28 +581,12 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tCodCliente.setEnabled(b);
 		tObservacin.setEnabled(b);
 		tBuscar.setEnabled(!b);
-		tabla.setEnabled(!b);
+		tablaEstadia.setEnabled(!b);
 		if(b==false)
-			tabla.requestFocus();
+			tablaEstadia.requestFocus();
 		else
 			tFecha.requestFocus();
 		//	tNumero.requestFocus();
-	}
-
-	//carga los atributos del objeto al ser persistido*/
-	@Override
-	public void cargarAtributos() {
-		estadia = new Estadia();
-		if(accion.equals("AGREGAR")){
-			estadiaDao = new EstadiaDao();
-			estadia.setId(estadiaDao.recuperMaxId()+1);
-		}else
-			estadia.setId((int) tabla.campo(0));
-		
-		estadia.setFecha(FormatoFecha.stringToDate(tFecha.getText()));
-		estadia.setCliente(cliente);
-		estadia.setHabitacion(habitacion);
-		estadia.setObservacion(tObservacin.getText());
 	}
 
 	//deja la pantallaen su estado inicial
@@ -692,27 +610,37 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 
 	@Override
 	public void cargarFormulario() {
-		if(tabla.getRowCount()==1)
+		if(tablaEstadia.getRowCount()==1)
 			ultimaFila = -1;
-		if (tabla.getSelectedRow()>=0 && tabla.getSelectedRow()!=ultimaFila) {
-			ultimaFila=tabla.getSelectedRow();
+		if (tablaEstadia.getSelectedRow()>=0 && tablaEstadia.getSelectedRow()!=ultimaFila) {
+			ultimaFila=tablaEstadia.getSelectedRow();
 			botonGrup3.botones(false, accion);
 			estadiaDao = new EstadiaDao();
-			estadia = estadiaDao.recuperarPorId((int) tabla.campo(0));
+			estadia = estadiaDao.recuperarPorId((int) tablaEstadia.campo(0));
 			if (estadia!=null) {
+				
 				cliente = estadia.getCliente();
 				habitacion = estadia.getHabitacion();
+				
 				tFecha.setValue(FormatoFecha.dateAString(estadia.getFecha()));
 				tCodCliente.setText(estadia.getCliente().getNombre());
 				tCodHabitacion.setText(estadia.getHabitacion().getDescripcion());
 				tObservacin.setText(estadia.getObservacion());
-
+				
+				recuperaDatosDetalle();
 				
 			}
 			
 		}
 		
 	}
+
+	private void recuperaDatosDetalle() {
+		detalleDao = new DetalleDao();
+		listaDetalles = detalleDao.cosultarPorEstadia(estadia);
+		cargarGrillaProductos();
+	}
+
 
 	@Override
 	public void limpiarCampos() {
@@ -731,7 +659,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				public void run() {
 					estadiaDao = new EstadiaDao();
 					listaEstadias = estadiaDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
-					cargarGrilla();
+					cargarGrillaEstadia();
 					timer.cancel();
 					timer=null;
 					task=null;
@@ -755,22 +683,166 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 
 	@Override
 	public void eliminar() {
-		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar el Cliente: "+tabla.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
+		int si = JOptionPane.showConfirmDialog(null, "Esta seguro que desea eliminar estadia: "+tablaEstadia.campo(1)+"?","Atención",JOptionPane.YES_NO_OPTION);
 		if (si==JOptionPane.YES_OPTION) {
 			estadiaDao = new EstadiaDao();
 			try {
-				estadiaDao.eliminar((int) tabla.campo(0) );
+				estadiaDao.eliminar((int) tablaEstadia.campo(0) );
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 				estadiaDao.rollback();
-				advertencia("No se eliminar el Estadia "+tabla.campo(1)+". Esta en uso!",2);
+				advertencia("No se eliminar el Estadia "+tablaEstadia.campo(1)+". Esta en uso!",2);
 			}
 			inicializar();
 		}
 		
 		
 	}
+	
+	//meodos para guardar producto
+	private void guardarProducto() {
+		
+		if (tCantidadProducto.getText().equals("")) {
+			JOptionPane.showMessageDialog(null,"cantidad no puede estar vacio");
+			tCantidadProducto.requestFocus();
+		}else{
+			cargarAtributosProductos();
+			
+			detalleDao = new DetalleDao();
+		//	JOptionPane.showMessageDialog(null,"hola"+ 1);
+			
+			try {
+				detalleDao.insertar(detalle);
+				restarStock(detalle);
+				
+				inicializarDetalle();
+				
+			} catch (Exception e) {
+			}
+		}
+	}
+	private void restarStock(Detalle det) {
+		Producto p = det.getProducto();
+		p.getStock().setCantidad(p.getStock().getCantidad()-det.getCantidadProducto());
+		productoDao = new ProductoDao();
+		try {
+			productoDao.actualizar(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void sumarStock(Detalle det) {
+		Producto p = det.getProducto();
+		p.getStock().setCantidad(p.getStock().getCantidad()+det.getCantidadProducto());
+		productoDao = new ProductoDao();
+		try {
+			productoDao.actualizar(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	
+
+
+	private void inicializarDetalle() {
+		limpiarCamposDetalle();
+		recuperaDatosDetalle();
+	}
+
+
+	private void limpiarCamposDetalle() {
+		tCodProducto.setText("");
+		tPrecioProducto.setText("");
+		tCantidadProducto.setText("");
+	}
+
+
+	@Override
+	//CARGAR ATRIBUTOS DEL PRODUCTOS
+	public void cargarAtributosProductos() {
+			
+		detalle = new Detalle();
+			
+				detalleDao = new DetalleDao();
+				detalle.setId(detalleDao.recuperMaxId()+1);
+						
+				detalle.setProducto(producto);
+				detalle.setEstadia(estadia);
+				detalle.setTotal(Double.parseDouble(tCantidadProducto.getText())*producto.getStock().getPrecio());
+				detalle.setCantidadProducto(Integer.parseInt( tCantidadProducto.getText()));
+		 
+		}
+	
+	
+	public void cargarAtributosEstadia() {
+		estadia = new Estadia();
+		if(accion.equals("AGREGAR")){
+			estadiaDao = new EstadiaDao();
+			estadia.setId(estadiaDao.recuperMaxId()+1);
+		}else
+		estadia.setId((int) tablaEstadia.campo(0));
+		estadia.setFecha(FormatoFecha.stringToDate(tFecha.getText()));
+		estadia.setCliente(cliente);
+		estadia.setHabitacion(habitacion);
+		estadia.setObservacion(tObservacin.getText());
+	}
+	//cargar grilla o tabla de productos
+	private void cargarGrillaProductos() {
+		
+		tablaProductos.vaciar();
+		tTotalDetalle.setText("");
+		fila = new Object[tablaProductos.getColumnCount()];
+		for (Detalle d: listaDetalles) {
+			fila[0] = d.getId();
+			fila[1] = d.getProducto().getDescripcion();
+			fila[2] = d.getCantidadProducto();
+			fila[3] = d.getProducto().getStock().getPrecio();
+			fila[4] = d.getTotal();
+			
+			if (tTotalDetalle.getText().equals("")) 
+				tTotalDetalle.setText(fila[3].toString());
+			else
+				tTotalDetalle.setText(""+(Double.parseDouble(tTotalDetalle.getText())+(Double)fila[3]));
+			tablaProductos.agregar(fila);
+ 		}
+		//mantiene el foco en el ultimo registro cargado
+		//tablaEstadia.setSeleccion();
+	}
+	
+	
+		@Override
+		public void cargarFormularioProducto() {
+		if(tablaProductos.getRowCount()==1)
+			ultimaFila = -1;
+		if (tablaProductos.getSelectedRow()>=0 && tablaProductos.getSelectedRow()!=ultimaFila) {
+			ultimaFila=tablaProductos.getSelectedRow();
+			botonGrup3.botones(false, accion);
+			productoDao = new ProductoDao();
+			producto = productoDao.recuperarPorId((int) tablaProductos.campo(0));
+			
+			if (detalle!=null) {
+				cliente = estadia.getCliente();
+				habitacion = estadia.getHabitacion();
+				
+				producto = detalle.getProducto();
+			
+				
+				tCodProducto.setText(detalle.getProducto().getDescripcion());
+				tCodProducto.setText(""+detalle.getProducto().getStock().getPrecio());
+				tCodProducto.setText(""+detalle.getProducto().getStock().getCantidad());
+				
+			}
+			
+		}
+		
+	}
+			
+
+	
 
 
 	@Override
@@ -798,6 +870,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		this.cliente = c;
 		
 		
+
+	
 	}
 	
 	@Override
@@ -805,31 +879,24 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tCodHabitacion.setText(h.getDescripcion());
 		this.habitacion = h;
 	}
-	private void mostrarBuscadorServicio() {
-	BusqudaServicio busquedaSercio = new	BusqudaServicio(this); 
-	busquedaSercio.setIbs(this);
-	busquedaSercio.setVisible(true);
-	
-	}
 	
 	private void mostrarBuscadorProducto() {
 		BusqudaProducto busquedaProducto = new BusqudaProducto(this);
 		busquedaProducto.setIbp(this);
 		busquedaProducto.setVisible(true);
 	}
+	
 
 
 	@Override
 	public void cargar(Producto p) {
-	tCodProducto.setText(p.getDescripcion());
-	tPrecioProducto.setText(""+p.getStock().getPrecio());
-
-	
-	
 	this.producto = p;
-		
-		
-		
+	
+	tCodProducto.setText(p.getDescripcion());
+	tPrecioProducto.setText((int)p.getStock().getPrecio()+"");
+	
+	tCantidadProducto.requestFocus();
+	
 	}
 
 
@@ -865,5 +932,16 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
+	@Override
+	public void cargarAtributos() {
+		// TODO Auto-generated method stub
+		
+	}
+		
 	}
 
+	

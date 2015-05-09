@@ -466,11 +466,13 @@ public class TransCompra extends JDialog
 	}
 
 	private void cargarAtributos() {
+		
 		compra = new Compra();
 		compra.setId(Integer.parseInt(tfId.getText()));
 		compra.setFactura(tfFactura.getText());
 		compra.setFecha(FormatoFecha.stringToDate(tfFecha.getText()));
 		compra.setTimbrado(tfTimbrado.getText());
+		compra.setVencimientoTimbrado(FormatoFecha.stringToDate(tfVencimientoTimbrado.getText()));
 		compra.setTotal(Double.parseDouble(tfTotal.getText()));
 		compra.setProveedor(proveegor);
 		
@@ -633,6 +635,7 @@ public class TransCompra extends JDialog
 
 	@Override
 	public void cargar(Proveedor p) {
+		this.proveegor = p;
 		tfIdProveedor.setText(p.getId()+"");
 		tfProveedor.setText(p.getNombre());
 		tfRuc.setText(p.getDocumento());

@@ -371,6 +371,18 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		}
 		
 	}
+
+	@Override
+	public void cargarFormularioProducto() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cargarAtributosProductos() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

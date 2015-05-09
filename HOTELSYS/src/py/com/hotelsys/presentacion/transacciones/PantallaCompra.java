@@ -175,37 +175,37 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 
 	@Override
 	public void habilitarCampos(boolean b) {
-		// TODO Auto-generated method stub
+	
 		
 	}
 
 	@Override
 	public void cargarAtributos() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void inicializar() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void advertencia(String texto, int t) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void cargarFormulario() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void limpiarCampos() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -241,5 +241,21 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	@Override
 	public void salir() {
 		dispose();
+	}
+
+
+
+	@Override
+	public void cargarFormularioProducto() {
+		
+		
+	}
+
+
+
+	@Override
+	public void cargarAtributosProductos() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -41,6 +41,7 @@
 		<mapping class="py.com.hotelsys.modelo.Compra"/>
 		<mapping class="py.com.hotelsys.modelo.CompraItem"/>
 		<mapping class="py.com.hotelsys.modelo.Estadia"/>
+		<mapping class="py.com.hotelsys.modelo.Detalle"/>
 	
     </session-factory>
     

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 
 import py.com.hotelsys.util.HibernateUtil;
@@ -49,7 +50,7 @@ public abstract class GenericGao <T>{
 	
 	@SuppressWarnings("unchecked")
 	public List<T> recuperaTodo(){
-		list = session.createCriteria(entity).list();
+		list = session.createCriteria(entity).addOrder(Order.asc("id")).list();
 		cerrar();
 		return list;
 	}

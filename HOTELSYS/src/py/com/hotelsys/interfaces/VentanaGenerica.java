@@ -6,6 +6,8 @@ public interface VentanaGenerica {
 	public void inicializar();
 	public void advertencia(String texto,int t);
 	public void cargarFormulario();
+	public void cargarFormularioProducto();
 	public void limpiarCampos();
 	public void buscar();
+	void cargarAtributosProductos();
 }

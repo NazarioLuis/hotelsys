@@ -34,6 +34,7 @@ import py.com.hotelsys.presentacion.formulario.FormHabitacion;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
 import py.com.hotelsys.presentacion.formulario.FormProveedor;
 import py.com.hotelsys.presentacion.formulario.FormServicio;
+import py.com.hotelsys.presentacion.transacciones.PantallaCompra;
 import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 import py.com.hotelsys.util.HibernateUtil;
 
@@ -146,15 +147,6 @@ public class Principal extends JFrame  {
 		JMenu mnCompras = new JMenu("Compras");
 		menuBar.add(mnCompras);
 		
-		JMenuItem mntmProveedor = new JMenuItem("Proveedor");
-		mnCompras.add(mntmProveedor);
-		mntmProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0));
-		mntmProveedor.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				verFormProveedor();
-			}
-		});
-		
 		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar Compra");
 		mntmRegistrar_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -227,10 +219,6 @@ public class Principal extends JFrame  {
 		FormCliente fc = new FormCliente(this);
 		fc.setVisible(true);
 	}
-	private void verFormProveedor() {
-		FormProveedor fp = new FormProveedor(this);
-		fp.setVisible(true);
-	}
 	private void verFormProducto() {
 		FormProducto fp = new FormProducto(this);
 		fp.setVisible(true);
@@ -250,7 +238,8 @@ public class Principal extends JFrame  {
 		
 	}
 	private void mostrarCompras() {
-		//TransCompra tc = new TransCompra(d, c, this);
+		PantallaCompra pc = new PantallaCompra(this);
+		pc.setVisible(true);
 
 	}
 }

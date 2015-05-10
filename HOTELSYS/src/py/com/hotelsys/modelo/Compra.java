@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+@SuppressWarnings("serial")
 @Entity
 public class Compra implements Serializable{
 	
@@ -33,7 +34,7 @@ public class Compra implements Serializable{
 	private double total;
 	@Column(name = "com_estado")
 	private boolean estado;
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="com_proveedor_fk")
 	private Proveedor proveedor;
 	@OneToMany(cascade=CascadeType.ALL,mappedBy="compra",fetch = FetchType.EAGER)

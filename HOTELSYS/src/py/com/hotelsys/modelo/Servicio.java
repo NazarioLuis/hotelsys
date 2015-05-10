@@ -3,7 +3,6 @@ package py.com.hotelsys.modelo;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 @Entity
 public class Servicio{
 	

@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 
 import py.com.hotelsys.modelo.Estadia;
 
-public class EstadiaDao extends GenericGao<Estadia>{
+public class EstadiaDao extends GenericDao<Estadia>{
 
 	public EstadiaDao() {
 		super(Estadia.class);

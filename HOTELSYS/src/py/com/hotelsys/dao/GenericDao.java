@@ -10,7 +10,7 @@ import org.hibernate.criterion.Projections;
 import py.com.hotelsys.util.HibernateUtil;
 
 
-public abstract class GenericGao <T>{
+public abstract class GenericDao <T>{
 	Session session;
 	Class<?> entity;
 	Object id;
@@ -18,7 +18,7 @@ public abstract class GenericGao <T>{
 	List<T> list;
 	public String[] filtros;
 
-	GenericGao(Class<?> entity){
+	GenericDao(Class<?> entity){
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		this.entity = entity;

@@ -42,6 +42,11 @@
 		<mapping class="py.com.hotelsys.modelo.CompraItem"/>
 		<mapping class="py.com.hotelsys.modelo.Estadia"/>
 		<mapping class="py.com.hotelsys.modelo.Detalle"/>
+		<mapping class="py.com.hotelsys.modelo.EntradaStock"/>
+		<mapping class="py.com.hotelsys.modelo.EntradaStockItem"/>
+		<mapping class="py.com.hotelsys.modelo.SalidaStock"/>
+		<mapping class="py.com.hotelsys.modelo.SalidaStockItem"/>
+		<mapping class="py.com.hotelsys.modelo.Cotizacion"/>
 	
     </session-factory>
     

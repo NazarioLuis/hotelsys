@@ -7,7 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Producto;
 
-public class HabitacionDao extends GenericGao<Habitacion>{
+public class HabitacionDao extends GenericDao<Habitacion>{
 
 	public HabitacionDao() {
 		super(Habitacion.class);

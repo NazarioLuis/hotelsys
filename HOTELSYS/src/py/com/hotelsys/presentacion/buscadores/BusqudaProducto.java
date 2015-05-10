@@ -15,12 +15,9 @@ import javax.swing.JScrollPane;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
-import py.com.hotelsys.dao.ProveedorDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
-import py.com.hotelsys.interfaces.InterfaceBusquedaProveedor;
 import py.com.hotelsys.modelo.Producto;
-import py.com.hotelsys.modelo.Proveedor;
-import py.com.hotelsys.presentacion.transacciones.TransEstadia;
+import py.com.hotelsys.util.VariablesDelSistema;
 
 public class BusqudaProducto extends JDialog {
 
@@ -51,7 +48,7 @@ public class BusqudaProducto extends JDialog {
 		scrollPane.setBounds(10, 42, 504, 204);
 		getContentPane().add(scrollPane);
 		
-		table = new CustomTable(new String[] {"#", "Descripcion", "Precio"}, new int[] {100, 200, 200});
+		table = new CustomTable(new String[] {"#", "Descripcion","Cant.", "Precio"}, new int[] {50, 200,100, 100});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -111,7 +108,8 @@ public class BusqudaProducto extends JDialog {
 		for (Producto p:listaProducto) {
 			fila[0] = p.getId();
 			fila[1] = p.getDescripcion();
-			fila[2] = p.getStock().getPrecio();
+			fila[2] = p.getStock().getCantidad();
+			fila[3] = VariablesDelSistema.formatoDecimal(p.getStock().getPrecio());
 			table.agregar(fila);
  		}
 		

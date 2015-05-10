@@ -13,7 +13,7 @@ import py.com.hotelsys.modelo.Compra;
 import py.com.hotelsys.modelo.CompraItem;
 import py.com.hotelsys.modelo.Producto;
 
-public class CompraItemDao extends GenericGao<CompraItem>{
+public class CompraItemDao extends GenericDao<CompraItem>{
 
 	public CompraItemDao() {
 		super(CompraItem.class);

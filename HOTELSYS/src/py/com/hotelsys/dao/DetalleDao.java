@@ -8,7 +8,7 @@ import py.com.hotelsys.modelo.Detalle;
 import py.com.hotelsys.modelo.Estadia;
 import py.com.hotelsys.modelo.Producto;
 
-public class DetalleDao extends GenericGao<Detalle>{
+public class DetalleDao extends GenericDao<Detalle>{
 
 	public DetalleDao() {
 		super(Detalle.class);

@@ -17,17 +17,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.PlaceholderTextField;
-import py.com.hotelsys.dao.HabitacionDao;
 import py.com.hotelsys.dao.ServicioDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
-import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Servicio;
 
 
@@ -66,8 +64,7 @@ public class FormServicio extends JDialog implements AbmBotonInterface {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
-		panel = new JPanel();
-		panel.setBorder(new LineBorder(Color.GRAY));
+		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 388, 302);
 		getContentPane().add(panel);
 		panel.setLayout(null);

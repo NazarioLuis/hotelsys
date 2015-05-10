@@ -14,24 +14,23 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Stock;
-
-import javax.swing.JRadioButton;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 
 
@@ -72,8 +71,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		setLocationRelativeTo(null);
 		
-		panel = new JPanel();
-		panel.setBorder(new LineBorder(Color.GRAY));
+		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 388, 280);
 		getContentPane().add(panel);
 		panel.setLayout(null);

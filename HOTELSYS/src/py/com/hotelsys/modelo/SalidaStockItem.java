@@ -9,23 +9,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class CompraItem {
+public class SalidaStockItem {
 	@Id
 	@GeneratedValue
-	@Column(name="cit_numero")
+	@Column(name="sit_numero")
 	private int id;
-	@Column(name="cit_cantidad",nullable=false)
+	@Column(name="sit_cantidad",nullable=false)
 	private int cantidad;
-	@Column(name="cit_costo",nullable=false)
-	private double costo;
-	@Column(name="cit_costo_promedio",nullable=false)
-	private double costoPromedio;
 	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="cit_producto_fk")
+	@JoinColumn(name="sit_producto_fk")
 	private Producto producto;
 	@ManyToOne
-	@JoinColumn(name="cit_compra_fk",referencedColumnName="com_numero")
-	private Compra compra;
+	@JoinColumn(name="sit_entrada_fk",referencedColumnName="sal_numero")
+	private SalidaStock salida;
 	public int getId() {
 		return id;
 	}
@@ -39,30 +35,17 @@ public class CompraItem {
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
-	public double getCosto() {
-		return costo;
-	}
-	public void setCosto(double costo) {
-		this.costo = costo;
-	}
 	public Producto getProducto() {
 		return producto;
 	}
 	public void setProducto(Producto producto) {
 		this.producto = producto;
 	}
-	public Compra getCompra() {
-		return compra;
+	public SalidaStock getSalida() {
+		return salida;
 	}
-	public void setCompra(Compra compra) {
-		this.compra = compra;
+	public void setSalida(SalidaStock salida) {
+		this.salida = salida;
 	}
-	public double getCostoPromedio() {
-		return costoPromedio;
-	}
-	public void setCostoPromedio(double costoPromedio) {
-		this.costoPromedio = costoPromedio;
-	}
-	
 	
 }

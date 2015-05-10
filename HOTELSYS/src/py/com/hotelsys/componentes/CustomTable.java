@@ -76,4 +76,10 @@ public class CustomTable extends JTable {
 			changeSelection(getSelectedRow()+1, 0, true, false);
 		}
 	}
+
+	public void ocultarColumna(int i) {
+		getColumnModel().getColumn(i).setMaxWidth(0);
+		getColumnModel().getColumn(i).setMinWidth(0);
+		getColumnModel().getColumn(i).setPreferredWidth(0);
+	}
 }

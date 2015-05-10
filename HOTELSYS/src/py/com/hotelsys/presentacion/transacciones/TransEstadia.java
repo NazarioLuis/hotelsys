@@ -3,7 +3,6 @@ package py.com.hotelsys.presentacion.transacciones;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -20,22 +19,21 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
 
 import py.com.hotelsys.componentes.BotonGrup3;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.JCustomPanel1;
+import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.dao.DetalleDao;
@@ -52,12 +50,11 @@ import py.com.hotelsys.modelo.Estadia;
 import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Servicio;
-import py.com.hotelsys.modelo.Stock;
 import py.com.hotelsys.presentacion.buscadores.BusqudaCliente;
 import py.com.hotelsys.presentacion.buscadores.BusqudaHabitacion;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
-import py.com.hotelsys.presentacion.buscadores.BusqudaServicio;
 import py.com.hotelsys.util.FormatoFecha;
+import py.com.hotelsys.util.VariablesDelSistema;
 
 
 
@@ -69,8 +66,6 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	
 	private Producto producto;
 	private ProductoDao productoDao;
-	private List<Producto> listaProductos;
-	
 	private Detalle detalle;
 	private DetalleDao detalleDao;
 	private List<Detalle> listaDetalles;
@@ -103,7 +98,6 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private JButton button_2;
 
 	private JScrollPane scrollPane_1;
-	private CustomTable tableServicio;
 	private CustomTable tablaProductos;
 	private JPanel panel_1;
 	private PlaceholderTextField placeholderTextField_5;
@@ -128,13 +122,16 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private PlaceholderTextField tCodProducto;
 	private PlaceholderTextField tPrecioProducto;
 	private PlaceholderTextField tCantidadProducto;
+	private PlaceholderTextField tPrecioProductoRs;
+	private PlaceholderTextField tPrecioProductoUs;
+	private Double totalDetalle;
 	
 
 	public TransEstadia(JFrame frame) {
 		super(frame);
 		getContentPane().setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		getContentPane().setLocation(-25, -344);
-		setTitle("Archivo de Estadia");
+		setTitle("Hospedar a Cliente");
 		setBounds(100, 100, 899, 547);
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -142,10 +139,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		getContentPane().setLayout(null);
 		
-		panel = new JPanel();
-		panel.setBackground(SystemColor.inactiveCaption);
+		panel =	new JCustomPanel1();
 		panel.setBounds(10, 11, 241, 269);
-		panel.setBorder(new LineBorder(Color.GRAY));
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -267,10 +262,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		btnTodos.setBounds(823, 203, 61, 23);
 		getContentPane().add(btnTodos);
 		
-		panel_1 = new JPanel();
-		panel_1.setBackground(SystemColor.inactiveCaption);
+		panel_1 = new JCustomPanel2();
 		panel_1.setLayout(null);
-		panel_1.setBorder(new LineBorder(Color.GRAY));
 		panel_1.setBounds(19, 304, 232, 201);
 		getContentPane().add(panel_1);
 		
@@ -375,17 +368,15 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tpServicios.addTab("Productos", null, panelProducto, null);
 		panelProducto.setLayout(null);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(20, 6, 331, 77);
+		JPanel panel_2 = new JCustomPanel1();
+		panel_2.setBounds(10, 6, 341, 77);
 		panelProducto.add(panel_2);
-		panel_2.setBackground(SystemColor.activeCaption);
 		panel_2.setLayout(null);
-		panel_2.setBorder(new LineBorder(Color.GRAY));
 		
 		tPrecioProducto = new PlaceholderTextField();
 		tPrecioProducto.setBounds(7, 29, 104, 20);
 		panel_2.add(tPrecioProducto);
-		tPrecioProducto.setPlaceholder("Precio producto");
+		tPrecioProducto.setPlaceholder("Guaran\u00ED");
 		
 		tCodProducto = new PlaceholderTextField();
 		tCodProducto.setBounds(7, 7, 263, 20);
@@ -398,13 +389,35 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				mostrarBuscadorProducto();
 			}
 		});
-		button_2.setBounds(280, 7, 41, 20);
+		button_2.setBounds(280, 7, 46, 20);
 		panel_2.add(button_2);
 		
 		tCantidadProducto = new PlaceholderTextField();
 		tCantidadProducto.setPlaceholder("Cantidad");
 		tCantidadProducto.setBounds(7, 52, 104, 20);
 		panel_2.add(tCantidadProducto);
+		
+		tPrecioProductoRs = new PlaceholderTextField();
+		tPrecioProductoRs.setPlaceholder("Dolar");
+		tPrecioProductoRs.setBounds(132, 29, 81, 20);
+		panel_2.add(tPrecioProductoRs);
+		
+		tPrecioProductoUs = new PlaceholderTextField();
+		tPrecioProductoUs.setPlaceholder("Precio producto");
+		tPrecioProductoUs.setBounds(237, 29, 81, 20);
+		panel_2.add(tPrecioProductoUs);
+		
+		JLabel lblGs = new JLabel("Gs.");
+		lblGs.setBounds(111, 32, 22, 14);
+		panel_2.add(lblGs);
+		
+		JLabel lblUs = new JLabel("Rs.");
+		lblUs.setBounds(214, 32, 23, 14);
+		panel_2.add(lblUs);
+		
+		JLabel lblRs = new JLabel("Us.");
+		lblRs.setBounds(319, 32, 22, 14);
+		panel_2.add(lblRs);
 		
 		JButton btnEliminar_1 = new JButton("Eliminar");
 		btnEliminar_1.addActionListener(new ActionListener() {
@@ -430,9 +443,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		
 		tablaProductos = new CustomTable(new String[] {"#","Descripción producto","Cant.","Precio","Subtotal"}, new int[] {0,100,20,30});
-		tablaProductos.getColumnModel().getColumn(0).setMaxWidth(0);
-		tablaProductos.getColumnModel().getColumn(0).setMinWidth(0);
-		tablaProductos.getColumnModel().getColumn(0).setPreferredWidth(0);
+		tablaProductos.ocultarColumna(0);
 		scrollPane_1.setViewportView(tablaProductos);
 		
 		tTotalDetalle = new JTextField();
@@ -479,7 +490,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 
 	private void eliminarProducto() {
 		if (tablaProductos.getSelectedRow()>=0) {
-			id=(int) tablaProductos.getValueAt(tablaProductos.getSelectedRow(), 0);
+			id=(int) tablaProductos.campo(0);
 			detalleDao = new DetalleDao();
 			detalle = detalleDao.recuperarPorId(id);
 			try {
@@ -516,7 +527,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			fila[0] = e.getId();
 			fila[1] = e.getCliente().getNombre();
 			fila[2] = e.getHabitacion().getDescripcion();
-			fila[3] = e.getHabitacion().getPrecio();
+			fila[3] = VariablesDelSistema.formatoDecimal(e.getHabitacion().getPrecio());
 			tablaEstadia.agregar(fila);
  		}
 		//mantiene el foco en el ultimo registro cargado
@@ -595,6 +606,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		limpiarCampos();
 		habilitarCampos(false);
 		recuperaDatos();
+		botonGrup3.botones(false, accion);
 		ultimaFila = -1;
 	}
 
@@ -792,7 +804,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	}
 	//cargar grilla o tabla de productos
 	private void cargarGrillaProductos() {
-		
+		totalDetalle = 0.0;
 		tablaProductos.vaciar();
 		tTotalDetalle.setText("");
 		fila = new Object[tablaProductos.getColumnCount()];
@@ -800,15 +812,15 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			fila[0] = d.getId();
 			fila[1] = d.getProducto().getDescripcion();
 			fila[2] = d.getCantidadProducto();
-			fila[3] = d.getProducto().getStock().getPrecio();
-			fila[4] = d.getTotal();
+			fila[3] = VariablesDelSistema.formatoDecimal(d.getProducto().getStock().getPrecio());
+			fila[4] = VariablesDelSistema.formatoDecimal(d.getTotal());
+			totalDetalle+=d.getTotal();
 			
-			if (tTotalDetalle.getText().equals("")) 
-				tTotalDetalle.setText(fila[3].toString());
-			else
-				tTotalDetalle.setText(""+(Double.parseDouble(tTotalDetalle.getText())+(Double)fila[3]));
+		
+			
 			tablaProductos.agregar(fila);
  		}
+		tTotalDetalle.setText(VariablesDelSistema.formatoDecimal(totalDetalle));
 		//mantiene el foco en el ultimo registro cargado
 		//tablaEstadia.setSeleccion();
 	}
@@ -890,13 +902,14 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 
 	@Override
 	public void cargar(Producto p) {
-	this.producto = p;
-	
-	tCodProducto.setText(p.getDescripcion());
-	tPrecioProducto.setText((int)p.getStock().getPrecio()+"");
-	
-	tCantidadProducto.requestFocus();
-	
+		this.producto = p;
+		
+		tCodProducto.setText(p.getDescripcion());
+		tPrecioProducto.setText(VariablesDelSistema.formatoDecimal(p.getStock().getPrecio()));
+		tPrecioProductoRs.setText(VariablesDelSistema.formatoDecimal(p.getStock().getPrecio()/VariablesDelSistema.cotizacionReal));
+		tPrecioProductoUs.setText(VariablesDelSistema.formatoDecimal(p.getStock().getPrecio()/VariablesDelSistema.cotizacionDolar));
+		tCantidadProducto.requestFocus();
+		
 	}
 
 
@@ -941,7 +954,6 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		// TODO Auto-generated method stub
 		
 	}
-		
 	}
 
 	

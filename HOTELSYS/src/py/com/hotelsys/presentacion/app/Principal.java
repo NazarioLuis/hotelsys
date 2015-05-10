@@ -30,13 +30,15 @@ import javax.swing.border.LineBorder;
 import py.com.hotelsys.componentes.FondoPrincipal;
 import py.com.hotelsys.componentes.VisorFechaHora;
 import py.com.hotelsys.presentacion.formulario.FormCliente;
+import py.com.hotelsys.presentacion.formulario.FormCotizacion;
 import py.com.hotelsys.presentacion.formulario.FormHabitacion;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
-import py.com.hotelsys.presentacion.formulario.FormProveedor;
-import py.com.hotelsys.presentacion.formulario.FormServicio;
 import py.com.hotelsys.presentacion.transacciones.PantallaCompra;
+import py.com.hotelsys.presentacion.transacciones.PantallaEntrada;
+import py.com.hotelsys.presentacion.transacciones.PantallaSalida;
 import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 import py.com.hotelsys.util.HibernateUtil;
+import py.com.hotelsys.util.VariablesDelSistema;
 
 @SuppressWarnings("serial")
 public class Principal extends JFrame  {
@@ -49,6 +51,7 @@ public class Principal extends JFrame  {
 				try {
 					HibernateUtil.buildIfNeeded();
 					Principal frame = new Principal();
+					VariablesDelSistema.cotizacionDelDia();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -86,16 +89,14 @@ public class Principal extends JFrame  {
 		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0));
 		mnGral.add(mntmCliente);
 		
-		JMenuItem mntmServicio = new JMenuItem("Servicio");
-		mntmServicio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				verForServicio();
+		JMenuItem mntmMoneda = new JMenuItem("Cotizaci\u00F3n de Monedas");
+		mntmMoneda.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				verFormCotizacion();
 			}
+
+			
 		});
-		mntmServicio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
-		mnGral.add(mntmServicio);
-		
-		JMenuItem mntmMoneda = new JMenuItem("Moneda");
 		mntmMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0));
 		mnGral.add(mntmMoneda);
 		
@@ -139,6 +140,24 @@ public class Principal extends JFrame  {
 				verFormProducto();
 			}
 		});
+		
+		JMenuItem mntmRegistrarEntrada = new JMenuItem("Registrar Alta");
+		mntmRegistrarEntrada.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrarEntradas();
+			}
+		});
+		mntmRegistrarEntrada.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0));
+		mnStock.add(mntmRegistrarEntrada);
+		
+		JMenuItem mntmRegistrarSalida = new JMenuItem("Registrar Baja");
+		mntmRegistrarSalida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrarSalidas();
+			}
+		});
+		mntmRegistrarSalida.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0));
+		mnStock.add(mntmRegistrarSalida);
 		
 		JMenuItem mntmImprimirInforme = new JMenuItem("Imprimir Informe");
 		mntmImprimirInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
@@ -215,6 +234,16 @@ public class Principal extends JFrame  {
 		fondoPrincipal.setLayout(gl_fondoPrincipal);
 	}
 
+	private void mostrarEntradas() {
+		PantallaEntrada pe = new PantallaEntrada(this);
+		pe.setVisible(true);
+	}
+
+	private void mostrarSalidas() {
+		PantallaSalida ps = new PantallaSalida(this);
+		ps.setVisible(true);
+	}
+
 	private void verFormCliente() {
 		FormCliente fc = new FormCliente(this);
 		fc.setVisible(true);
@@ -227,10 +256,10 @@ public class Principal extends JFrame  {
 		FormHabitacion fh = new FormHabitacion(this);
 		fh.setVisible(true);
 	}
-	private void verForServicio() {
-		FormServicio fs = new FormServicio(this);
-		fs.setVisible(true);
-
+	
+	private void verFormCotizacion() {
+		FormCotizacion fc = new FormCotizacion(this);
+		fc.setVisible(true);
 	}
 	private void mostrarEstadia() {
 		TransEstadia te= new TransEstadia(this);

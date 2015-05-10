@@ -5,8 +5,6 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,15 +18,15 @@ public class Estadia {
 	@Column(name="est_fecha",nullable=false)
 	private Date fecha;
 		
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name="est_cliente_fk",referencedColumnName="cli_codigo")
 	private Cliente cliente;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name="est_habitacion_fk",referencedColumnName="hab_codigo")
 	private Habitacion habitacion;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name="est_producto_fk",referencedColumnName="pro_codigo")
 	private Producto producto;
 	

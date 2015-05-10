@@ -112,10 +112,6 @@ public class Principal extends JFrame  {
 		mnEstada.add(mntmHabitacin);
 		mntmHabitacin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
 		
-		JMenuItem mntmReservar = new JMenuItem("Reservar");
-		mntmReservar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
-		mnEstada.add(mntmReservar);
-		
 		JMenuItem mntmRegistrar = new JMenuItem("Hospedar");
 		mntmRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

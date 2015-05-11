@@ -25,7 +25,7 @@ import py.com.hotelsys.dao.CompraDao;
 import py.com.hotelsys.interfaces.TranBotonInterface;
 import py.com.hotelsys.modelo.Compra;
 import py.com.hotelsys.util.FormatoFecha;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class PantallaCompra extends JDialog implements TranBotonInterface{
@@ -56,7 +56,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		scrollPane.setBounds(10, 70, 763, 291);
 		getContentPane().add(scrollPane);
 		
-		table = new CustomTable(new String[] {"#", "Factura", "Timbrado", "Proveedor", "Fecha", "Monto", "Estado"}, new int[] {40, 50, 100, 100, 50, 50, 50});
+		table = new CustomTable(new String[] {"#", "Factura", "Timbrado", "Proveedor", "Fecha", "Monto", "Estado"}, new int[] {20, 100, 100, 100, 50, 50, 50});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -83,7 +83,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		lblFechaDeCompra.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		
-		tFecha1 = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tFecha1 = new JFormattedTextField(Util.formatoFecha());
 		
 		tFecha1.setBounds(522, 9, 103, 26);
 		panel.add(tFecha1);
@@ -93,7 +93,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		panel.add(lblA);
 		lblA.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		tFecha2 = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tFecha2 = new JFormattedTextField(Util.formatoFecha());
 		tFecha2.setBounds(650, 9, 103, 26);
 		panel.add(tFecha2);
 		

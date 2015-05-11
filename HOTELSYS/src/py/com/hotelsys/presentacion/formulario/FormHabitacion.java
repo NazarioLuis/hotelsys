@@ -23,10 +23,12 @@ import javax.swing.event.ListSelectionListener;
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
+import py.com.hotelsys.componentes.NumberTextField;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.HabitacionDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Habitacion;
+import py.com.hotelsys.util.Util;
 
 
 
@@ -42,7 +44,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 	private BotonGrup abmBoton;
 	private String accion = "";
 	private PlaceholderTextField tDescripcion;
-	private PlaceholderTextField tPrecio;
+	private NumberTextField tPrecio;
 	private JTextArea tObservacion;
 	private PlaceholderTextField tBuscar;
 	private JPanel panel;
@@ -51,6 +53,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 	private Timer timer;
 	private TimerTask task;
 	private int ultimaFila;
+	private JLabel lblGs;
 
 
 	/**
@@ -75,10 +78,15 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		tDescripcion.setBounds(25, 40, 301, 20);
 		panel.add(tDescripcion);
 		
-		tPrecio = new PlaceholderTextField();
+		tPrecio = new NumberTextField();
+		tPrecio.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
+		});
 		tPrecio.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tPrecio.setPlaceholder("Precio");
-		tPrecio.setBounds(25, 71, 173, 20);
+		tPrecio.setBounds(25, 71, 100, 20);
 		panel.add(tPrecio);
 		
 		tObservacion = new JTextArea("");
@@ -96,6 +104,10 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		label.setBounds(25, 119, 107, 14);
 		panel.add(label);
+		
+		lblGs = new JLabel("Gs.");
+		lblGs.setBounds(135, 74, 46, 14);
+		panel.add(lblGs);
 		
 		abmBoton = new BotonGrup();
 		abmBoton.setBounds(10, 324, 647, 33);
@@ -159,7 +171,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		for (Habitacion h:listaHabitacion) {
 			fila[0] = h.getId();
 			fila[1] = h.getDescripcion();
-			fila[2] = (int)h.getPrecio();
+			fila[2] = Util.formatoDecimal(h.getPrecio())+" Gs.";
 			tabla.agregar(fila);
  		}
 		
@@ -266,7 +278,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		if(!tDescripcion.getText().equals(""))
 			habitacion.setDescripcion(tDescripcion.getText());
 		if(!tPrecio.getText().equals(""))
-		habitacion.setPrecio(Integer.parseInt(tPrecio.getText()));
+		habitacion.setPrecio(((Number)tPrecio.getValue()).doubleValue());
 		habitacion.setObservacion(tObservacion.getText());
 	}
 
@@ -298,7 +310,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 			habitacion = habitacionDao.recuperarPorId((int) tabla.campo(0));
 			if (habitacion!=null) {
 				tDescripcion.setText(habitacion.getDescripcion());
-				tPrecio.setText((int)habitacion.getPrecio()+"");
+				tPrecio.setValue(habitacion.getPrecio());
 				tObservacion.setText(habitacion.getObservacion());
 			}
 			
@@ -309,7 +321,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 	@Override
 	public void limpiarCampos() {
 		tDescripcion.setText("");
-		tPrecio.setText("");
+		tPrecio.setValue(null);
 		tObservacion.setText("");
 	}
 

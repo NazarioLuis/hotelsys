@@ -11,9 +11,20 @@ public class FormatoFecha {
 	private static String fecha;
 	private static Date date;
 	private static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	private static DateFormat dfh = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private static DateFormat dh = new SimpleDateFormat("HH:mm");
 	public static String showFull(Date date) {
 		fecha = "Hoy es "+dfFull.format(date)+" y son las "+dfHora.format(date);
 		return fecha;
+	}
+	
+	public static Date stringToDateHora(String fecha) {
+		try {
+			date = dfh .parse(fecha);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
 	}
 	
 	public static Date stringToDate(String fecha) {
@@ -25,9 +36,17 @@ public class FormatoFecha {
 		return date;
 	}
 
-	public static String dateAString(Date date2) {
+	public static String dateAString(Date date) {
 		try {
-			return df.format(date2);
+			return df.format(date);
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	public static Object dateAStringHora(Date date) {
+		try {
+			return dh.format(date);
 		} catch (Exception e) {
 			return "";
 		}

@@ -2,12 +2,13 @@ package py.com.hotelsys.modelo;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Estadia {
@@ -15,40 +16,29 @@ public class Estadia {
 	@Column(name="est_numero")
 	private int id;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="est_fecha",nullable=false)
 	private Date fecha;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="est_fecha_sal")
+	private Date fechaSal;
+	
+	
+	@Column(name="est_exce")
+	private Double excedente;
+	
+	
 		
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name="est_cliente_fk",referencedColumnName="cli_codigo")
 	private Cliente cliente;
 	
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name="est_habitacion_fk",referencedColumnName="hab_codigo")
 	private Habitacion habitacion;
 	
-	@ManyToOne(cascade=CascadeType.MERGE)
-	@JoinColumn(name="est_producto_fk",referencedColumnName="pro_codigo")
-	private Producto producto;
 	
-	public Producto getProducto() {
-		return producto;
-	}
-
-	public void setProducto(Producto producto) {
-		this.producto = producto;
-	}
-
-	public Servicio getServicio() {
-		return servicio;
-	}
-
-	public void setServicio(Servicio servicio) {
-		this.servicio = servicio;
-	}
-
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="est_ssservicio_fk",referencedColumnName="ser_codigo")
-	private Servicio servicio;
 	
 	
 	@Column(name="est_observacion",nullable=false)
@@ -99,6 +89,22 @@ public class Estadia {
 
 	public void setHabitacion(Habitacion habitacion) {
 		this.habitacion = habitacion;
+	}
+
+	public Date getFechaSal() {
+		return fechaSal;
+	}
+
+	public void setFechaSal(Date fechaSal) {
+		this.fechaSal = fechaSal;
+	}
+
+	public Double getExcedente() {
+		return excedente;
+	}
+
+	public void setExcedente(Double excedente) {
+		this.excedente = excedente;
 	}
 	
 	

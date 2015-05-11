@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.criterion.Restrictions;
 
 import py.com.hotelsys.modelo.Habitacion;
-import py.com.hotelsys.modelo.Producto;
 
 public class HabitacionDao extends GenericDao<Habitacion>{
 
@@ -18,6 +17,7 @@ public class HabitacionDao extends GenericDao<Habitacion>{
 	public List<Habitacion> cosultarPorFiltros(String [] filtro) {
 		criteria = session.createCriteria(entity);
 		criteria.add(
+						
 						Restrictions.like("descripcion", "%"+filtro[0]+"%").ignoreCase()
 					);
 		

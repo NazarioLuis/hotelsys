@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.ParseException;
+import java.text.Normalizer.Form;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -24,19 +24,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.MaskFormatter;
 
 import py.com.hotelsys.componentes.BotonGrup3;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
+import py.com.hotelsys.componentes.NumberTextField;
 import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.componentes.PlaceholderTextField2;
 import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.dao.DetalleDao;
+import py.com.hotelsys.dao.DeudaDao;
 import py.com.hotelsys.dao.EstadiaDao;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaCliente;
@@ -46,6 +49,7 @@ import py.com.hotelsys.interfaces.InterfaceBusquedaServicio;
 import py.com.hotelsys.interfaces.TranBotonInterface2;
 import py.com.hotelsys.modelo.Cliente;
 import py.com.hotelsys.modelo.Detalle;
+import py.com.hotelsys.modelo.Deuda;
 import py.com.hotelsys.modelo.Estadia;
 import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Producto;
@@ -54,7 +58,7 @@ import py.com.hotelsys.presentacion.buscadores.BusqudaCliente;
 import py.com.hotelsys.presentacion.buscadores.BusqudaHabitacion;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
 import py.com.hotelsys.util.FormatoFecha;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 
 
@@ -76,7 +80,6 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private Habitacion habitacion;
 	
 	private EstadiaDao estadiaDao;
-	private MaskFormatter maskFecha;
 
 	private List<Estadia> listaEstadias;
 	private CustomTable tablaEstadia;
@@ -102,17 +105,13 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	private JPanel panel_1;
 	private PlaceholderTextField placeholderTextField_5;
 	private JButton button_5;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JLabel lblDetalle;
-	private JTextField textField_2;
+	private JFormattedTextField tFechaSalida;
+	private NumberTextField tMontoDiario;
+	private NumberTextField tCompleto;
 	private JLabel lblSubtotal;
-	private JTextField textField_3;
 	private JLabel lblDescuento;
-	private JTextField textField_4;
-	private JLabel lblMontoTotal;
-	private JTextField textField_5;
-	private JTextField tTotalDetalle;
+	private NumberTextField tExcedente;
+	private PlaceholderTextField tTotalDetalle;
 	//private InterfaceBusquedaCliente ibc;
 	private JPanel panelProducto;
 	private JFormattedTextField tFecha;
@@ -120,11 +119,33 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	
 	private int id;
 	private PlaceholderTextField tCodProducto;
-	private PlaceholderTextField tPrecioProducto;
+	private PlaceholderTextField2 tPrecioProducto;
 	private PlaceholderTextField tCantidadProducto;
-	private PlaceholderTextField tPrecioProductoRs;
-	private PlaceholderTextField tPrecioProductoUs;
+	private PlaceholderTextField2 tPrecioProductoRs;
+	private PlaceholderTextField2 tPrecioProductoUs;
 	private Double totalDetalle;
+	private PlaceholderTextField tTotalDetalleRs;
+	private PlaceholderTextField tTotalDetalleUs;
+	private JLabel lblHospedar;
+	private JLabel lblCierre;
+	private JLabel lblTotales;
+	private JPanel panel_4;
+	private JFormattedTextField tHora;
+	private JFormattedTextField tHoraSalida;
+	private JLabel lblDias;
+	private JLabel lblHoras;
+	private double total;
+	private PlaceholderTextField2 tTotalUs;
+	private PlaceholderTextField2 tTotalRs;
+	private PlaceholderTextField2 tTotalGs;
+	private JButton btnGuardarSalida;
+	private JButton btnCncelarSalida;
+	private JButton btnCerrar;
+	private Date fechaSalida;
+	private double montoHoras;
+	private Deuda deu;
+	private Deuda deu2;
+	private DeudaDao deudaDao;
 	
 
 	public TransEstadia(JFrame frame) {
@@ -132,7 +153,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		getContentPane().setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		getContentPane().setLocation(-25, -344);
 		setTitle("Hospedar a Cliente");
-		setBounds(100, 100, 899, 547);
+		setBounds(100, 100, 1000, 600);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
@@ -140,20 +161,20 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		getContentPane().setLayout(null);
 		
 		panel =	new JCustomPanel1();
-		panel.setBounds(10, 11, 241, 269);
+		panel.setBounds(33, 22, 286, 258);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		tCodHabitacion = new PlaceholderTextField();
 		tCodHabitacion.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tCodHabitacion.setPlaceholder("Habitaci\u00F3n");
-		tCodHabitacion.setBounds(17, 95, 140, 20);
+		tCodHabitacion.setBounds(10, 79, 187, 20);
 		panel.add(tCodHabitacion);
 		
 		tCodCliente = new PlaceholderTextField();
 		tCodCliente.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tCodCliente.setPlaceholder("Cliente");
-		tCodCliente.setBounds(17, 64, 140, 20);
+		tCodCliente.setBounds(10, 48, 187, 20);
 		panel.add(tCodCliente);
 		
 		tObservacin = new JTextArea("");
@@ -164,12 +185,12 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		tObservacin.setRows(10);
 		tObservacin.setLineWrap(true);
-		tObservacin.setBounds(17, 140, 211, 118);
+		tObservacin.setBounds(10, 124, 249, 118);
 		panel.add(tObservacin);
 		
 		label = new JLabel("Observaci\u00F3n:");
 		label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		label.setBounds(22, 120, 88, 20);
+		label.setBounds(15, 104, 88, 20);
 		panel.add(label);
 		
 	
@@ -184,15 +205,9 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			
 		});
 		
-		try {
-			maskFecha = new MaskFormatter("##/##/####");
-		} catch (ParseException e) {
-			
-			e.printStackTrace();
-		}
-		maskFecha.setPlaceholderCharacter('_');
+	
 		
-		button.setBounds(165, 62, 52, 23);
+		button.setBounds(207, 47, 52, 23);
 		panel.add(button);
 		
 		JButton button_1 = new JButton("#");
@@ -201,27 +216,29 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				mostrarHabitacion();
 			}
 		});
-		button_1.setBounds(165, 91, 52, 23);
+		button_1.setBounds(207, 76, 52, 23);
 		panel.add(button_1);
 		
 		
-		tFecha = new JFormattedTextField(maskFecha);
-		tFecha.setBounds(124, 27, 93, 20);
+		tFecha = new JFormattedTextField(Util.formatoFecha());
+		tFecha.setDisabledTextColor(new Color(128, 128, 128));
+		tFecha.setBounds(10, 11, 74, 20);
 		panel.add(tFecha);
 		
-		JLabel lblNewLabel = new JLabel("Fecha entrada");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(17, 30, 93, 14);
-		panel.add(lblNewLabel);
+		tHora = new JFormattedTextField(Util.formatoHora());
+		tHora.setDisabledTextColor(new Color(128, 128, 128));
+		tHora.setEnabled(false);
+		tHora.setBounds(94, 11, 52, 20);
+		panel.add(tHora);
 		
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(346, 11, 538, 181);
+		scrollPane.setBounds(423, 11, 538, 181);
 		getContentPane().add(scrollPane);
 		
 		
 		tBuscar = new PlaceholderTextField();
-		tBuscar.setBounds(346, 203, 307, 20);
+		tBuscar.setBounds(423, 203, 307, 20);
 		tBuscar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
@@ -247,121 +264,23 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		JButton btnAbierto = new JButton("Abierto");
 		btnAbierto.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		btnAbierto.setForeground(new Color(0, 0, 0));
-		btnAbierto.setBounds(665, 203, 71, 23);
+		btnAbierto.setBounds(742, 203, 71, 23);
 		getContentPane().add(btnAbierto);
 		
 		JButton btnCerrado = new JButton("Cerrado");
 		btnCerrado.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		btnCerrado.setForeground(new Color(0, 0, 0));
-		btnCerrado.setBounds(743, 203, 71, 23);
+		btnCerrado.setBounds(820, 203, 71, 23);
 		getContentPane().add(btnCerrado);
 		
 		JButton btnTodos = new JButton("Todos");
 		btnTodos.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		btnTodos.setForeground(new Color(0, 0, 0));
-		btnTodos.setBounds(823, 203, 61, 23);
+		btnTodos.setBounds(900, 203, 61, 23);
 		getContentPane().add(btnTodos);
 		
-		panel_1 = new JCustomPanel2();
-		panel_1.setLayout(null);
-		panel_1.setBounds(19, 304, 232, 201);
-		getContentPane().add(panel_1);
-		
-		placeholderTextField_5 = new PlaceholderTextField();
-		placeholderTextField_5.setPlaceholder("Monto del servicio");
-		placeholderTextField_5.setBounds(469, 11, 108, 20);
-		panel_1.add(placeholderTextField_5);
-		
-		button_5 = new JButton("#");
-		button_5.setBounds(418, 11, 41, 20);
-		panel_1.add(button_5);
-		
-		JLabel lblFechaCierre = new JLabel("Fecha cierre");
-		lblFechaCierre.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblFechaCierre.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblFechaCierre.setBounds(10, 14, 79, 14);
-		panel_1.add(lblFechaCierre);
-		
-		textField = new JTextField();
-		textField.setBounds(103, 11, 114, 20);
-		panel_1.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblMontoDiaria = new JLabel("Monto diaria");
-		lblMontoDiaria.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblMontoDiaria.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblMontoDiaria.setBounds(10, 40, 79, 14);
-		panel_1.add(lblMontoDiaria);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(103, 37, 125, 20);
-		panel_1.add(textField_1);
-		textField_1.setColumns(10);
-		
-		lblDetalle = new JLabel("Detalle");
-		lblDetalle.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblDetalle.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblDetalle.setBounds(10, 71, 46, 14);
-		panel_1.add(lblDetalle);
-		
-		textField_2 = new JTextField();
-		textField_2.setBounds(103, 68, 125, 20);
-		panel_1.add(textField_2);
-		textField_2.setColumns(10);
-		
-		lblSubtotal = new JLabel("Sub total");
-		lblSubtotal.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblSubtotal.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblSubtotal.setBounds(10, 103, 79, 17);
-		panel_1.add(lblSubtotal);
-		
-		textField_3 = new JTextField();
-		textField_3.setBounds(103, 100, 125, 20);
-		panel_1.add(textField_3);
-		textField_3.setColumns(10);
-		
-		lblDescuento = new JLabel("Descuento");
-		lblDescuento.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblDescuento.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblDescuento.setBounds(10, 136, 79, 14);
-		panel_1.add(lblDescuento);
-		
-		textField_4 = new JTextField();
-		textField_4.setBounds(103, 131, 125, 20);
-		panel_1.add(textField_4);
-		textField_4.setColumns(10);
-		
-		lblMontoTotal = new JLabel("Monto Total");
-		lblMontoTotal.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblMontoTotal.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblMontoTotal.setBounds(10, 162, 79, 14);
-		panel_1.add(lblMontoTotal);
-		
-		textField_5 = new JTextField();
-		textField_5.setBounds(103, 159, 125, 20);
-		panel_1.add(textField_5);
-		textField_5.setColumns(10);
-		
-		JButton btnCerrar = new JButton("Cerrar");
-		btnCerrar.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		btnCerrar.setForeground(new Color(0, 0, 0));
-		btnCerrar.setBounds(258, 356, 75, 23);
-		getContentPane().add(btnCerrar);
-		
-		JButton btnGuardar_1 = new JButton("Guardar");
-		btnGuardar_1.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		btnGuardar_1.setForeground(new Color(0, 0, 0));
-		btnGuardar_1.setBounds(258, 393, 75, 23);
-		getContentPane().add(btnGuardar_1);
-		
-		JButton btnCncelar_1 = new JButton("C\u00E1ncelar");
-		btnCncelar_1.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		btnCncelar_1.setForeground(new Color(0, 0, 0));
-		btnCncelar_1.setBounds(258, 434, 75, 23);
-		getContentPane().add(btnCncelar_1);
-		
 		JTabbedPane tpServicios = new JTabbedPane(JTabbedPane.TOP);
-		tpServicios.setBounds(346, 234, 537, 271);
+		tpServicios.setBounds(424, 266, 537, 271);
 		getContentPane().add(tpServicios);
 		
 		panelProducto = new JPanel();
@@ -369,19 +288,21 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		panelProducto.setLayout(null);
 		
 		JPanel panel_2 = new JCustomPanel1();
-		panel_2.setBounds(10, 6, 341, 77);
+		panel_2.setBounds(10, 6, 341, 94);
 		panelProducto.add(panel_2);
 		panel_2.setLayout(null);
 		
-		tPrecioProducto = new PlaceholderTextField();
-		tPrecioProducto.setBounds(7, 29, 104, 20);
+		tPrecioProducto = new PlaceholderTextField2();
+		tPrecioProducto.setEnabled(false);
+		tPrecioProducto.setBounds(7, 29, 104, 34);
 		panel_2.add(tPrecioProducto);
 		tPrecioProducto.setPlaceholder("Guaran\u00ED");
 		
 		tCodProducto = new PlaceholderTextField();
+		tCodProducto.setEnabled(false);
 		tCodProducto.setBounds(7, 7, 263, 20);
 		panel_2.add(tCodProducto);
-		tCodProducto.setPlaceholder("C\u00F3d. producto");
+		tCodProducto.setPlaceholder("Producto");
 		
 		button_2 = new JButton("#");
 		button_2.addActionListener(new ActionListener() {
@@ -394,29 +315,31 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		tCantidadProducto = new PlaceholderTextField();
 		tCantidadProducto.setPlaceholder("Cantidad");
-		tCantidadProducto.setBounds(7, 52, 104, 20);
+		tCantidadProducto.setBounds(7, 67, 104, 20);
 		panel_2.add(tCantidadProducto);
 		
-		tPrecioProductoRs = new PlaceholderTextField();
-		tPrecioProductoRs.setPlaceholder("Dolar");
-		tPrecioProductoRs.setBounds(132, 29, 81, 20);
+		tPrecioProductoRs = new PlaceholderTextField2();
+		tPrecioProductoRs.setEnabled(false);
+		tPrecioProductoRs.setPlaceholder("Real");
+		tPrecioProductoRs.setBounds(132, 29, 81, 34);
 		panel_2.add(tPrecioProductoRs);
 		
-		tPrecioProductoUs = new PlaceholderTextField();
-		tPrecioProductoUs.setPlaceholder("Precio producto");
-		tPrecioProductoUs.setBounds(237, 29, 81, 20);
+		tPrecioProductoUs = new PlaceholderTextField2();
+		tPrecioProductoUs.setEnabled(false);
+		tPrecioProductoUs.setPlaceholder("Dolar");
+		tPrecioProductoUs.setBounds(237, 29, 81, 34);
 		panel_2.add(tPrecioProductoUs);
 		
 		JLabel lblGs = new JLabel("Gs.");
-		lblGs.setBounds(111, 32, 22, 14);
+		lblGs.setBounds(111, 32, 22, 31);
 		panel_2.add(lblGs);
 		
 		JLabel lblUs = new JLabel("Rs.");
-		lblUs.setBounds(214, 32, 23, 14);
+		lblUs.setBounds(214, 32, 23, 31);
 		panel_2.add(lblUs);
 		
 		JLabel lblRs = new JLabel("Us.");
-		lblRs.setBounds(319, 32, 22, 14);
+		lblRs.setBounds(319, 32, 22, 31);
 		panel_2.add(lblRs);
 		
 		JButton btnEliminar_1 = new JButton("Eliminar");
@@ -438,7 +361,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		btnCncelar_2.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		
 		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 89, 512, 124);
+		scrollPane_1.setBounds(10, 103, 512, 110);
 		panelProducto.add(scrollPane_1);
 		
 		
@@ -446,13 +369,17 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tablaProductos.ocultarColumna(0);
 		scrollPane_1.setViewportView(tablaProductos);
 		
-		tTotalDetalle = new JTextField();
-		tTotalDetalle.setBounds(323, 212, 199, 20);
+		tTotalDetalle = new PlaceholderTextField();
+		tTotalDetalle.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tTotalDetalle.setDisabledTextColor(new Color(220, 20, 60));
+		tTotalDetalle.setEnabled(false);
+		tTotalDetalle.setBounds(230, 214, 79, 20);
 		panelProducto.add(tTotalDetalle);
 		tTotalDetalle.setColumns(10);
 		
 		JLabel lblMontoTotal_1 = new JLabel("Monto Total");
-		lblMontoTotal_1.setBounds(249, 218, 71, 14);
+		lblMontoTotal_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblMontoTotal_1.setBounds(151, 215, 83, 14);
 		panelProducto.add(lblMontoTotal_1);
 		
 		JButton button_4 = new JButton("Guardar");
@@ -466,27 +393,317 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		button_4.setBounds(361, 8, 89, 23);
 		panelProducto.add(button_4);
 		
+		tTotalDetalleRs = new PlaceholderTextField();
+		tTotalDetalleRs.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tTotalDetalleRs.setDisabledTextColor(new Color(220, 20, 60));
+		tTotalDetalleRs.setEnabled(false);
+		tTotalDetalleRs.setColumns(10);
+		tTotalDetalleRs.setBounds(347, 214, 52, 20);
+		panelProducto.add(tTotalDetalleRs);
+		
+		tTotalDetalleUs = new PlaceholderTextField();
+		tTotalDetalleUs.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tTotalDetalleUs.setDisabledTextColor(new Color(220, 20, 60));
+		tTotalDetalleUs.setEnabled(false);
+		tTotalDetalleUs.setColumns(10);
+		tTotalDetalleUs.setBounds(442, 214, 60, 20);
+		panelProducto.add(tTotalDetalleUs);
+		
+		JLabel label_1 = new JLabel("Gs.");
+		label_1.setHorizontalAlignment(SwingConstants.CENTER);
+		label_1.setBounds(308, 212, 22, 20);
+		panelProducto.add(label_1);
+		
+		JLabel lblRs_1 = new JLabel("Rs.");
+		lblRs_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRs_1.setBounds(398, 212, 28, 20);
+		panelProducto.add(lblRs_1);
+		
+		JLabel lblUs_1 = new JLabel("Us.");
+		lblUs_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUs_1.setBounds(500, 212, 27, 20);
+		panelProducto.add(lblUs_1);
+		
 		botonGrup3 = new BotonGrup3();
 		botonGrup3.setAbi(this);
-		botonGrup3.setBounds(258, 11, 84, 215);
+		botonGrup3.setBounds(329, 21, 84, 215);
 		
 		getContentPane().add(botonGrup3);
+		
+		lblHospedar = new JLabel("Hospedar");
+		lblHospedar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		lblHospedar.setBounds(44, 9, 84, 14);
+		getContentPane().add(lblHospedar);
+		
+		panel_4 = new JPanel();
+		panel_4.setBorder(new LineBorder(new Color(143, 188, 143), 1, true));
+		panel_4.setBounds(33, 297, 355, 248);
+		getContentPane().add(panel_4);
+		panel_4.setLayout(null);
+		
+		lblCierre = new JLabel("Cierre");
+		lblCierre.setBounds(21, 11, 84, 14);
+		panel_4.add(lblCierre);
+		lblCierre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		
+		panel_1 = new JCustomPanel2();
+		panel_1.setBounds(10, 23, 241, 137);
+		panel_4.add(panel_1);
+		panel_1.setLayout(null);
+		
+		placeholderTextField_5 = new PlaceholderTextField();
+		placeholderTextField_5.setPlaceholder("Monto del servicio");
+		placeholderTextField_5.setBounds(469, 11, 108, 20);
+		panel_1.add(placeholderTextField_5);
+		
+		button_5 = new JButton("#");
+		button_5.setBounds(418, 11, 41, 20);
+		panel_1.add(button_5);
+		
+		tFechaSalida = new JFormattedTextField(Util.formatoFecha());
+		tFechaSalida.setEnabled(false);
+		tFechaSalida.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					tHoraSalida.requestFocus();
+				}
+				
+			}
+		});
+		tFechaSalida.setBounds(22, 11, 73, 20);
+		panel_1.add(tFechaSalida);
+		tFechaSalida.setColumns(10);
+		
+		JLabel lblMontoDiaria = new JLabel("Monto diaria");
+		lblMontoDiaria.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblMontoDiaria.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblMontoDiaria.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		lblMontoDiaria.setBounds(10, 56, 83, 14);
+		panel_1.add(lblMontoDiaria);
+		
+		tMontoDiario = new NumberTextField();
+		tMontoDiario.setEnabled(false);
+		tMontoDiario.setBounds(103, 53, 95, 20);
+		panel_1.add(tMontoDiario);
+		tMontoDiario.setColumns(10);
+		
+		tCompleto = new NumberTextField();
+		tCompleto.setEnabled(false);
+		tCompleto.setBounds(103, 81, 95, 20);
+		panel_1.add(tCompleto);
+		tCompleto.setColumns(10);
+		
+		lblSubtotal = new JLabel("Completo");
+		lblSubtotal.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSubtotal.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblSubtotal.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		lblSubtotal.setBounds(10, 82, 83, 17);
+		panel_1.add(lblSubtotal);
+		
+		lblDescuento = new JLabel("Excedente");
+		lblDescuento.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDescuento.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblDescuento.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		lblDescuento.setBounds(10, 110, 83, 14);
+		panel_1.add(lblDescuento);
+		
+		tExcedente = new NumberTextField();
+		tExcedente.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					calcularValoresTotales();
+					btnGuardarSalida.requestFocus();
+				}
+			}
+		});
+		tExcedente.setEnabled(false);
+		tExcedente.setBounds(103, 107, 95, 20);
+		panel_1.add(tExcedente);
+		tExcedente.setColumns(10);
+		
+		tHoraSalida = new JFormattedTextField(Util.formatoHora());
+		tHoraSalida.setEnabled(false);
+		tHoraSalida.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					calcularValoresSalida();
+					tExcedente.requestFocus();
+				}
+			}
+		});
+		tHoraSalida.setBounds(102, 11, 52, 20);
+		panel_1.add(tHoraSalida);
+		
+		lblDias = new JLabel("");
+		lblDias.setForeground(new Color(220, 20, 60));
+		lblDias.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDias.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		lblDias.setBounds(10, 31, 84, 23);
+		panel_1.add(lblDias);
+		
+		lblHoras = new JLabel("");
+		lblHoras.setHorizontalAlignment(SwingConstants.LEFT);
+		lblHoras.setForeground(new Color(220, 20, 60));
+		lblHoras.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
+		lblHoras.setBounds(103, 31, 95, 23);
+		panel_1.add(lblHoras);
+		
+		btnCerrar = new JButton("Cerrar");
+		btnCerrar.setEnabled(false);
+		btnCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cerrar();
+			}
+		});
+		btnCerrar.setBounds(261, 32, 80, 23);
+		panel_4.add(btnCerrar);
+		btnCerrar.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
+		btnCerrar.setForeground(new Color(0, 0, 0));
+		
+		btnGuardarSalida = new JButton("Guardar");
+		btnGuardarSalida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				guardarCierre();
+			}
+		});
+		btnGuardarSalida.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				guardarCierre();
+			}
+		});
+		btnGuardarSalida.setEnabled(false);
+		btnGuardarSalida.setBounds(261, 59, 80, 23);
+		panel_4.add(btnGuardarSalida);
+		btnGuardarSalida.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
+		btnGuardarSalida.setForeground(new Color(0, 0, 0));
+		
+		btnCncelarSalida = new JButton("C\u00E1ncelar");
+		btnCncelarSalida.setEnabled(false);
+		btnCncelarSalida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cancelarCierre();
+			}
+		});
+		btnCncelarSalida.setBounds(261, 87, 80, 23);
+		panel_4.add(btnCncelarSalida);
+		btnCncelarSalida.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
+		btnCncelarSalida.setForeground(new Color(0, 0, 0));
+		
+		JPanel panel_3 = new JCustomPanel2();
+		panel_3.setBounds(10, 177, 331, 56);
+		panel_4.add(panel_3);
+		panel_3.setLayout(null);
+		
+		tTotalGs = new PlaceholderTextField2();
+		tTotalGs.setBounds(10, 11, 94, 34);
+		panel_3.add(tTotalGs);
+		tTotalGs.setPlaceholder("Guaran\u00ED");
+		tTotalGs.setEnabled(false);
+		
+		JLabel label_2 = new JLabel("Gs.");
+		label_2.setBounds(104, 14, 22, 31);
+		panel_3.add(label_2);
+		
+		tTotalRs = new PlaceholderTextField2();
+		tTotalRs.setBounds(125, 11, 81, 34);
+		panel_3.add(tTotalRs);
+		tTotalRs.setPlaceholder("Real");
+		tTotalRs.setEnabled(false);
+		
+		JLabel label_3 = new JLabel("Rs.");
+		label_3.setBounds(207, 14, 23, 31);
+		panel_3.add(label_3);
+		
+		tTotalUs = new PlaceholderTextField2();
+		tTotalUs.setBounds(230, 11, 81, 34);
+		panel_3.add(tTotalUs);
+		tTotalUs.setPlaceholder("Dolar");
+		tTotalUs.setEnabled(false);
+		
+		JLabel label_4 = new JLabel("Us.");
+		label_4.setBounds(312, 14, 22, 31);
+		panel_3.add(label_4);
+		
+		lblTotales = new JLabel("Totales");
+		lblTotales.setBounds(21, 162, 84, 14);
+		panel_4.add(lblTotales);
+		lblTotales.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		
 		tablaEstadia.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
+				System.out.println("ok");
 				cargarFormulario();
 				
 			}
 		});
 		
 		//Al iniciar deshavilita los campos y recupera los registros para la tabla
+		inicializar();
 		
-		
-		inicializar();		
+			
 	}
 	
+
+	
+
+
+	private void generarDeuda() {
+		try {
+			deu = new Deuda();
+			deudaDao = new DeudaDao();
+			deu.setId(deudaDao.recuperMaxId()+1);
+			deu.setCliente(estadia.getCliente());
+			deu.setEstadia(estadia);
+			deu.setTipo(0);		
+			deu.setMonto(Util.stringADouble(tCompleto.getText())+Util.stringADouble(tExcedente.getText()));
+			deudaDao = new DeudaDao();
+			deudaDao.insertar(deu);
+			
+			deu.setId(deu.getId()+1);
+			deu.setTipo(1);		
+			deu.setMonto(Util.stringADouble(tTotalDetalle.getText()));
+			deudaDao = new DeudaDao();
+			deudaDao.insertar(deu);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private void calcularValoresTotales() {
+		if(tExcedente.getText().isEmpty())
+			tExcedente.setValue(0.0);
+		total = Util.stringADouble(tCompleto.getText())+Util.stringADouble(tExcedente.getText())+Util.stringADouble(tTotalDetalle.getText());
+	
+		tTotalGs.setText(Util.formatoDecimal(total));
+		tTotalRs.setText(Util.formatoDecimal(total/Util.cotizacionReal));
+		tTotalUs.setText(Util.formatoDecimal(total/Util.cotizacionDolar));
+	}
+
+
+	private void calcularValoresSalida() {
+		montoHoras = 0.0;
+		fechaSalida = FormatoFecha.stringToDateHora(tFechaSalida.getText()+" "+tHoraSalida.getText());
+		Util.restarFecha(fechaSalida, estadia.getFecha());
+		lblDias.setText(Util.dias+" Dia/s");
+		lblHoras.setText(Util.horas+" Hora/s");
+	
+		tMontoDiario.setValue(estadia.getHabitacion().getPrecio());
+		if (Util.horas<=12 && Util.horas>0) {
+			montoHoras = estadia.getHabitacion().getPrecio() * 0.5;
+		}else if (Util.horas>12)
+			montoHoras = estadia.getHabitacion().getPrecio();
+		
+		tCompleto.setValue(estadia.getHabitacion().getPrecio()*Util.dias);
+		tExcedente.setValue(montoHoras);
+	}
+
 
 	private void eliminarProducto() {
 		if (tablaProductos.getSelectedRow()>=0) {
@@ -511,10 +728,10 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		listaEstadias = estadiaDao.recuperaTodo();
 		
 		cargarGrillaEstadia();
-		if (listaEstadias.size()>0)
-			accion = "DATOS";
-		else
-			accion = "";
+//		if (listaEstadias.size()>0)
+//			accion = "DATOS";
+//		else
+//			accion = "";
 	}
 
 	//Metodo que rellena la tabla con los datos obtenidos
@@ -527,7 +744,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			fila[0] = e.getId();
 			fila[1] = e.getCliente().getNombre();
 			fila[2] = e.getHabitacion().getDescripcion();
-			fila[3] = VariablesDelSistema.formatoDecimal(e.getHabitacion().getPrecio());
+			fila[3] = Util.formatoDecimal(e.getHabitacion().getPrecio()) + " Gs.";
 			tablaEstadia.agregar(fila);
  		}
 		//mantiene el foco en el ultimo registro cargado
@@ -543,6 +760,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		accion = "AGREGAR";
 		limpiarCampos();
 		tFecha.setValue(FormatoFecha.dateAString(new Date()));
+		tHora.setValue(FormatoFecha.dateAStringHora(new Date()));
+		
 		habilitarCampos(true);
 		botonGrup3.botones(true, accion);
 		
@@ -557,14 +776,11 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			try {
 				
 				estadiaDao.insertar(estadia);
-				
 				inicializar();
-				limpiarCampos();
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				estadiaDao.rollback();
-				
-				advertencia("No se guardar estadia---: "+tablaEstadia.campo(2)+". Esta en uso!",2);
 				advertencia("No se puede guardar el Estadia. Los campos con * son obligatorios",2);
 			}
 		if (accion.equals("MODIFICAR"))
@@ -588,6 +804,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	public void habilitarCampos(boolean b) {
 	//	tNumero.setEnabled(b);
 		tFecha.setEnabled(b);
+		tHora.setEnabled(b);
 		tCodHabitacion.setEnabled(b);
 		tCodCliente.setEnabled(b);
 		tObservacin.setEnabled(b);
@@ -603,10 +820,15 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	//deja la pantallaen su estado inicial
 	@Override
 	public void inicializar() {
-		limpiarCampos();
 		habilitarCampos(false);
+		limpiarCampos();
 		recuperaDatos();
+		
 		botonGrup3.botones(false, accion);
+		
+		
+		
+		
 		ultimaFila = -1;
 	}
 
@@ -625,16 +847,35 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		if(tablaEstadia.getRowCount()==1)
 			ultimaFila = -1;
 		if (tablaEstadia.getSelectedRow()>=0 && tablaEstadia.getSelectedRow()!=ultimaFila) {
+			accion = "DATOS";
 			ultimaFila=tablaEstadia.getSelectedRow();
 			botonGrup3.botones(false, accion);
+			habilitarBotonesSalida(false);
+			System.out.println(accion);
+			
 			estadiaDao = new EstadiaDao();
 			estadia = estadiaDao.recuperarPorId((int) tablaEstadia.campo(0));
 			if (estadia!=null) {
+				
+				if (estadia.getFechaSal()==null) {
+					limpiarCamposSalida();
+					
+				}else{
+					accion = "";
+					botonGrup3.botones(false, accion);
+					tFechaSalida.setValue(FormatoFecha.dateAString(estadia.getFechaSal()));
+					tHoraSalida.setValue(FormatoFecha.dateAStringHora(estadia.getFechaSal()));
+					calcularValoresSalida();
+					tExcedente.setValue(estadia.getExcedente());
+					calcularValoresTotales();
+					btnCerrar.setEnabled(false);
+				}
 				
 				cliente = estadia.getCliente();
 				habitacion = estadia.getHabitacion();
 				
 				tFecha.setValue(FormatoFecha.dateAString(estadia.getFecha()));
+				tHora.setValue(FormatoFecha.dateAStringHora(estadia.getFecha()));
 				tCodCliente.setText(estadia.getCliente().getNombre());
 				tCodHabitacion.setText(estadia.getHabitacion().getDescripcion());
 				tObservacin.setText(estadia.getObservacion());
@@ -656,7 +897,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 
 	@Override
 	public void limpiarCampos() {
-		tFecha.setText("");
+		tFecha.setValue(null);;
+		tHora.setValue(null);
 		tCodCliente.setText("");
 		tCodHabitacion.setText("");
 		tObservacin.setText("");
@@ -797,7 +1039,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			estadia.setId(estadiaDao.recuperMaxId()+1);
 		}else
 		estadia.setId((int) tablaEstadia.campo(0));
-		estadia.setFecha(FormatoFecha.stringToDate(tFecha.getText()));
+		estadia.setFecha(FormatoFecha.stringToDateHora(tFecha.getText()+" "+tHora.getText()));
 		estadia.setCliente(cliente);
 		estadia.setHabitacion(habitacion);
 		estadia.setObservacion(tObservacin.getText());
@@ -812,15 +1054,17 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			fila[0] = d.getId();
 			fila[1] = d.getProducto().getDescripcion();
 			fila[2] = d.getCantidadProducto();
-			fila[3] = VariablesDelSistema.formatoDecimal(d.getProducto().getStock().getPrecio());
-			fila[4] = VariablesDelSistema.formatoDecimal(d.getTotal());
+			fila[3] = Util.formatoDecimal(d.getProducto().getStock().getPrecio()) + " Gs.";
+			fila[4] = Util.formatoDecimal(d.getTotal())  + " Gs.";
 			totalDetalle+=d.getTotal();
 			
 		
 			
 			tablaProductos.agregar(fila);
  		}
-		tTotalDetalle.setText(VariablesDelSistema.formatoDecimal(totalDetalle));
+		tTotalDetalle.setText(Util.formatoDecimal(totalDetalle));
+		tTotalDetalleRs.setText(Util.formatoDecimal(totalDetalle/Util.cotizacionReal));
+		tTotalDetalleUs.setText(Util.formatoDecimal(totalDetalle/Util.cotizacionDolar));
 		//mantiene el foco en el ultimo registro cargado
 		//tablaEstadia.setSeleccion();
 	}
@@ -832,7 +1076,6 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			ultimaFila = -1;
 		if (tablaProductos.getSelectedRow()>=0 && tablaProductos.getSelectedRow()!=ultimaFila) {
 			ultimaFila=tablaProductos.getSelectedRow();
-			botonGrup3.botones(false, accion);
 			productoDao = new ProductoDao();
 			producto = productoDao.recuperarPorId((int) tablaProductos.campo(0));
 			
@@ -905,9 +1148,9 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		this.producto = p;
 		
 		tCodProducto.setText(p.getDescripcion());
-		tPrecioProducto.setText(VariablesDelSistema.formatoDecimal(p.getStock().getPrecio()));
-		tPrecioProductoRs.setText(VariablesDelSistema.formatoDecimal(p.getStock().getPrecio()/VariablesDelSistema.cotizacionReal));
-		tPrecioProductoUs.setText(VariablesDelSistema.formatoDecimal(p.getStock().getPrecio()/VariablesDelSistema.cotizacionDolar));
+		tPrecioProducto.setText(Util.formatoDecimal(p.getStock().getPrecio()));
+		tPrecioProductoRs.setText(Util.formatoDecimal(p.getStock().getPrecio()/Util.cotizacionReal));
+		tPrecioProductoUs.setText(Util.formatoDecimal(p.getStock().getPrecio()/Util.cotizacionDolar));
 		tCantidadProducto.requestFocus();
 		
 	}
@@ -928,22 +1171,69 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 
 	@Override
 	public void cerrar() {
-		// TODO Auto-generated method stub
+		habilitarCamposSalida(true);
+		tFechaSalida.setValue(FormatoFecha.dateAString(new Date()));
+		tHoraSalida.setValue(FormatoFecha.dateAStringHora(new Date()));
+		tFechaSalida.requestFocus();
+		habilitarBotonesSalida(true);
+	}
+
+
+	private void habilitarBotonesSalida(boolean b) {
 		
+		btnCerrar.setEnabled(!b);
+		
+		btnCncelarSalida.setEnabled(b);
+		btnGuardarSalida.setEnabled(b);
+	}
+
+	private void limpiarCamposSalida() {
+		tFechaSalida.setValue(null);
+		tHoraSalida.setText(null);
+		lblDias.setText("");
+		lblHoras.setText("");
+		tMontoDiario.setValue(null);
+		tCompleto.setValue(null);
+		tExcedente.setValue(null);
+		tTotalGs.setText("");
+		tTotalRs.setText("");
+		tTotalUs.setText("");
+	}
+
+	private void habilitarCamposSalida(boolean b) {
+		tFechaSalida.setEnabled(b);
+		tHoraSalida.setEnabled(b);
+		tExcedente.setEnabled(b);
 	}
 
 
 	@Override
 	public void guardarCierre() {
-		// TODO Auto-generated method stub
+		estadia.setFechaSal(fechaSalida);
+		estadia.setExcedente(montoHoras);
+		estadiaDao = new EstadiaDao();
+		try {
+			estadiaDao.actualizar(estadia);
+		} catch (Exception e) {
+			estadiaDao.rollback();
+		}
 		
+		
+		generarDeuda();
+		
+		limpiarCamposSalida();
+		habilitarCamposSalida(false);
+		habilitarBotonesSalida(false);
+		btnGuardarSalida.setEnabled(false);
+		recuperaDatos();
 	}
 
 
 	@Override
 	public void cancelarCierre() {
-		// TODO Auto-generated method stub
-		
+		limpiarCamposSalida();
+		habilitarCamposSalida(false);
+		habilitarBotonesSalida(false);
 	}
 
 

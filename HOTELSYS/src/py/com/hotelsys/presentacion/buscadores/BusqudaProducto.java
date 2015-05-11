@@ -17,7 +17,7 @@ import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
 import py.com.hotelsys.modelo.Producto;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 public class BusqudaProducto extends JDialog {
 
@@ -109,7 +109,7 @@ public class BusqudaProducto extends JDialog {
 			fila[0] = p.getId();
 			fila[1] = p.getDescripcion();
 			fila[2] = p.getStock().getCantidad();
-			fila[3] = VariablesDelSistema.formatoDecimal(p.getStock().getPrecio());
+			fila[3] = Util.formatoDecimal(p.getStock().getPrecio());
 			table.agregar(fila);
  		}
 		

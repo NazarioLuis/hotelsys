@@ -1,8 +1,8 @@
 package py.com.hotelsys.componentes;
 
-import javax.swing.JPanel;
-import java.awt.SystemColor;
 import java.awt.Color;
+
+import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 public class JCustomPanel1 extends JPanel{

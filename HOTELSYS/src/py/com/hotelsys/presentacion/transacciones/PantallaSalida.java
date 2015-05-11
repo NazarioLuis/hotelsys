@@ -25,7 +25,7 @@ import py.com.hotelsys.dao.SalidaStockDao;
 import py.com.hotelsys.interfaces.TranBotonInterface;
 import py.com.hotelsys.modelo.SalidaStock;
 import py.com.hotelsys.util.FormatoFecha;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class PantallaSalida extends JDialog implements TranBotonInterface{
@@ -83,7 +83,7 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		lblFechaDeCompra.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		
-		tFecha1 = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tFecha1 = new JFormattedTextField(Util.formatoFecha());
 		
 		tFecha1.setBounds(237, 39, 103, 26);
 		panel.add(tFecha1);
@@ -93,7 +93,7 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		panel.add(lblA);
 		lblA.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		tFecha2 = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tFecha2 = new JFormattedTextField(Util.formatoFecha());
 		tFecha2.setBounds(365, 39, 103, 26);
 		panel.add(tFecha2);
 		

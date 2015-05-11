@@ -38,7 +38,7 @@ import py.com.hotelsys.presentacion.transacciones.PantallaEntrada;
 import py.com.hotelsys.presentacion.transacciones.PantallaSalida;
 import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 import py.com.hotelsys.util.HibernateUtil;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class Principal extends JFrame  {
@@ -51,7 +51,7 @@ public class Principal extends JFrame  {
 				try {
 					HibernateUtil.buildIfNeeded();
 					Principal frame = new Principal();
-					VariablesDelSistema.cotizacionDelDia();
+					Util.cotizacionDelDia();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

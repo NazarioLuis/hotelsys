@@ -26,11 +26,13 @@ import javax.swing.event.ListSelectionListener;
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
+import py.com.hotelsys.componentes.NumberTextField;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Stock;
+import py.com.hotelsys.util.Util;
 
 
 
@@ -56,8 +58,9 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	private Timer timer;
 	private TimerTask task;
 	private JRadioButton rdbtnTieneStockAnterior;
-	private PlaceholderTextField tPrecio;
+	private NumberTextField tPrecio;
 	private PlaceholderTextField tStock;
+	private JLabel lblGs;
 
 
 	/**
@@ -131,20 +134,21 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		tStock.setBounds(25, 102, 147, 20);
 		panel.add(tStock);
 		
-		tPrecio = new PlaceholderTextField();
+		tPrecio = new NumberTextField();
 		tPrecio.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if ((e.getKeyChar()<'0' || e.getKeyChar()>'9') && e.getKeyCode() != KeyEvent.VK_BACK_SPACE && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
-					e.consume();
-				}
+				Util.validarNumero(e);
 			}
 		});
 		
-		tPrecio.setPlaceholder("Precio");
 		tPrecio.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tPrecio.setBounds(25, 42, 133, 20);
+		tPrecio.setBounds(25, 42, 107, 20);
 		panel.add(tPrecio);
+		
+		lblGs = new JLabel("Gs.");
+		lblGs.setBounds(142, 42, 40, 20);
+		panel.add(lblGs);
 		
 		abmBoton = new BotonGrup();
 		abmBoton.setBounds(10, 302, 647, 33);
@@ -209,7 +213,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			fila[1] = p.getDescripcion();
 			fila[2] = p.getStock().getCantidad();
 			fila[3] = "";
-			fila[4] = (int)p.getStock().getPrecio();
+			fila[4] = Util.formatoDecimal(p.getStock().getPrecio())+ " Gs.";
 			
 			tabla.agregar(fila);
  		}
@@ -337,7 +341,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		producto.setObservacion(tObservacin.getText());
 		
 		if (!tPrecio.getText().equals(""))
-			stock.setPrecio(Integer.parseInt(tPrecio.getText()));
+			stock.setPrecio(((Number) tPrecio.getValue()).doubleValue());
 		else
 			stock.setPrecio(0);
 		
@@ -375,7 +379,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			if (producto!=null) {
 				tDescri.setText(producto.getDescripcion());
 				tObservacin.setText(producto.getObservacion());
-				tPrecio.setText((int)producto.getStock().getPrecio()+"");
+				tPrecio.setValue(producto.getStock().getPrecio());
 				stock = producto.getStock();
 				
 			}
@@ -388,7 +392,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void limpiarCampos() {
 		tDescri.setText("");
 		tObservacin.setText("");
-		tPrecio.setText("");
+		tPrecio.setValue(null);
 		tStock.setText("");
 		
 	}

@@ -23,7 +23,7 @@ import py.com.hotelsys.interfaces.InterfaceBusquedaProveedor;
 import py.com.hotelsys.modelo.Habitacion;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.Proveedor;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 public class BusqudaHabitacion extends JDialog {
 
@@ -114,7 +114,7 @@ public class BusqudaHabitacion extends JDialog {
 		for (Habitacion h:listaHabitacions) {
 			fila[0] = h.getId();
 			fila[1] = h.getDescripcion();
-			fila[2] = VariablesDelSistema.formatoDecimal(h.getPrecio());
+			fila[2] = Util.formatoDecimal(h.getPrecio());
 			table.agregar(fila);
  		}
 		

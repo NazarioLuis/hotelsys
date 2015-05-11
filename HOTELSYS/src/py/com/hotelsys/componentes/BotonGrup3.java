@@ -1,16 +1,14 @@
 package py.com.hotelsys.componentes;
 
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.interfaces.TranBotonInterface2;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
 
 @SuppressWarnings("serial")
 public class BotonGrup3 extends JPanel {

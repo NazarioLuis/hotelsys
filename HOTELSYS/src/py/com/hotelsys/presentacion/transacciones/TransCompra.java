@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
+import py.com.hotelsys.componentes.NumberTextField;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.CompraDao;
 import py.com.hotelsys.dao.CompraItemDao;
@@ -37,7 +38,7 @@ import py.com.hotelsys.modelo.Proveedor;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProveedor;
 import py.com.hotelsys.util.FormatoFecha;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class TransCompra extends JDialog 
@@ -47,7 +48,7 @@ public class TransCompra extends JDialog
 	private JTextField tfId;
 	private JFormattedTextField tfFactura;
 	
-	
+	private Double total=0.0;
 	private JFormattedTextField tfFecha;
 	private JLabel lblFechaDeCompra;
 	private CompraDao compraDao;
@@ -58,17 +59,17 @@ public class TransCompra extends JDialog
 	private PlaceholderTextField tfRuc;
 	private PlaceholderTextField tfIdProducto;
 	private JButton btnBuscarProducto;
-	private PlaceholderTextField tfCosto;
-	private PlaceholderTextField tfPromedio;
-	private PlaceholderTextField tfPrecioVenta;
-	private PlaceholderTextField tfNuevoPrecio;
-	private PlaceholderTextField tfTotal;
+	private NumberTextField tCosto;
+	private NumberTextField tPromedio;
+	private NumberTextField tPrecioVenta;
+	private NumberTextField tNuevoPrecio;
+	private NumberTextField tTotal;
 	private ProductoDao productoDao;
 	private Proveedor proveegor;
 	private Producto p;
 	private Object[] object;
 	private JButton btnEliminar;
-	private PlaceholderTextField tfCantidad;
+	private PlaceholderTextField tCantidad;
 	private CompraItemDao compraItemDao;
 	private JLabel lblTimbrado_1;
 	private JFormattedTextField tfVencimientoTimbrado;
@@ -153,18 +154,17 @@ public class TransCompra extends JDialog
 		table = new CustomTable(new String[] {"#", "Producto", "Cantidad", "Costo de compra", "Costo promedio", "Precio anterior", "Nuevo precio", "Subtotal compra"}, new int[] {30, 200, 60, 90, 90, 90, 90, 90});
 		scrollPane.setViewportView(table);
 		
-		tfTotal = new PlaceholderTextField();
-		tfTotal.setText("0");
-		tfTotal.setPlaceholder("Total");
-		tfTotal.setEnabled(false);
-		tfTotal.setBounds(615, 369, 152, 20);
-		getContentPane().add(tfTotal);
+		tTotal = new NumberTextField();
+		tTotal.setText("0");
+		tTotal.setEnabled(false);
+		tTotal.setBounds(615, 369, 152, 20);
+		getContentPane().add(tTotal);
 		
 		panelGeneral =new JCustomPanel1();
 		panelGeneral.setBounds(20, 19, 403, 99);
 		getContentPane().add(panelGeneral);
 		panelGeneral.setLayout(null);
-		tfFecha = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tfFecha = new JFormattedTextField(Util.formatoFecha());
 		tfFecha.setBounds(305, 11, 79, 20);
 		panelGeneral.add(tfFecha);
 		
@@ -185,7 +185,7 @@ public class TransCompra extends JDialog
 		lblNroDeCompra.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		
-		tfFactura = new JFormattedTextField(VariablesDelSistema.formatoFactura());
+		tfFactura = new JFormattedTextField(Util.formatoFactura());
 		tfFactura.setBounds(89, 39, 116, 20);
 		panelGeneral.add(tfFactura);
 		
@@ -206,7 +206,7 @@ public class TransCompra extends JDialog
 		lblTimbrado_1.setBounds(234, 73, 61, 14);
 		panelGeneral.add(lblTimbrado_1);
 		
-		tfVencimientoTimbrado = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tfVencimientoTimbrado = new JFormattedTextField(Util.formatoFecha());
 		tfVencimientoTimbrado.setBounds(305, 70, 79, 20);
 		panelGeneral.add(tfVencimientoTimbrado);
 		
@@ -220,9 +220,12 @@ public class TransCompra extends JDialog
 		
 		btnEliminar = new JButton("");
 		btnEliminar.addActionListener(new ActionListener() {
+			
+
 			public void actionPerformed(ActionEvent arg0) {
 				if(table.getSelectedRow()>=0){
-					tfTotal.setText(Integer.parseInt(tfTotal.getText())-(int)table.campo(7)+"");
+					total-=Util.stringADouble(table.campo(7).toString());
+					tTotal.setText(Util.formatoDecimal(total));
 					table.getModelo().removeRow(table.getSelectedRow());
 				}
 				
@@ -280,48 +283,58 @@ public class TransCompra extends JDialog
 		tfProducto.setPlaceholder("Producto");
 		tfProducto.setEnabled(false);
 		
-		tfCantidad = new PlaceholderTextField();
-		tfCantidad.setBounds(306, 16, 46, 20);
-		panelProducto.add(tfCantidad);
-		tfCantidad.addKeyListener(new KeyAdapter() {
+		tCantidad = new PlaceholderTextField();
+		tCantidad.setPlaceholder("Cantidad");
+		tCantidad.setBounds(306, 16, 46, 20);
+		panelProducto.add(tCantidad);
+		tCantidad.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfCosto.requestFocus();
+					tCosto.requestFocus();
 				}
 			}
 		});
-		tfCantidad.setPlaceholder("Cantidad");
 		
-		tfCosto = new PlaceholderTextField();
-		tfCosto.setBounds(362, 16, 86, 20);
-		panelProducto.add(tfCosto);
-		tfCosto.addKeyListener(new KeyAdapter() {
+		tCosto = new NumberTextField();
+		tCosto.setBounds(362, 16, 86, 20);
+		panelProducto.add(tCosto);
+		tCosto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					calcularPromedioDeCosto();
-					tfNuevoPrecio.requestFocus();
+					tNuevoPrecio.requestFocus();
 				}
 			}
 		});
 		
-		tfCosto.setPlaceholder("Costo de compra");
 		
-		tfPromedio = new PlaceholderTextField();
-		tfPromedio.setBounds(458, 16, 86, 20);
-		panelProducto.add(tfPromedio);
-		tfPromedio.setEnabled(false);
-		tfPromedio.setPlaceholder("Costo promedio");
+		tPromedio = new NumberTextField();
+		tPromedio.setBounds(458, 16, 86, 20);
+		panelProducto.add(tPromedio);
+		tPromedio.setEnabled(false);
 		
-		tfPrecioVenta = new PlaceholderTextField();
-		tfPrecioVenta.setBounds(554, 16, 86, 20);
-		panelProducto.add(tfPrecioVenta);
-		tfPrecioVenta.setEnabled(false);
-		tfPrecioVenta.setPlaceholder("Precio de anterior");
+		tPrecioVenta = new NumberTextField();
+		tPrecioVenta.setBounds(554, 16, 86, 20);
+		panelProducto.add(tPrecioVenta);
+		tPrecioVenta.setEnabled(false);
 		
-		tfNuevoPrecio = new PlaceholderTextField();
-		tfNuevoPrecio.addKeyListener(new KeyAdapter() {
+		
+		tNuevoPrecio = new NumberTextField();
+		tNuevoPrecio.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
@@ -332,9 +345,8 @@ public class TransCompra extends JDialog
 				}
 			}
 		});
-		tfNuevoPrecio.setBounds(650, 16, 86, 20);
-		panelProducto.add(tfNuevoPrecio);
-		tfNuevoPrecio.setPlaceholder("Nuevo precio");
+		tNuevoPrecio.setBounds(650, 16, 86, 20);
+		panelProducto.add(tNuevoPrecio);
 		
 		lblCant = new JLabel("Cant.");
 		lblCant.setBounds(306, 0, 46, 14);
@@ -399,18 +411,18 @@ public class TransCompra extends JDialog
 		tfIdProveedor.setText(compra.getProveedor().getId()+"");
 		tfProveedor.setText(compra.getProveedor().getNombre());
 		tfRuc.setText(compra.getProveedor().getDocumento());
-		tfTotal.setText(compra.getTotal()+"");
+		tTotal.setValue(compra.getTotal());
 		
 		for (CompraItem ci: compra.getCompraItems()) {
 			Object[] fila = new Object[8];
 			fila[0] = ci.getProducto().getId();
 			fila[1] = ci.getProducto().getDescripcion();
 			fila[2] = ci.getCantidad();
-			fila[3] = ci.getCosto();
-			fila[4] = ci.getCostoPromedio();
+			fila[3] = Util.formatoDecimal(ci.getCosto());
+			fila[4] = Util.formatoDecimal(ci.getCostoPromedio());
 			fila[5] = "---";
 			fila[6] = "---";
-			fila[7] = ci.getCantidad()*ci.getCosto();
+			fila[7] = Util.formatoDecimal(ci.getCantidad()*ci.getCosto());
 			table.getModelo().addRow(fila);
 		}
 	}
@@ -433,7 +445,7 @@ public class TransCompra extends JDialog
 		compra.setFecha(FormatoFecha.stringToDate(tfFecha.getText()));
 		compra.setTimbrado(tfTimbrado.getText());
 		compra.setVencimientoTimbrado(FormatoFecha.stringToDate(tfVencimientoTimbrado.getText()));
-		compra.setTotal(Double.parseDouble(tfTotal.getText()));
+		compra.setTotal(Util.stringADouble(tTotal.getText()));
 		compra.setProveedor(proveegor);
 		
 		for (int i = 0; i < table.getRowCount(); i++) {
@@ -442,12 +454,12 @@ public class TransCompra extends JDialog
 			productoDao = new ProductoDao();
 			p = productoDao.recuperarPorId(Integer.parseInt((String) table.getModelo().getValueAt(i, 0)));
 			compraItem.setProducto(p);
-			compraItem.setCantidad(Integer.parseInt((String)table.getModelo().getValueAt(i, 2)));
-			compraItem.setCosto(Integer.parseInt((String)table.getModelo().getValueAt(i, 3)));
-			compraItem.setCostoPromedio(Integer.parseInt((String) table.getModelo().getValueAt(i, 4)));
+			compraItem.setCantidad(Integer.parseInt(table.getModelo().getValueAt(i, 2).toString()));
+			compraItem.setCosto(Util.stringADouble(table.getModelo().getValueAt(i, 3).toString()));
+			compraItem.setCostoPromedio(Util.stringADouble(table.getModelo().getValueAt(i, 4).toString()));
 			compraItem.setCompra(compra);
 			
-			actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""),Integer.parseInt(table.getModelo().getValueAt(i, 6)+""));
+			actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""),Util.stringADouble(table.getModelo().getValueAt(i, 6).toString()));
 			
 			compraItems.add(compraItem);
 			
@@ -511,7 +523,7 @@ public class TransCompra extends JDialog
 		return true;
 	}
 
-	private void actualizarStock(int cantidad,int precio) {
+	private void actualizarStock(int cantidad,Double precio) {
 		
 		p.getStock().setCantidad(p.getStock().getCantidad()+cantidad);
 		if (precio != 0) 
@@ -523,18 +535,19 @@ public class TransCompra extends JDialog
 			object = new Object[8];
 			object[0] = tfIdProducto.getText();
 			object[1] = tfProducto.getText();
-			object[2] = tfCantidad.getText();
-			object[3] = tfCosto.getText();
-			object[4] = tfPromedio.getText();
-			object[5] = tfPrecioVenta.getText();
-			if (tfNuevoPrecio.getText().isEmpty()) {
+			object[2] = tCantidad.getText();
+			object[3] = Util.formatoDecimal(((Number)tCosto.getValue()).doubleValue());
+			object[4] = Util.formatoDecimal(((Number)tPromedio.getValue()).doubleValue());
+			object[5] = Util.formatoDecimal(((Number)tPrecioVenta.getValue()).doubleValue());
+			if (tNuevoPrecio.getText().isEmpty()) {
 				object[6] = 0;
 			}else
-				object[6] = tfNuevoPrecio.getText();
-			object[7] = Integer.parseInt(tfCosto.getText())*Integer.parseInt(tfCantidad.getText());
+				object[6] = tNuevoPrecio.getText();
+			object[7] = Util.stringADouble(tCosto.getText())*Integer.parseInt(tCantidad.getText());
 			table.getModelo().addRow(object);
 			p=null;
-			tfTotal.setText(Integer.parseInt(tfCosto.getText())*Integer.parseInt(tfCantidad.getText())+Integer.parseInt(tfTotal.getText())+"");
+			total += Util.stringADouble(tCosto.getText())*Integer.parseInt(tCantidad.getText());
+			tTotal.setText(Util.formatoDecimal(total));
 			vaciarProducto();
 		}
 	}
@@ -542,11 +555,11 @@ public class TransCompra extends JDialog
 	private void vaciarProducto() {
 		tfIdProducto.setText("");
 		tfProducto.setText("");
-		tfCosto.setText("");
-		tfPromedio.setText("");
-		tfPrecioVenta.setText("");
-		tfNuevoPrecio.setText("");
-		tfCantidad.setText("");
+		tCosto.setValue(null);
+		tPromedio.setValue(null);
+		tPrecioVenta.setValue(null);
+		tNuevoPrecio.setValue(null);
+		tCantidad.setText("");
 	}
 
 	private boolean comprobarProductoVacio() {
@@ -555,14 +568,14 @@ public class TransCompra extends JDialog
 			tfIdProducto.requestFocus();
 			return false;
 		}
-		if(tfCantidad.getText().isEmpty()){
+		if(tCantidad.getText().isEmpty()){
 			JOptionPane.showMessageDialog(null, "El campo cantidad no puede estar vacio");
-			tfCantidad.requestFocus();
+			tCantidad.requestFocus();
 			return false;
 		}
-		if(tfCosto.getText().isEmpty()){
+		if(tCosto.getText().isEmpty()){
 			JOptionPane.showMessageDialog(null, "El campo costo de compra no puede estar vacio");
-			tfCosto.requestFocus();
+			tCosto.requestFocus();
 			return false;
 		}
 		return true;
@@ -572,12 +585,11 @@ public class TransCompra extends JDialog
 		compraItemDao = new CompraItemDao();
 		if (!tfIdProducto.getText().isEmpty()) {
 			if (compraItemDao.cosultarPromedio(p)!=0) {
-				promedio = (((p.getStock().getCantidad()*compraItemDao.cosultarPromedio(p))+(Integer.parseInt(tfCosto.getText())*Integer.parseInt(tfCantidad.getText())))/
-				(p.getStock().getCantidad()+Integer.parseInt(tfCantidad.getText())))+"";
-				tfPromedio.setText(promedio);
+				promedio = (((p.getStock().getCantidad()*compraItemDao.cosultarPromedio(p))+(Util.stringADouble(tCosto.getText())*Integer.parseInt(tCantidad.getText())))/
+				(p.getStock().getCantidad()+Integer.parseInt(tCantidad.getText())))+"";
+				tPromedio.setValue(promedio);
 			}else{
-				
-				tfPromedio.setText(tfCosto.getText());
+				tPromedio.setValue(Util.stringADouble(tCosto.getText()));
 			}
 			
 			
@@ -598,7 +610,7 @@ public class TransCompra extends JDialog
 		BusqudaProducto busqudaProducto = new BusqudaProducto(this);
 		busqudaProducto.setIbp(this);
 		busqudaProducto.setVisible(true);
-		tfCantidad.requestFocus();
+		tCantidad.requestFocus();
 	}
 
 	private void nuevo() {
@@ -620,6 +632,6 @@ public class TransCompra extends JDialog
 		this.p = p;
 		tfIdProducto.setText(p.getId()+"");
 		tfProducto.setText(p.getDescripcion());
-		tfPrecioVenta.setText((int)p.getStock().getPrecio()+"");
+		tPrecioVenta.setValue(p.getStock().getPrecio());
 	}
 }

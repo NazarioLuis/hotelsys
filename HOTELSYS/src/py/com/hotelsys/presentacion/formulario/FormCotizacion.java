@@ -1,7 +1,6 @@
 package py.com.hotelsys.presentacion.formulario;
 
 import java.awt.Font;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -22,12 +21,16 @@ import javax.swing.event.ListSelectionListener;
 import py.com.hotelsys.componentes.BotonGrup;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
-import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.componentes.NumberTextField;
 import py.com.hotelsys.dao.CotizacionDao;
 import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Cotizacion;
 import py.com.hotelsys.util.FormatoFecha;
-import py.com.hotelsys.util.VariablesDelSistema;
+import py.com.hotelsys.util.Util;
+
+import javax.swing.JLabel;
+
+import java.awt.event.KeyAdapter;
 
 
 
@@ -42,7 +45,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 	private Object[] fila;
 	private BotonGrup abmBoton;
 	private String accion = "";
-	private PlaceholderTextField tMonto;
+	private JFormattedTextField tMonto;
 	private JFormattedTextField tFecha;
 	private JPanel panel;
 	private Cotizacion cotizacion;
@@ -50,6 +53,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 	private int ultimaFila;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cbMoneda;
+	private JLabel lblGs;
 
 
 	/**
@@ -61,7 +65,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				VariablesDelSistema.cotizacionDelDia();
+				Util.cotizacionDelDia();
 			}
 		});
 		setTitle("Cotizaci\u00F3n de Monedas");
@@ -75,21 +79,25 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		tMonto = new PlaceholderTextField();
+		
+		tMonto = new NumberTextField();
 		tMonto.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if ((e.getKeyChar()<'0' || e.getKeyChar()>'9') && e.getKeyCode() != KeyEvent.VK_BACK_SPACE && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
-					e.consume();
-				}
+				Util.validarNumero(e);
+			}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) 
+					tFecha.requestFocus();
 			}
 		});
+		
 		tMonto.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tMonto.setPlaceholder("Valor");
-		tMonto.setBounds(22, 66, 113, 20);
+		tMonto.setBounds(22, 66, 90, 20);
 		panel.add(tMonto);
 		
-		tFecha = new JFormattedTextField(VariablesDelSistema.formatoFecha());
+		tFecha = new JFormattedTextField(Util.formatoFecha());
 		tFecha.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tFecha.setBounds(22, 97, 113, 20);
 		panel.add(tFecha);
@@ -98,6 +106,10 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		cbMoneda.setModel(new DefaultComboBoxModel(new String[] {"Real", "Dolar"}));
 		cbMoneda.setBounds(22, 35, 113, 20);
 		panel.add(cbMoneda);
+		
+		lblGs = new JLabel("Gs.");
+		lblGs.setBounds(119, 69, 26, 14);
+		panel.add(lblGs);
 		
 		abmBoton = new BotonGrup();
 		abmBoton.setBounds(10, 215, 647, 33);
@@ -159,7 +171,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 				break;
 			}
 			
-			fila[2] = c.getMonto();
+			fila[2] = Util.formatoDecimal(c.getMonto())+" Gs.";
 			fila[3] = FormatoFecha.dateAString(c.getFecha());
 			tabla.agregar(fila);
  		}
@@ -209,7 +221,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 	@Override
 	public void salir() {
 		dispose();
-		VariablesDelSistema.cotizacionDelDia();
+		Util.cotizacionDelDia();
 	}
 
 	@Override
@@ -273,7 +285,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		}else
 			cotizacion.setId((int) tabla.campo(0));
 		if(!tMonto.getText().equals(""))
-			cotizacion.setMonto(Double.parseDouble((tMonto.getText())));
+			cotizacion.setMonto(((Number) tMonto.getValue()).doubleValue());
 		if(!tFecha.getText().equals("__/__/____"))
 			cotizacion.setFecha(FormatoFecha.stringToDate((tFecha.getText())));
 		cotizacion.setMoneda(cbMoneda.getSelectedIndex());
@@ -307,7 +319,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 			cotizacioDao = new CotizacionDao();
 			System.out.println(tabla.campo(0));
 			cotizacion = cotizacioDao.recuperarPorId((int) tabla.campo(0));
-				tMonto.setText(cotizacion.getMonto()+"");
+				tMonto.setValue(cotizacion.getMonto());
 				tFecha.setValue(FormatoFecha.dateAString(cotizacion.getFecha()));
 				cbMoneda.setSelectedIndex(cotizacion.getMoneda());
 			}
@@ -317,8 +329,8 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void limpiarCampos() {
-		tMonto.setText("");
-		tFecha.setValue(null);;
+		tMonto.setValue(null);
+		tFecha.setValue(null);
 		cbMoneda.setSelectedIndex(0);
 	}
 

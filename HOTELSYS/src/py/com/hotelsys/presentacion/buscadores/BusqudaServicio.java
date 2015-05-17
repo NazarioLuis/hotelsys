@@ -48,7 +48,7 @@ public class BusqudaServicio extends JDialog {
 		scrollPane.setBounds(10, 42, 504, 204);
 		getContentPane().add(scrollPane);
 		
-		table = new CustomTable(new String[] {"#", "Descripcion servicio", "costo"}, new int[] {100, 200, 200});
+		table = new CustomTable(new String[] {"#", "Descripción servicio", "costo"}, new int[] {50, 250, 100});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

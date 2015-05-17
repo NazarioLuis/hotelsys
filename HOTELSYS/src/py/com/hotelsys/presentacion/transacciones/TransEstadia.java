@@ -58,6 +58,7 @@ import py.com.hotelsys.presentacion.buscadores.BusqudaHabitacion;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.Util;
+import javax.swing.ImageIcon;
 
 
 
@@ -156,7 +157,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		getContentPane().setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		getContentPane().setLocation(-25, -344);
 		setTitle("Hospedar a Cliente");
-		setBounds(100, 100, 1000, 600);
+		setBounds(100, 100, 1050, 600);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
@@ -171,13 +172,13 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tCodHabitacion = new PlaceholderTextField();
 		tCodHabitacion.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tCodHabitacion.setPlaceholder("Habitaci\u00F3n");
-		tCodHabitacion.setBounds(10, 79, 187, 20);
+		tCodHabitacion.setBounds(10, 80, 226, 20);
 		panel.add(tCodHabitacion);
 		
 		tCodCliente = new PlaceholderTextField();
 		tCodCliente.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tCodCliente.setPlaceholder("Cliente");
-		tCodCliente.setBounds(10, 48, 187, 20);
+		tCodCliente.setBounds(10, 48, 226, 20);
 		panel.add(tCodCliente);
 		
 		tObservacin = new JTextArea("");
@@ -196,7 +197,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		tObservacin.setRows(10);
 		tObservacin.setLineWrap(true);
-		tObservacin.setBounds(10, 124, 249, 118);
+		tObservacin.setBounds(10, 124, 266, 118);
 		panel.add(tObservacin);
 		
 		label = new JLabel("Observaci\u00F3n:");
@@ -207,7 +208,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 	
 		
 		
-		btnBuscarCli = new JButton("#");
+		btnBuscarCli = new JButton("");
+		btnBuscarCli.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/1428455167_698838-icon-111-search-16.png")));
 		btnBuscarCli.setEnabled(false);
 		btnBuscarCli.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -219,17 +221,18 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 	
 		
-		btnBuscarCli.setBounds(207, 47, 52, 23);
+		btnBuscarCli.setBounds(239, 44, 34, 23);
 		panel.add(btnBuscarCli);
 		
-		btnBuscarHa = new JButton("#");
+		btnBuscarHa = new JButton("");
+		btnBuscarHa.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/1428455167_698838-icon-111-search-16.png")));
 		btnBuscarHa.setEnabled(false);
 		btnBuscarHa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				mostrarHabitacion();
 			}
 		});
-		btnBuscarHa.setBounds(207, 76, 52, 23);
+		btnBuscarHa.setBounds(239, 76, 34, 23);
 		panel.add(btnBuscarHa);
 		
 		
@@ -262,7 +265,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(423, 11, 538, 181);
+		scrollPane.setBounds(423, 11, 611, 181);
 		getContentPane().add(scrollPane);
 		
 		
@@ -278,7 +281,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		getContentPane().add(tBuscar);
 		
 		
-		tablaEstadia = new CustomTable(new String[] {"#", "Cliente", "Habitación","Precio"}, new int[] {75, 200, 200,100});
+		tablaEstadia = new CustomTable(new String[] {"#", "Cliente", "Habitación","Precio"}, new int[] {75, 220, 270,90});
 		scrollPane.setViewportView(tablaEstadia);
 		
 //		JList list = new JList();
@@ -309,7 +312,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		getContentPane().add(btnTodos);
 		
 		JTabbedPane tpServicios = new JTabbedPane(JTabbedPane.TOP);
-		tpServicios.setBounds(424, 266, 537, 271);
+		tpServicios.setBounds(424, 266, 610, 283);
 		getContentPane().add(tpServicios);
 		
 		panelProducto = new JPanel();
@@ -317,19 +320,19 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		panelProducto.setLayout(null);
 		
 		JPanel panel_2 = new JCustomPanel1();
-		panel_2.setBounds(10, 6, 341, 94);
+		panel_2.setBounds(10, 6, 476, 94);
 		panelProducto.add(panel_2);
 		panel_2.setLayout(null);
 		
 		tPrecioProducto = new PlaceholderTextField2();
 		tPrecioProducto.setEnabled(false);
-		tPrecioProducto.setBounds(7, 29, 104, 34);
+		tPrecioProducto.setBounds(36, 29, 104, 34);
 		panel_2.add(tPrecioProducto);
 		tPrecioProducto.setPlaceholder("Guaran\u00ED");
 		
 		tCodProducto = new PlaceholderTextField();
 		tCodProducto.setEnabled(false);
-		tCodProducto.setBounds(7, 7, 263, 20);
+		tCodProducto.setBounds(7, 7, 315, 20);
 		panel_2.add(tCodProducto);
 		tCodProducto.setPlaceholder("Producto");
 		
@@ -339,7 +342,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				mostrarBuscadorProducto();
 			}
 		});
-		btnAddProducto.setBounds(280, 7, 46, 20);
+		btnAddProducto.setBounds(332, 7, 46, 20);
 		panel_2.add(btnAddProducto);
 		
 		tCantidadProducto = new PlaceholderTextField();
@@ -363,25 +366,28 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tPrecioProductoRs = new PlaceholderTextField2();
 		tPrecioProductoRs.setEnabled(false);
 		tPrecioProductoRs.setPlaceholder("Real");
-		tPrecioProductoRs.setBounds(132, 29, 81, 34);
+		tPrecioProductoRs.setBounds(190, 29, 81, 34);
 		panel_2.add(tPrecioProductoRs);
 		
 		tPrecioProductoUs = new PlaceholderTextField2();
 		tPrecioProductoUs.setEnabled(false);
 		tPrecioProductoUs.setPlaceholder("Dolar");
-		tPrecioProductoUs.setBounds(237, 29, 81, 34);
+		tPrecioProductoUs.setBounds(331, 29, 81, 34);
 		panel_2.add(tPrecioProductoUs);
 		
-		JLabel lblGs = new JLabel("Gs.");
-		lblGs.setBounds(111, 32, 22, 31);
+		JLabel lblGs = new JLabel("");
+		lblGs.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/pry.png")));
+		lblGs.setBounds(8, 32, 29, 31);
 		panel_2.add(lblGs);
 		
-		JLabel lblUs = new JLabel("Rs.");
-		lblUs.setBounds(214, 32, 23, 31);
+		JLabel lblUs = new JLabel("");
+		lblUs.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/brE.png")));
+		lblUs.setBounds(161, 32, 37, 31);
 		panel_2.add(lblUs);
 		
-		JLabel lblRs = new JLabel("Us.");
-		lblRs.setBounds(319, 32, 22, 31);
+		JLabel lblRs = new JLabel("");
+		lblRs.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/eeuue.png")));
+		lblRs.setBounds(301, 32, 29, 31);
 		panel_2.add(lblRs);
 		
 		btnEliminarDetalle = new JButton("Eliminar");
@@ -390,7 +396,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 				eliminarProducto();
 			}
 		});
-		btnEliminarDetalle.setBounds(361, 60, 89, 23);
+		btnEliminarDetalle.setBounds(496, 60, 89, 23);
 		panelProducto.add(btnEliminarDetalle);
 		btnEliminarDetalle.setForeground(new Color(0, 0, 0));
 		btnEliminarDetalle.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
@@ -402,17 +408,17 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			}
 		});
 		
-		btnCncelarDetalle.setBounds(361, 34, 89, 23);
+		btnCncelarDetalle.setBounds(496, 34, 89, 23);
 		panelProducto.add(btnCncelarDetalle);
 		btnCncelarDetalle.setForeground(new Color(0, 0, 0));
 		btnCncelarDetalle.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
 		
 		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 103, 512, 110);
+		scrollPane_1.setBounds(10, 103, 585, 110);
 		panelProducto.add(scrollPane_1);
 		
 		
-		tablaProductos = new CustomTable(new String[] {"#","Descripción producto","Cant.","Precio","Subtotal"}, new int[] {0,100,20,30});
+		tablaProductos = new CustomTable(new String[] {"#","Descripción producto","Cant.","Precio","Subtotal"}, new int[] {50,180,35,35});
 		tablaProductos.ocultarColumna(0);
 		scrollPane_1.setViewportView(tablaProductos);
 		
@@ -421,13 +427,13 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tTotalDetalle.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tTotalDetalle.setDisabledTextColor(new Color(220, 20, 60));
 		tTotalDetalle.setEnabled(false);
-		tTotalDetalle.setBounds(230, 214, 79, 20);
+		tTotalDetalle.setBounds(248, 214, 86, 20);
 		panelProducto.add(tTotalDetalle);
 		tTotalDetalle.setColumns(10);
 		
 		JLabel lblMontoTotal_1 = new JLabel("Monto Total");
 		lblMontoTotal_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMontoTotal_1.setBounds(151, 215, 83, 14);
+		lblMontoTotal_1.setBounds(142, 215, 83, 14);
 		panelProducto.add(lblMontoTotal_1);
 		
 		btnGuardarDetalle = new JButton("Guardar");
@@ -438,7 +444,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		});
 		btnGuardarDetalle.setForeground(Color.BLACK);
 		btnGuardarDetalle.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 9));
-		btnGuardarDetalle.setBounds(361, 8, 89, 23);
+		btnGuardarDetalle.setBounds(496, 8, 89, 23);
 		panelProducto.add(btnGuardarDetalle);
 		
 		tTotalDetalleRs = new PlaceholderTextField();
@@ -447,7 +453,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tTotalDetalleRs.setDisabledTextColor(new Color(220, 20, 60));
 		tTotalDetalleRs.setEnabled(false);
 		tTotalDetalleRs.setColumns(10);
-		tTotalDetalleRs.setBounds(347, 214, 52, 20);
+		tTotalDetalleRs.setBounds(382, 214, 79, 20);
 		panelProducto.add(tTotalDetalleRs);
 		
 		tTotalDetalleUs = new PlaceholderTextField();
@@ -456,23 +462,29 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tTotalDetalleUs.setDisabledTextColor(new Color(220, 20, 60));
 		tTotalDetalleUs.setEnabled(false);
 		tTotalDetalleUs.setColumns(10);
-		tTotalDetalleUs.setBounds(442, 214, 60, 20);
+		tTotalDetalleUs.setBounds(512, 214, 79, 20);
 		panelProducto.add(tTotalDetalleUs);
 		
-		JLabel label_1 = new JLabel("Gs.");
-		label_1.setHorizontalAlignment(SwingConstants.CENTER);
-		label_1.setBounds(308, 212, 22, 20);
-		panelProducto.add(label_1);
-		
-		JLabel lblRs_1 = new JLabel("Rs.");
+		JLabel lblRs_1 = new JLabel("");
+		lblRs_1.setVerticalAlignment(SwingConstants.TOP);
+		lblRs_1.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/brE.png")));
 		lblRs_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRs_1.setBounds(398, 212, 28, 20);
+		lblRs_1.setBounds(355, 213, 28, 30);
 		panelProducto.add(lblRs_1);
 		
-		JLabel lblUs_1 = new JLabel("Us.");
+		JLabel lblUs_1 = new JLabel("");
+		lblUs_1.setVerticalAlignment(SwingConstants.TOP);
+		lblUs_1.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/eeuue.png")));
 		lblUs_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUs_1.setBounds(500, 212, 27, 20);
+		lblUs_1.setBounds(485, 212, 27, 32);
 		panelProducto.add(lblUs_1);
+		
+		JLabel label_1 = new JLabel("");
+		label_1.setVerticalAlignment(SwingConstants.TOP);
+		label_1.setBounds(221, 212, 28, 32);
+		panelProducto.add(label_1);
+		label_1.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/pry.png")));
+		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		botonGrup3 = new BotonGrup3();
 		botonGrup3.setAbi(this);
@@ -487,7 +499,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		panel_4 = new JPanel();
 		panel_4.setBorder(new LineBorder(new Color(143, 188, 143), 1, true));
-		panel_4.setBounds(33, 297, 355, 248);
+		panel_4.setBounds(33, 297, 380, 248);
 		getContentPane().add(panel_4);
 		panel_4.setLayout(null);
 		
@@ -645,39 +657,42 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		btnCncelarSalida.setForeground(new Color(0, 0, 0));
 		
 		JPanel panel_3 = new JCustomPanel2();
-		panel_3.setBounds(10, 177, 331, 56);
+		panel_3.setBounds(10, 177, 359, 56);
 		panel_4.add(panel_3);
 		panel_3.setLayout(null);
 		
 		tTotalGs = new PlaceholderTextField2();
-		tTotalGs.setBounds(10, 11, 94, 34);
+		tTotalGs.setBounds(31, 11, 94, 34);
 		panel_3.add(tTotalGs);
 		tTotalGs.setPlaceholder("Guaran\u00ED");
 		tTotalGs.setEnabled(false);
 		
 		JLabel label_2 = new JLabel("Gs.");
-		label_2.setBounds(104, 14, 22, 31);
+		label_2.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/pry.png")));
+		label_2.setBounds(5, 14, 30, 31);
 		panel_3.add(label_2);
 		
 		tTotalRs = new PlaceholderTextField2();
-		tTotalRs.setBounds(125, 11, 81, 34);
+		tTotalRs.setBounds(157, 11, 81, 34);
 		panel_3.add(tTotalRs);
 		tTotalRs.setPlaceholder("Real");
 		tTotalRs.setEnabled(false);
 		
-		JLabel label_3 = new JLabel("Rs.");
-		label_3.setBounds(207, 14, 23, 31);
-		panel_3.add(label_3);
-		
 		tTotalUs = new PlaceholderTextField2();
-		tTotalUs.setBounds(230, 11, 81, 34);
+		tTotalUs.setBounds(272, 11, 81, 34);
 		panel_3.add(tTotalUs);
 		tTotalUs.setPlaceholder("Dolar");
 		tTotalUs.setEnabled(false);
 		
+		JLabel label_3 = new JLabel("Rs.");
+		label_3.setBounds(133, 14, 23, 31);
+		panel_3.add(label_3);
+		label_3.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/brE.png")));
+		
 		JLabel label_4 = new JLabel("Us.");
-		label_4.setBounds(312, 14, 22, 31);
+		label_4.setBounds(246, 14, 29, 31);
 		panel_3.add(label_4);
+		label_4.setIcon(new ImageIcon(TransEstadia.class.getResource("/img/eeuue.png")));
 		
 		lblTotales = new JLabel("Totales");
 		lblTotales.setBounds(21, 162, 84, 14);

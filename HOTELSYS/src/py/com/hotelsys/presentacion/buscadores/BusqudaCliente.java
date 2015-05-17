@@ -47,7 +47,7 @@ public class BusqudaCliente extends JDialog {
 		scrollPane.setBounds(10, 42, 504, 204);
 		getContentPane().add(scrollPane);
 		
-		table = new CustomTable(new String[] {"#", "Descripcion", "Nro documento"}, new int[] {100, 200, 200});
+		table = new CustomTable(new String[] {"#", "Descripcion", "Nro documento"}, new int[] {100, 300, 120});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

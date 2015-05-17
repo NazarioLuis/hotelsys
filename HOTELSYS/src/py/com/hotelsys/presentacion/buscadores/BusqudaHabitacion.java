@@ -49,7 +49,7 @@ public class BusqudaHabitacion extends JDialog {
 		scrollPane.setBounds(10, 42, 504, 204);
 		getContentPane().add(scrollPane);
 		
-		table = new CustomTable(new String[] {"#", "Descripcion", "Precio"}, new int[] {100, 200, 200});
+		table = new CustomTable(new String[] {"#", "Descripcion", "Precio"}, new int[] {100, 350, 100});
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

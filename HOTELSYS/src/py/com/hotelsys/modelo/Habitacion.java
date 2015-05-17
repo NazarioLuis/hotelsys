@@ -3,8 +3,11 @@ package py.com.hotelsys.modelo;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"hab_descripcion"}))
 public class Habitacion{
 
 
@@ -44,5 +47,6 @@ public class Habitacion{
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
+
 	
 }

@@ -14,12 +14,12 @@ import java.awt.Font;
 @SuppressWarnings("serial")
 public class BotonGrup extends JPanel {
 	AbmBotonInterface abi;
-	private JButton btnModificar;
-	private JButton btnGuardar;
-	private JButton btnNuevo;
-	private JButton btnCancelar;
-	private JButton btnEliminar;
-	private JButton btnSalir;
+	public JButton btnModificar;
+	public JButton btnGuardar;
+	public JButton btnNuevo;
+	public JButton btnCancelar;
+	public JButton btnEliminar;
+	public JButton btnSalir;
 
 	public void setAbi(AbmBotonInterface abi) {
 		this.abi = abi;

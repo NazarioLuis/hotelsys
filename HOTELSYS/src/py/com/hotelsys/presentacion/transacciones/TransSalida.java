@@ -28,6 +28,7 @@ import javax.swing.text.MaskFormatter;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.ProductoDao;
+import py.com.hotelsys.dao.SalidaItemDao;
 import py.com.hotelsys.dao.SalidaStockDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
 import py.com.hotelsys.interfaces.TranBotonInterface;
@@ -66,6 +67,7 @@ public class TransSalida extends JDialog
 	private String accion;
 	private JLabel lblCant;
 	private TranBotonInterface tbi;
+	private SalidaItemDao salidaItemDao;
 	
 
 	public void setTbi(TranBotonInterface tbi) {
@@ -115,6 +117,14 @@ public class TransSalida extends JDialog
 		getContentPane().add(panelGeneral);
 		panelGeneral.setLayout(null);
 		tfFecha = new JFormattedTextField(maskFecha);
+		tfFecha.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER||e.getKeyCode()==KeyEvent.VK_TAB) {
+					tfDescri.requestFocus();
+				}
+			}
+		});
 		tfFecha.setBounds(305, 11, 79, 20);
 		panelGeneral.add(tfFecha);
 		
@@ -140,6 +150,14 @@ public class TransSalida extends JDialog
 		panelGeneral.add(lblDescri);
 		
 		tfDescri = new JTextField();
+		tfDescri.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER||e.getKeyCode()==KeyEvent.VK_TAB) {
+					btnBuscarProducto.requestFocus();
+				}
+			}
+		});
 		tfDescri.setBounds(89, 39, 295, 20);
 		panelGeneral.add(tfDescri);
 		tfDescri.setColumns(10);
@@ -277,11 +295,14 @@ public class TransSalida extends JDialog
 		salida.setFecha(FormatoFecha.stringToDate(tfFecha.getText()));
 		salida.setDescripcion(tfDescri.getText());
 		
+		salidaItemDao = new SalidaItemDao();
+		int itemId = salidaItemDao.recuperMaxId()+1;
 		for (int i = 0; i < table.getRowCount(); i++) {
 			salidaStockItem = new SalidaStockItem();
 			
-			System.out.println(table.getValueAt(i, 0));
+			
 			productoDao = new ProductoDao();
+			salidaStockItem.setId(itemId);
 			producto = productoDao.recuperarPorId(Integer.parseInt((String) table.getModelo().getValueAt(i, 0)));
 			salidaStockItem.setProducto(producto);
 			salidaStockItem.setCantidad(Integer.parseInt((String)table.getModelo().getValueAt(i, 2)));
@@ -289,7 +310,7 @@ public class TransSalida extends JDialog
 			actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""));
 			salidaStockItems.add(salidaStockItem);
 			
-			
+			itemId++;
 		}
 		
 		salida.setSalidaItems(salidaStockItems);
@@ -301,17 +322,21 @@ public class TransSalida extends JDialog
 	private void confirmar() {
 		
 		if (accion == "AGREGAR") {
-			cargarAtributos();
-			salidaDao = new SalidaStockDao();
-			try {
-				salidaDao.insertar(salida);
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (comprobarCabeceraYTabla()) {
+				cargarAtributos();
+				salidaDao = new SalidaStockDao();
+				try {
+					salidaDao.insertar(salida);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
-		}
-		
-		if (accion == "ANULAR") {
-			
+			tbi.buscar();
+			dispose();
+		}else {
+			if (accion == "ANULAR") {
+				
 				salida.setEstado(false);
 				try {
 					salidaDao = new SalidaStockDao();
@@ -332,6 +357,9 @@ public class TransSalida extends JDialog
 		
 		tbi.buscar();
 		dispose();
+		}
+		
+		
 		
 		
 	}
@@ -416,5 +444,30 @@ public class TransSalida extends JDialog
 		this.producto = p;
 		tfIdProducto.setText(p.getId()+"");
 		tfProducto.setText(p.getDescripcion());
+	}
+	
+	public void advertencia(String texto, int t) {
+		JOptionPane.showMessageDialog(null, texto, "Atención", t);
+	}
+	
+
+	private boolean comprobarCabeceraYTabla() {
+		if (tfDescri.getText().isEmpty()) {
+			advertencia("Debe cargar una descripción", 2);
+			tfDescri.requestFocus();
+			return false;
+		}
+		if (tfFecha.getText().equals("__/__/____")) {
+			advertencia("Debe cargar una fecha", 2);
+			tfFecha.requestFocus();
+			return false;
+		}
+		if (table.getRowCount()==0) {
+			advertencia("Debe cargar almenos un producto en la tabla", 2);
+			btnBuscarProducto.requestFocus();
+			return false;
+		}
+		
+		return true;
 	}
 }

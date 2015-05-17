@@ -13,12 +13,13 @@ public class EntradaStockDao extends GenericDao<EntradaStock>{
 		super(EntradaStock.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<EntradaStock> cosultarPorFiltros(String [] filtro) {
+	public List<EntradaStock> recuperarPorFiltros(String [] filtro) {
 		criteria = session.createCriteria(entity);
 		criteria.add(Restrictions.like("descripcion", "%"+filtro[0]+"%"));
 		criteria.add(Restrictions.between("fecha", FormatoFecha.stringToDate(filtro[1]),FormatoFecha.stringToDate(filtro[2])));
-		criteria.add(Restrictions.eq("estado", true));
+		
 		list = criteria.list();
 		session.close();
 		return list;

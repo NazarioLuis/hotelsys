@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -65,42 +66,86 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+		
 		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 388, 302);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		tNombre = new PlaceholderTextField();
+		tNombre.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tDocumento.requestFocus();
+				}
+			}
+		});
 		tNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tNombre.setPlaceholder("Nombre del Cliente");
 		tNombre.setBounds(25, 24, 301, 20);
 		panel.add(tNombre);
 		
 		tDocumento = new PlaceholderTextField();
+		tDocumento.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tTelefono.requestFocus();
+				}
+			}
+		});
 		tDocumento.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDocumento.setPlaceholder("Nro de Documento");
 		tDocumento.setBounds(25, 55, 173, 20);
 		panel.add(tDocumento);
 		
 		tTelefono = new PlaceholderTextField();
+		tTelefono.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tEmail.requestFocus();
+				}
+			}
+		});
 		tTelefono.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tTelefono.setPlaceholder("Nro de Tel\u00E9fono");
 		tTelefono.setBounds(25, 86, 173, 20);
 		panel.add(tTelefono);
 		
 		tDireccion = new PlaceholderTextField();
+		tDireccion.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tObservacin.requestFocus();
+				}
+			}
+		});
 		tDireccion.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDireccion.setPlaceholder("Direcci\u00F3n");
 		tDireccion.setBounds(25, 148, 334, 20);
 		panel.add(tDireccion);
 		
 		tEmail = new PlaceholderTextField();
+		tEmail.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tDireccion.requestFocus();
+				}
+			}
+		});
 		tEmail.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tEmail.setPlaceholder("Correo Electr\u00F3nico");
 		tEmail.setBounds(25, 117, 301, 20);
 		panel.add(tEmail);
 		
 		tObservacin = new JTextArea("");
+		tObservacin.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					abmBoton.btnGuardar.requestFocus();
+				}
+			}
+		});
 		tObservacin.setFont(new Font("Monospaced", Font.BOLD, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		tObservacin.setBorder(BorderFactory.createCompoundBorder(border, 
@@ -158,7 +203,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		clienteDao = new ClienteDao();
-		listaCliente = clienteDao.recuperaTodo();
+		listaCliente = clienteDao.recuperarTodo();
 		
 		cargarGrilla();
 		if (listaCliente.size()>0)
@@ -230,29 +275,29 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void guardar() {
-		cargarAtributos();
-		clienteDao = new ClienteDao();
-		
-		if(accion.equals("AGREGAR"))
-			try {
-				clienteDao.insertar(cliente);
-				inicializar();
-			} catch (Exception e) {
-				clienteDao.rollback();
-				advertencia("No se puede guardar el Cliente. Los campos con * son obligatorios",2);
-			}
-		if (accion.equals("MODIFICAR"))
-			try {
-				clienteDao.actualizar(cliente);
-				inicializar();
-			} catch (Exception e) {
-				clienteDao.rollback();
-				advertencia("No se puede actualizar el Cliente. Los campos con * son obligatorios",2);
-			}
-		
-		
-		
-		
+		if (comprobarVacio()) {
+			cargarAtributos();
+			clienteDao = new ClienteDao();
+			
+			if(accion.equals("AGREGAR"))
+				try {
+					clienteDao.insertar(cliente);
+					inicializar();
+				} catch (Exception e) {
+					clienteDao.rollback();
+					advertencia("Ya existe un cliente con cedula "+tDocumento.getText(),2);
+				}
+			if (accion.equals("MODIFICAR"))
+				try {
+					clienteDao.actualizar(cliente);
+					inicializar();
+				} catch (Exception e) {
+					clienteDao.rollback();
+					advertencia("Ya existe un cliente con cedula "+tDocumento.getText(),2);
+				}
+			
+		}
+	
 	}
 
 	@Override
@@ -286,10 +331,8 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 			cliente.setId(clienteDao.recuperMaxId()+1);
 		}else
 			cliente.setId((int) tabla.campo(0));
-		if(!tNombre.getText().equals(""))
-			cliente.setNombre(tNombre.getText());
-		if(!tDocumento.getText().equals(""))
-			cliente.setDocumento(tDocumento.getText());
+		cliente.setNombre(tNombre.getText());
+		cliente.setDocumento(tDocumento.getText());
 		cliente.setTelefono(tTelefono.getText());
 		cliente.setDireccion(tDireccion.getText());
 		cliente.setEmail(tEmail.getText());
@@ -353,7 +396,7 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 				@Override
 				public void run() {
 					clienteDao = new ClienteDao();
-					listaCliente = clienteDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaCliente = clienteDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;
@@ -378,6 +421,20 @@ public class FormCliente extends JDialog implements AbmBotonInterface {
 		
 	}
 		
+	private boolean comprobarVacio() {
+		if (tNombre.getText().isEmpty()) {
+			advertencia("Debe ingresar un nombre", 2);
+			tNombre.requestFocus();
+			return false;
+		}
+		if (tDocumento.getText().isEmpty()) {
+			advertencia("Debe ingresar un nro. de documeto", 2);
+			tDocumento.requestFocus();
+			return false;
+		}
+		
+		return true;
+	}
 	
 	
 	

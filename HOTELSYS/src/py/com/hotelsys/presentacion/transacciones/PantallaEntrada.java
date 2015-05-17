@@ -3,8 +3,6 @@ package py.com.hotelsys.presentacion.transacciones;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,18 +10,25 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup2;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.FormatoTablaEntrada;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.EntradaStockDao;
+import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.TranBotonInterface;
 import py.com.hotelsys.modelo.EntradaStock;
+import py.com.hotelsys.modelo.EntradaStockItem;
+import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.Util;
 
@@ -41,6 +46,10 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 	private String accion;
 	private JFormattedTextField tFecha2;
 	private JFormattedTextField tFecha1;
+	private EntradaStock entrada;
+	private BotonGrup2 botonGrup2;
+	private Producto producto;
+	private ProductoDao productoDao;
 
 	
 	
@@ -57,10 +66,13 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 		getContentPane().add(scrollPane);
 		
 		table = new CustomTable(new String[] {"#", "Descripcion", "Fecha" , "Estado"}, new int[] {30, 300,80, 50});
-		table.addMouseListener(new MouseAdapter() {
+		table.setDefaultRenderer(Object.class, new FormatoTablaEntrada());
+		
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				
+			public void valueChanged(ListSelectionEvent arg0) {
+				activarEliminar();
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -106,7 +118,7 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
-		BotonGrup2 botonGrup2 = new BotonGrup2();
+		botonGrup2 = new BotonGrup2();
 		botonGrup2.setBounds(10, 11, 111, 193);
 		panel_1.add(botonGrup2);
 		botonGrup2.setTbi(this);
@@ -136,7 +148,7 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 						fecha2 = tFecha2.getText();
 					}
 					entradaDao = new EntradaStockDao();
-					listaEntrada = entradaDao.cosultarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
+					listaEntrada = entradaDao.recuperarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
 					cargarGrilla();
 					
 			
@@ -145,18 +157,24 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 	private void cargarGrilla() {
 		table.vaciar();
 		
+		int i = 0;
 		
+			
 		fila = new Object[table.getColumnCount()];
 		for (EntradaStock e:listaEntrada) {
-			fila[0] = e.getId();
-			fila[1] = e.getDescripcion();
-			fila[2] = FormatoFecha.dateAString(e.getFecha());
+			if (i != e.getId()) {
+				i = e.getId();
+				fila[0] = e.getId();
+				fila[1] = e.getDescripcion();
+				fila[2] = FormatoFecha.dateAString(e.getFecha());
+				
+				if (e.isEstado())
+					fila[3] = "Confirmado";
+				else
+					fila[3] = "Pendiente";
+				table.agregar(fila);
+			}
 			
-			if (e.isEstado())
-				fila[3] = "Activo";
-			else
-				fila[3] = "Anulado";
-			table.agregar(fila);
  		}
 		
 		
@@ -183,8 +201,7 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 
 	@Override
 	public void advertencia(String texto, int t) {
-		
-		
+		JOptionPane.showMessageDialog(null, texto, "Atención", t);
 	}
 
 	@Override
@@ -211,7 +228,8 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 	public void ver() {
 		if (table.getSelectedRow() >= 0) {
 			accion = "VER";
-			transEntrad = new TransEntrada(this,listaEntrada.get(table.getSelectedRow()),accion);
+			entradaDao = new EntradaStockDao();
+			transEntrad = new TransEntrada(this,entradaDao.recuperarPorId((int) table.campo(0)),accion);
 			transEntrad.setTbi(this);
 			transEntrad.setVisible(true);
 		}
@@ -222,7 +240,8 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 	public void anular() {
 		if (table.getSelectedRow() >= 0) {
 			accion = "ANULAR";
-			transEntrad = new TransEntrada(this,listaEntrada.get(table.getSelectedRow()),accion);
+			entradaDao = new EntradaStockDao();
+			transEntrad = new TransEntrada(this,entradaDao.recuperarPorId((int) table.campo(0)),accion);
 			transEntrad.setTbi(this);
 			transEntrad.setVisible(true);
 		}
@@ -241,6 +260,8 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 		
 	}
 
+	
+	
 
 
 	@Override
@@ -248,4 +269,55 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void activarEliminar() {
+		if (table.getSelectedRow()>=0) {
+			entradaDao = new EntradaStockDao();
+			entrada = entradaDao.recuperarPorId((int) table.campo(0));
+			if (entrada.isEstado()==true){
+				botonGrup2.btnConfirmar.setEnabled(false);
+				botonGrup2.btnEliminar.setEnabled(false);
+			}else{
+				botonGrup2.btnConfirmar.setEnabled(true);
+				botonGrup2.btnEliminar.setEnabled(true);
+			}
+		}
+		
+			
+	}
+
+
+
+
+	@Override
+	public void confimar() {
+		entrada.setEstado(true);
+		
+		try {
+			for (EntradaStockItem ei: entrada.getEntradaItems()) {
+				producto = ei.getProducto();
+				
+				Double promedio = (producto.getStock().getCantidad()
+									*producto.getStock().getCosto())
+									/(ei.getCantidad()+producto.getStock().getCantidad());
+					
+					
+				producto.getStock().setCosto(promedio);
+				producto.getStock().setCantidad(producto.getStock().getCantidad()+ei.getCantidad());
+				
+				productoDao = new ProductoDao();
+				productoDao.actualizar(producto);
+			}
+			entradaDao = new EntradaStockDao();
+			entradaDao.actualizar(entrada);
+			
+			buscar();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+
+
 }

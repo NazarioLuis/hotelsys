@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -50,6 +51,8 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 	private JPanel panel;
 	private Cotizacion cotizacion;
 	
+	
+	
 	private int ultimaFila;
 	@SuppressWarnings("rawtypes")
 	private JComboBox cbMoneda;
@@ -73,6 +76,8 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		getContentPane().setLayout(null);
 		setResizable(false);
 		setLocationRelativeTo(null);
+	
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
 		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 174, 188);
@@ -86,10 +91,10 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 			public void keyTyped(KeyEvent e) {
 				Util.validarNumero(e);
 			}
-			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) 
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
 					tFecha.requestFocus();
+				}
 			}
 		});
 		
@@ -98,11 +103,25 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		panel.add(tMonto);
 		
 		tFecha = new JFormattedTextField(Util.formatoFecha());
+		tFecha.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					abmBoton.btnGuardar.requestFocus();
+				}
+			}
+		});
 		tFecha.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tFecha.setBounds(22, 97, 113, 20);
 		panel.add(tFecha);
 		
 		cbMoneda = new JComboBox();
+		cbMoneda.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tMonto.requestFocus();
+				}
+			}
+		});
 		cbMoneda.setModel(new DefaultComboBoxModel(new String[] {"Real", "Dolar"}));
 		cbMoneda.setBounds(22, 35, 113, 20);
 		panel.add(cbMoneda);
@@ -142,7 +161,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		cotizacioDao = new CotizacionDao();
-		listCotizacion = cotizacioDao.recuperaTodo();
+		listCotizacion = cotizacioDao.recuperarTodo();
 		
 		cargarGrilla();
 		if (listCotizacion.size()>0)
@@ -226,31 +245,31 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void guardar() {
-		cargarAtributos();
-		cotizacioDao = new CotizacionDao();
-		
-		if(accion.equals("AGREGAR"))
-			try {
-				cotizacioDao.insertar(cotizacion);
-				inicializar();
-			} catch (Exception e) {
-				e.printStackTrace();
-				cotizacioDao.rollback();
-				advertencia("Cotización ya existe en fecha "+tFecha.getText(),2);
-			}
-		if (accion.equals("MODIFICAR"))
-			try {
-				cotizacioDao.actualizar(cotizacion);
-				inicializar();
-			} catch (Exception e) {
-				e.printStackTrace();
-				cotizacioDao.rollback();
-				advertencia("Cotización ya existe en fecha "+tFecha.getText(),2);
-			}
-		
-		
-		
-		
+		if (comprobarVacio()) {
+			cargarAtributos();
+			cotizacioDao = new CotizacionDao();
+			
+			if(accion.equals("AGREGAR"))
+				try {
+					cotizacioDao.insertar(cotizacion);
+					inicializar();
+				} catch (Exception e) {
+					e.printStackTrace();
+					cotizacioDao.rollback();
+					advertencia("Cotización ya existe en fecha "+tFecha.getText(),2);
+				}
+			if (accion.equals("MODIFICAR"))
+				try {
+					cotizacioDao.actualizar(cotizacion);
+					inicializar();
+				} catch (Exception e) {
+					e.printStackTrace();
+					cotizacioDao.rollback();
+					advertencia("Cotización ya existe en fecha "+tFecha.getText(),2);
+				}
+			
+		}
+			
 	}
 
 	@Override
@@ -284,10 +303,8 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 			cotizacion.setId(cotizacioDao.recuperMaxId()+1);
 		}else
 			cotizacion.setId((int) tabla.campo(0));
-		if(!tMonto.getText().equals(""))
-			cotizacion.setMonto(((Number) tMonto.getValue()).doubleValue());
-		if(!tFecha.getText().equals("__/__/____"))
-			cotizacion.setFecha(FormatoFecha.stringToDate((tFecha.getText())));
+		cotizacion.setMonto(((Number) tMonto.getValue()).doubleValue());
+		cotizacion.setFecha(FormatoFecha.stringToDate((tFecha.getText())));
 		cotizacion.setMoneda(cbMoneda.getSelectedIndex());
 		
 	}
@@ -350,6 +367,20 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 	public void cargarAtributosProductos() {
 		// TODO Auto-generated method stub
 		
+	}
+	private boolean comprobarVacio() {
+		if (tMonto.getText().isEmpty()) {
+			advertencia("Debe ingresar un monto", 2);
+			tMonto.requestFocus();
+			return false;
+		}
+		if (tFecha.getText().equals("__/__/____")) {
+			advertencia("Debe ingresar un fecha", 2);
+			tFecha.requestFocus();
+			return false;
+		}
+		
+		return true;
 	}
 
 }

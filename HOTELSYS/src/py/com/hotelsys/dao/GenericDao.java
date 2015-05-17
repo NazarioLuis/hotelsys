@@ -40,6 +40,10 @@ public abstract class GenericDao <T>{
 		session.delete(entity);
 		session.getTransaction().commit();
 	}
+	public void eliminar(T entity) throws Exception{
+		session.delete(entity);
+		session.getTransaction().commit();
+	}
 	//Metodo Generico para Recuperar por Id todas las entidades
 	@SuppressWarnings("unchecked")
 	public T recuperarPorId(int id){
@@ -49,7 +53,7 @@ public abstract class GenericDao <T>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<T> recuperaTodo(){
+	public List<T> recuperarTodo(){
 		list = session.createCriteria(entity).addOrder(Order.asc("id")).list();
 		cerrar();
 		return list;
@@ -69,7 +73,7 @@ public abstract class GenericDao <T>{
 	
 	
 	
-	public abstract List<T> cosultarPorFiltros(String [] filtro);
+	public abstract List<T> recuperarPorFiltros(String [] filtro);
 	
 	public void cerrar() {
 		session.close();

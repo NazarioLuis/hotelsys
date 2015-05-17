@@ -6,7 +6,6 @@ import org.hibernate.criterion.Restrictions;
 
 import py.com.hotelsys.modelo.Detalle;
 import py.com.hotelsys.modelo.Estadia;
-import py.com.hotelsys.modelo.Producto;
 
 public class DetalleDao extends GenericDao<Detalle>{
 
@@ -15,6 +14,7 @@ public class DetalleDao extends GenericDao<Detalle>{
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public List<Detalle> cosultarPorEstadia (Estadia e) {
 		criteria = session.createCriteria(entity);
 		criteria.createAlias("estadia", "e");
@@ -29,7 +29,7 @@ public class DetalleDao extends GenericDao<Detalle>{
 
 
 	@Override
-	public List<Detalle> cosultarPorFiltros(String[] filtro) {
+	public List<Detalle> recuperarPorFiltros(String[] filtro) {
 		return null;
 	}
 }

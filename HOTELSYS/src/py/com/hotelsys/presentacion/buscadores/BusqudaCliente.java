@@ -19,6 +19,7 @@ import py.com.hotelsys.interfaces.InterfaceBusquedaCliente;
 import py.com.hotelsys.modelo.Cliente;
 
 
+@SuppressWarnings("serial")
 public class BusqudaCliente extends JDialog {
 
 
@@ -71,7 +72,7 @@ public class BusqudaCliente extends JDialog {
 		getContentPane().add(tBuscar);
 		
 		clienteDao = new ClienteDao();
-		listaClientes = clienteDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		listaClientes = clienteDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -85,7 +86,7 @@ public class BusqudaCliente extends JDialog {
 				@Override
 				public void run() {
 					clienteDao = new ClienteDao();
-					listaClientes = clienteDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaClientes = clienteDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

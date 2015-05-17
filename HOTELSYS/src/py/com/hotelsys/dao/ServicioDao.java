@@ -12,8 +12,9 @@ public class ServicioDao extends GenericDao<Servicio>{
 		super(Servicio.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Servicio> cosultarPorFiltros(String [] filtro) {
+	public List<Servicio> recuperarPorFiltros(String [] filtro) {
 		criteria = session.createCriteria(entity);
 		criteria.add(
 						Restrictions.like("descripcion", "%"+filtro[0]+"%").ignoreCase()

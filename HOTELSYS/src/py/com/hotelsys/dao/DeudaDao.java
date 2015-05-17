@@ -11,7 +11,7 @@ public class DeudaDao extends GenericDao<Deuda>{
 	}
 
 	@Override
-	public List<Deuda> cosultarPorFiltros(String [] filtro) {
+	public List<Deuda> recuperarPorFiltros(String [] filtro) {
 		
 		return list;
 	}

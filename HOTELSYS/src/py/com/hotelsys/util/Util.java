@@ -3,9 +3,14 @@ package py.com.hotelsys.util;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import javax.swing.JLabel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
@@ -20,6 +25,7 @@ public class Util {
 	private static double monto;
 	public static int dias;
 	public static int horas;
+	
 	
 	
 		       
@@ -38,7 +44,47 @@ public class Util {
 
 	}
 	
+	public static void comprobarAlfanumerico(KeyEvent e, JLabel lbl){
+		char c = e.getKeyChar();
+        if (Character.isLetterOrDigit(c) || e.getKeyChar() == KeyEvent.VK_BACK_SPACE || e.getKeyChar() == KeyEvent.VK_ENTER){
+			lbl.setVisible(false);
+		}else{
+			e.consume();
+			mostrarError(lbl);
+		}
+	}
+	public static void comprobarEspacio(KeyEvent e, JLabel lbl){
+		char c = e.getKeyChar();
+        if (Character.isSpaceChar(c)){
+			e.consume();
+			mostrarError(lbl);
+		}else{
+			lbl.setVisible(false);
+		}
+	}
+
+	private static Timer timer;
+	private static TimerTask task;
+	public static long diff;
 	
+	private static void mostrarError(final JLabel lbl) {
+		lbl.setVisible(true);
+		if (timer==null&&task==null) {
+			timer = new Timer();
+			task = new TimerTask() {
+				@Override
+				public void run() {
+					lbl.setVisible(false);
+					timer.cancel();
+					timer=null;
+					task=null;
+				}
+			};
+						
+			timer.schedule(task, 1500);
+		}
+		
+	}
 	
 	public static MaskFormatter formatoFecha(){
 		try {
@@ -118,7 +164,7 @@ public class Util {
 		long milis2 = cal2.getTimeInMillis();
 
 		// calcular la diferencia en milisengundos
-		long diff = milis1 - milis2;
+		diff = milis1 - milis2;
 		
 		int diffHours = (int) (diff / (60 * 60 * 1000));
 		System.out.println(diffHours);
@@ -130,5 +176,20 @@ public class Util {
 			
 		}
 		horas = diffHours;
+	}
+
+	public static List<String> stringAArray(String str){
+
+		String[] array = str.split("-");
+		
+		return Arrays.asList(array);
+	}
+
+	public static String charAString(char[] password) {
+		String str = "";
+		for (int i = 0; i < password.length; i++) {
+			str+=password[i];
+		}
+		return str;
 	}
 }

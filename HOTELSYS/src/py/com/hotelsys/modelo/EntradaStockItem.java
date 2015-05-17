@@ -1,9 +1,7 @@
 package py.com.hotelsys.modelo;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,12 +9,11 @@ import javax.persistence.ManyToOne;
 @Entity
 public class EntradaStockItem {
 	@Id
-	@GeneratedValue
 	@Column(name="eit_numero")
 	private int id;
 	@Column(name="eit_cantidad",nullable=false)
 	private int cantidad;
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="eit_producto_fk")
 	private Producto producto;
 	@ManyToOne

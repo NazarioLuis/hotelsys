@@ -18,6 +18,7 @@ import py.com.hotelsys.dao.ProveedorDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProveedor;
 import py.com.hotelsys.modelo.Proveedor;
 
+@SuppressWarnings("serial")
 public class BusqudaProveedor extends JDialog {
 
 
@@ -72,7 +73,7 @@ public class BusqudaProveedor extends JDialog {
 		getContentPane().add(tBuscar);
 		
 		proveedorDao = new ProveedorDao();
-		listaProveedor = proveedorDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		listaProveedor = proveedorDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -86,7 +87,7 @@ public class BusqudaProveedor extends JDialog {
 				@Override
 				public void run() {
 					proveedorDao = new ProveedorDao();
-					listaProveedor = proveedorDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaProveedor = proveedorDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

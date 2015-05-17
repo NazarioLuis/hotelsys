@@ -26,6 +26,7 @@ import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.dao.EntradaItemDao;
 import py.com.hotelsys.dao.EntradaStockDao;
 import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
@@ -65,6 +66,7 @@ public class TransEntrada extends JDialog
 	private String accion;
 	private JLabel lblCant;
 	private TranBotonInterface tbi;
+	private EntradaItemDao entradaItemDao;
 	
 
 	public void setTbi(TranBotonInterface tbi) {
@@ -112,6 +114,14 @@ public class TransEntrada extends JDialog
 		getContentPane().add(panelGeneral);
 		panelGeneral.setLayout(null);
 		tfFecha = new JFormattedTextField(maskFecha);
+		tfFecha.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER||e.getKeyCode()==KeyEvent.VK_TAB) {
+					tfDescri.requestFocus();
+				}
+			}
+		});
 		tfFecha.setBounds(305, 11, 79, 20);
 		panelGeneral.add(tfFecha);
 		
@@ -137,6 +147,14 @@ public class TransEntrada extends JDialog
 		panelGeneral.add(lblDescri);
 		
 		tfDescri = new JTextField();
+		tfDescri.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER||e.getKeyCode()==KeyEvent.VK_TAB) {
+					btnBuscarProducto.requestFocus();
+				}
+			}
+		});
 		tfDescri.setBounds(89, 39, 295, 20);
 		panelGeneral.add(tfDescri);
 		tfDescri.setColumns(10);
@@ -272,23 +290,26 @@ public class TransEntrada extends JDialog
 		entrada.setFecha(FormatoFecha.stringToDate(tfFecha.getText()));
 		entrada.setDescripcion(tfDescri.getText());
 		
+		entradaItemDao = new EntradaItemDao();
+		int itemId = entradaItemDao.recuperMaxId()+1;
 		for (int i = 0; i < table.getRowCount(); i++) {
 			entradaItem = new EntradaStockItem();
 			
 			System.out.println(table.getValueAt(i, 0));
 			productoDao = new ProductoDao();
+			entradaItem.setId(itemId);
 			producto = productoDao.recuperarPorId(Integer.parseInt((String) table.getModelo().getValueAt(i, 0)));
 			entradaItem.setProducto(producto);
 			entradaItem.setCantidad(Integer.parseInt((String)table.getModelo().getValueAt(i, 2)));
 			entradaItem.setEntrada(entrada);
 			
 			entradaItems.add(entradaItem);
-			
-			actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""));
+			itemId++;
+			//actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""));
 		}
 		
 		entrada.setEntradaItems(entradaItems);
-		entrada.setEstado(true);
+		entrada.setEstado(false);
 		
 		
 	}
@@ -296,58 +317,46 @@ public class TransEntrada extends JDialog
 	private void confirmar() {
 		
 		if (accion == "AGREGAR") {
-			cargarAtributos();
-			entradaDao = new EntradaStockDao();
-			try {
-				entradaDao.insertar(entrada);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if (accion == "ANULAR") {
-			if (!stockNegativo(entrada.getEntradaItems())) {
-				entrada.setEstado(false);
+			if (comprobarCabeceraYTabla()) {
+				cargarAtributos();
+				entradaDao = new EntradaStockDao();
 				try {
-					entradaDao = new EntradaStockDao();
-					try {
-						entradaDao.actualizar(entrada);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					for (EntradaStockItem ei:entrada.getEntradaItems()) {
-						productoDao = new ProductoDao();
-						ei.getProducto().getStock().setCantidad(ei.getProducto().getStock().getCantidad()-ei.getCantidad());
-						productoDao.actualizar(ei.getProducto());
-					}
+					entradaDao.insertar(entrada);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}else
-				JOptionPane.showMessageDialog(null, "No puede anular esta compra pues dejaria productos con stock negativo");
-		}
-		
-		tbi.buscar();
-		dispose();
-		
-		
-	}
-
-
-	private boolean stockNegativo(List<EntradaStockItem> cis) {
-		for (EntradaStockItem ci:cis) {
-			
-			if(ci.getProducto().getStock().getCantidad()-ci.getCantidad()<0){
-				return true;
+				tbi.buscar();
+				dispose();
 			}
 			
+		}else {
+
+			if (accion == "ANULAR") {
+				
+					entrada.setEstado(false);
+					try {
+						entradaDao = new EntradaStockDao();
+						
+						entradaDao.eliminar(entrada);
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				
+			}
+			
+			tbi.buscar();
+			dispose();
+			
 		}
-		return false;
+		
+		
 	}
 
-	private void actualizarStock(int cantidad) {
-		producto.getStock().setCantidad(producto.getStock().getCantidad()+cantidad);
-	}
+
+	
+
+	
 
 	private void agregarProducto() {
 		if(comprobarProductoVacio()){
@@ -400,8 +409,30 @@ public class TransEntrada extends JDialog
 		tfFecha.setValue(FormatoFecha.dateAString(new Date()));
 	}
 
+	public void advertencia(String texto, int t) {
+		JOptionPane.showMessageDialog(null, texto, "Atención", t);
+	}
 	
 
+	private boolean comprobarCabeceraYTabla() {
+		if (tfDescri.getText().isEmpty()) {
+			advertencia("Debe cargar una descripción", 2);
+			tfDescri.requestFocus();
+			return false;
+		}
+		if (tfFecha.getText().equals("__/__/____")) {
+			advertencia("Debe cargar una fecha", 2);
+			tfFecha.requestFocus();
+			return false;
+		}
+		if (table.getRowCount()==0) {
+			advertencia("Debe cargar almenos un producto en la tabla", 2);
+			btnBuscarProducto.requestFocus();
+			return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public void cargar(Producto p) {
 		this.producto = p;

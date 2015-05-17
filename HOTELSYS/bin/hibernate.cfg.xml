@@ -48,6 +48,10 @@
 		<mapping class="py.com.hotelsys.modelo.SalidaStockItem"/>
 		<mapping class="py.com.hotelsys.modelo.Cotizacion"/>
 		<mapping class="py.com.hotelsys.modelo.Deuda"/>
+		<mapping class="py.com.hotelsys.modelo.Menu"/>
+		<mapping class="py.com.hotelsys.modelo.MenuItem"/>
+		<mapping class="py.com.hotelsys.modelo.Rol"/>
+		<mapping class="py.com.hotelsys.modelo.Usuario"/>
 	
     </session-factory>
     

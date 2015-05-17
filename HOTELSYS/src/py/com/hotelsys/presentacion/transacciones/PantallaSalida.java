@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import py.com.hotelsys.componentes.BotonGrup2;
+import py.com.hotelsys.componentes.BotonGrup4;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
@@ -106,15 +106,18 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
-		BotonGrup2 botonGrup2 = new BotonGrup2();
-		botonGrup2.setBounds(10, 11, 111, 193);
-		panel_1.add(botonGrup2);
-		botonGrup2.setTbi(this);
+		BotonGrup4 botonGrup4 = new BotonGrup4();
+		botonGrup4.setBounds(10, 11, 111, 193);
+		panel_1.add(botonGrup4);
+		botonGrup4.setTbi(this);
+		
+		
 		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				buscar();
 			}
 		});
+		
 		
 		buscar();
 
@@ -136,7 +139,7 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 						fecha2 = tFecha2.getText();
 					}
 					salidaDao = new SalidaStockDao();
-					listaSalida = salidaDao.cosultarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
+					listaSalida = salidaDao.recuperarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
 					cargarGrilla();
 					
 			
@@ -145,18 +148,23 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	private void cargarGrilla() {
 		table.vaciar();
 		
-		
+		int i = 0;
 		fila = new Object[table.getColumnCount()];
 		for (SalidaStock s:listaSalida) {
-			fila[0] = s.getId();
-			fila[1] = s.getDescripcion();
-			fila[2] = FormatoFecha.dateAString(s.getFecha());
+			if (i != s.getId()) {
+				i = s.getId();
+				fila[0] = s.getId();
+				fila[1] = s.getDescripcion();
+				fila[2] = FormatoFecha.dateAString(s.getFecha());
+				
+				if (s.isEstado())
+					fila[3] = "Activo";
+				else
+					fila[3] = "Anulado";
+				table.agregar(fila);
+			}
 			
-			if (s.isEstado())
-				fila[3] = "Activo";
-			else
-				fila[3] = "Anulado";
-			table.agregar(fila);
+			
  		}
 		
 		
@@ -211,7 +219,8 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	public void ver() {
 		if (table.getSelectedRow() >= 0) {
 			accion = "VER";
-			transSalid = new TransSalida(this,listaSalida.get(table.getSelectedRow()),accion);
+			salidaDao = new SalidaStockDao();
+			transSalid = new TransSalida(this,salidaDao.recuperarPorId((int) table.campo(0)),accion);
 			transSalid.setTbi(this);
 			transSalid.setVisible(true);
 		}
@@ -222,7 +231,8 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	public void anular() {
 		if (table.getSelectedRow() >= 0) {
 			accion = "ANULAR";
-			transSalid = new TransSalida(this,listaSalida.get(table.getSelectedRow()),accion);
+			salidaDao = new SalidaStockDao();
+			transSalid = new TransSalida(this,salidaDao.recuperarPorId((int) table.campo(0)),accion);
 			transSalid.setTbi(this);
 			transSalid.setVisible(true);
 		}
@@ -245,6 +255,14 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 
 	@Override
 	public void cargarAtributosProductos() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void confimar() {
 		// TODO Auto-generated method stub
 		
 	}

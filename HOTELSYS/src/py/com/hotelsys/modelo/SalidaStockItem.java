@@ -3,7 +3,6 @@ package py.com.hotelsys.modelo;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,7 +10,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class SalidaStockItem {
 	@Id
-	@GeneratedValue
 	@Column(name="sit_numero")
 	private int id;
 	@Column(name="sit_cantidad",nullable=false)

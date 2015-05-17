@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -61,6 +62,10 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	private NumberTextField tPrecio;
 	private PlaceholderTextField tStock;
 	private JLabel lblGs;
+	private NumberTextField tCosto;
+	private JLabel lblCostoDelProducto;
+	private JLabel lblGs2;
+	private JLabel lblPrecioVenta;
 
 
 	/**
@@ -74,18 +79,33 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		setLocationRelativeTo(null);
 		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+		
 		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 388, 280);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		tDescri = new PlaceholderTextField();
+		tDescri.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tPrecio.requestFocus();
+				}
+			}
+		});
 		tDescri.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDescri.setPlaceholder("Descripci\u00F3n del Producto");
 		tDescri.setBounds(25, 11, 301, 20);
 		panel.add(tDescri);
 		
 		tObservacin = new JTextArea("");
+		tObservacin.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				abmBoton.btnGuardar.requestFocus();
+			}
+		});
 		tObservacin.setFont(new Font("Monospaced", Font.BOLD, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		tObservacin.setBorder(BorderFactory.createCompoundBorder(border, 
@@ -93,29 +113,44 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		tObservacin.setRows(10);
 		tObservacin.setLineWrap(true);
-		tObservacin.setBounds(24, 151, 334, 77);
+		tObservacin.setBounds(25, 171, 334, 77);
 		panel.add(tObservacin);
 		
 		JLabel lblObservacin = new JLabel("Observaci\u00F3n:");
 		lblObservacin.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		lblObservacin.setBounds(25, 135, 107, 14);
+		lblObservacin.setBounds(26, 155, 107, 14);
 		panel.add(lblObservacin);
 		
 		rdbtnTieneStockAnterior = new JRadioButton("Tiene Stock anterior");
+		rdbtnTieneStockAnterior.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					if(rdbtnTieneStockAnterior.isSelected())
+						tStock.requestFocus();
+					else
+						tObservacin.requestFocus();
+				}
+			}
+		});
 		rdbtnTieneStockAnterior.setVisible(false);
 		rdbtnTieneStockAnterior.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				if(rdbtnTieneStockAnterior.isSelected()){
 					tStock.setVisible(true);
+					tCosto.setVisible(true);
+					lblCostoDelProducto.setVisible(true);
+					lblGs2.setVisible(true);
 					
 				}else{
 					tStock.setVisible(false);
-					
+					tCosto.setVisible(false);
+					lblCostoDelProducto.setVisible(false);
+					lblGs2.setVisible(false);
 				}
 					
 			}
 		});
-		rdbtnTieneStockAnterior.setBounds(25, 72, 190, 23);
+		rdbtnTieneStockAnterior.setBounds(25, 69, 190, 23);
 		panel.add(rdbtnTieneStockAnterior);
 		
 		tStock = new PlaceholderTextField();
@@ -127,11 +162,16 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 					e.consume();
 				}
 			}
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tCosto.requestFocus();
+				}
+			}
 		});
 		
 		tStock.setPlaceholder("Stock anterior");
 		tStock.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tStock.setBounds(25, 102, 147, 20);
+		tStock.setBounds(25, 99, 147, 20);
 		panel.add(tStock);
 		
 		tPrecio = new NumberTextField();
@@ -139,6 +179,14 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				Util.validarNumero(e);
+			}
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					if(accion.equals("AGREGAR"))
+						rdbtnTieneStockAnterior.requestFocus();
+					else
+						tObservacin.requestFocus();
+				}
 			}
 		});
 		
@@ -149,6 +197,32 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		lblGs = new JLabel("Gs.");
 		lblGs.setBounds(142, 42, 40, 20);
 		panel.add(lblGs);
+		
+		tCosto = new NumberTextField();
+		tCosto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				tObservacin.requestFocus();
+			}
+		});
+		tCosto.setVisible(false);
+		tCosto.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tCosto.setBounds(26, 133, 107, 20);
+		panel.add(tCosto);
+		
+		lblGs2 = new JLabel("Gs.");
+		lblGs2.setVisible(false);
+		lblGs2.setBounds(142, 133, 40, 20);
+		panel.add(lblGs2);
+		
+		lblCostoDelProducto = new JLabel("Costo de compra");
+		lblCostoDelProducto.setVisible(false);
+		lblCostoDelProducto.setBounds(25, 119, 108, 14);
+		panel.add(lblCostoDelProducto);
+		
+		lblPrecioVenta = new JLabel("Precio Venta");
+		lblPrecioVenta.setBounds(25, 29, 91, 14);
+		panel.add(lblPrecioVenta);
 		
 		abmBoton = new BotonGrup();
 		abmBoton.setBounds(10, 302, 647, 33);
@@ -191,7 +265,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		productoDao = new ProductoDao();
-		listaProducto = productoDao.recuperaTodo();
+		listaProducto = productoDao.recuperarTodo();
 		
 		cargarGrilla();
 		
@@ -212,7 +286,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			fila[0] = p.getId();
 			fila[1] = p.getDescripcion();
 			fila[2] = p.getStock().getCantidad();
-			fila[3] = "";
+			fila[3] = Util.formatoDecimal(p.getStock().getCosto())+ " Gs.";;
 			fila[4] = Util.formatoDecimal(p.getStock().getPrecio())+ " Gs.";
 			
 			tabla.agregar(fila);
@@ -266,26 +340,29 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void guardar() {
-		cargarAtributos();
-		productoDao = new ProductoDao();
+		if (comprobarVacio()) {
+			cargarAtributos();
+			productoDao = new ProductoDao();
+			
+			if(accion.equals("AGREGAR"))
+				try {
+					productoDao.insertar(producto);
+					inicializar();
+				} catch (Exception e) {
+					e.printStackTrace();
+					productoDao.rollback();
+					advertencia("Ya existe producto "+tDescri.getText(),2);
+				}
+			if (accion.equals("MODIFICAR"))
+				try {
+					productoDao.actualizar(producto);
+					inicializar();
+				} catch (Exception e) {
+					productoDao.rollback();
+					advertencia("Ya existe producto "+tDescri.getText(),2);
+				}
+		}
 		
-		if(accion.equals("AGREGAR"))
-			try {
-				productoDao.insertar(producto);
-				inicializar();
-			} catch (Exception e) {
-				e.printStackTrace();
-				productoDao.rollback();
-				advertencia("No se puede guardar el Producto. Los campos con * son obligatorios",2);
-			}
-		if (accion.equals("MODIFICAR"))
-			try {
-				productoDao.actualizar(producto);
-				inicializar();
-			} catch (Exception e) {
-				productoDao.rollback();
-				advertencia("No se puede actualizar el Producto. Los campos con * son obligatorios",2);
-			}
 		
 		
 		
@@ -328,12 +405,11 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			producto.setId(productoDao.recuperMaxId()+1);
 			
 			stock = new Stock();
+			stock.setId(producto.getId());
 			if (!tStock.getText().equals(""))
 				stock.setCantidad(Integer.parseInt(tStock.getText()));
 			else
 				stock.setCantidad(0);
-			
-			
 		}else
 			producto.setId((int) tabla.campo(0));	
 		if (!tDescri.getText().equals(""))
@@ -344,7 +420,10 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			stock.setPrecio(((Number) tPrecio.getValue()).doubleValue());
 		else
 			stock.setPrecio(0);
-		
+		if (!tCosto.getText().equals(""))
+			stock.setCosto(((Number) tPrecio.getValue()).doubleValue());
+		else
+			stock.setCosto(0);
 		producto.setStock(stock);
 	}
 
@@ -405,7 +484,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 				@Override
 				public void run() {
 					productoDao = new ProductoDao();
-					listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaProducto = productoDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;
@@ -428,5 +507,20 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void cargarAtributosProductos() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private boolean comprobarVacio() {
+		if (tDescri.getText().isEmpty()) {
+			advertencia("Debe ingresar un nombre", 2);
+			tDescri.requestFocus();
+			return false;
+		}
+		if (!tStock.getText().isEmpty()&&(tCosto.getText().isEmpty()||tCosto.getText().equals("0"))) {
+			advertencia("Debe ingresar un costo", 2);
+			tCosto.requestFocus();
+			return false;
+		}
+		
+		return true;
 	}
 }

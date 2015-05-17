@@ -2,13 +2,11 @@ package py.com.hotelsys.modelo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Stock {
 	@Id
-	@GeneratedValue
 	@Column(name="stk_codigo")
 	private int id;
 	
@@ -17,6 +15,9 @@ public class Stock {
 	
 	@Column(name="stk_precio",nullable=false)
 	private double precio;
+	
+	@Column(name="stk_costo",nullable=false)
+	private double costo;
 	
 	public int getId() {
 		return id;
@@ -35,6 +36,12 @@ public class Stock {
 	}
 	public void setPrecio(double precio) {
 		this.precio = precio;
+	}
+	public double getCosto() {
+		return costo;
+	}
+	public void setCosto(double costo) {
+		this.costo = costo;
 	}
 
 	

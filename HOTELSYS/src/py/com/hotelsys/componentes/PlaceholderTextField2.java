@@ -17,7 +17,7 @@ public class PlaceholderTextField2 extends JTextField {
 
     public PlaceholderTextField2() {
     	setForeground(new Color(220, 20, 60));
-    	setFont(new Font("Tahoma", Font.BOLD, 17));
+    	setFont(new Font("Tahoma", Font.BOLD, 15));
     	setHorizontalAlignment(SwingConstants.CENTER);
     	this.placeholder="placeholder";
     	setDisabledTextColor(new Color(220, 20, 60));

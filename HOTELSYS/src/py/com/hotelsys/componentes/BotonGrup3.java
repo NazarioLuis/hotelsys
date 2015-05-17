@@ -14,19 +14,18 @@ import py.com.hotelsys.interfaces.TranBotonInterface2;
 public class BotonGrup3 extends JPanel {
 	TranBotonInterface2 abi;
 	private JButton btnModificar;
-	private JButton btnGuardar;
+	public JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
 	private JButton btnEliminar;
 	private JButton btnSalir;
-	private JButton btnAgregar;
 
 	public void setAbi(TranBotonInterface2 abi) {
 		this.abi = abi;
 	}
 
 	public BotonGrup3() {
-		setLayout(new GridLayout(7, 0, 0, 5));
+		setLayout(new GridLayout(6, 0, 0, 5));
 		
 		btnModificar = new JButton("Modificar");
 		btnModificar.setFont(new Font("Tahoma", Font.BOLD, 10));
@@ -80,15 +79,6 @@ public class BotonGrup3 extends JPanel {
 				abi.salir();
 			}
 		});
-		
-		btnAgregar = new JButton("Agregar");
-		btnAgregar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				abi.agregar();
-			}
-		});
-		btnAgregar.setFont(new Font("Tahoma", Font.BOLD, 10));
-		add(btnAgregar);
 		add(btnSalir);
 	}
 	
@@ -101,11 +91,10 @@ public class BotonGrup3 extends JPanel {
 		if(accion.equals("DATOS")){
 			btnModificar.setEnabled(true);
 			btnEliminar.setEnabled(true);
-			btnAgregar.setEnabled(true);
+			
 		}else{
 			btnModificar.setEnabled(false);
 			btnEliminar.setEnabled(false);
-			btnAgregar.setEnabled(false);
 		}
 	}
 

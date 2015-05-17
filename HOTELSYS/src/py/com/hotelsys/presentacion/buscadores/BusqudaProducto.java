@@ -19,6 +19,7 @@ import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.util.Util;
 
+@SuppressWarnings("serial")
 public class BusqudaProducto extends JDialog {
 
 
@@ -73,7 +74,7 @@ public class BusqudaProducto extends JDialog {
 		getContentPane().add(tBuscar);
 		
 		productoDao = new ProductoDao();
-		listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		listaProducto = productoDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -87,7 +88,7 @@ public class BusqudaProducto extends JDialog {
 				@Override
 				public void run() {
 					productoDao = new ProductoDao();
-					listaProducto = productoDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaProducto = productoDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

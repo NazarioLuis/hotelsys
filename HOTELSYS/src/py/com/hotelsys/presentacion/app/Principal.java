@@ -2,7 +2,6 @@ package py.com.hotelsys.presentacion.app;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,33 +32,22 @@ import py.com.hotelsys.presentacion.formulario.FormCliente;
 import py.com.hotelsys.presentacion.formulario.FormCotizacion;
 import py.com.hotelsys.presentacion.formulario.FormHabitacion;
 import py.com.hotelsys.presentacion.formulario.FormProducto;
+import py.com.hotelsys.presentacion.formulario.FormProveedor;
+import py.com.hotelsys.presentacion.formulario.FormRol;
+import py.com.hotelsys.presentacion.formulario.FormUsuario;
 import py.com.hotelsys.presentacion.transacciones.PantallaCompra;
 import py.com.hotelsys.presentacion.transacciones.PantallaEntrada;
 import py.com.hotelsys.presentacion.transacciones.PantallaSalida;
 import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 import py.com.hotelsys.util.HibernateUtil;
+import py.com.hotelsys.util.OpcionesDeUsuario;
 import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class Principal extends JFrame  {
 
 	private JPanel contentPane;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					HibernateUtil.buildIfNeeded();
-					Principal frame = new Principal();
-					Util.cotizacionDelDia();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	private JMenuBar mbSistema;
 
 
 	public Principal() {
@@ -74,13 +62,13 @@ public class Principal extends JFrame  {
 		setExtendedState(MAXIMIZED_BOTH);
 		
 		
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
+		mbSistema = new JMenuBar();
+		setJMenuBar(mbSistema);
 		
 		JMenu mnGral = new JMenu("General");
-		menuBar.add(mnGral);
+		mbSistema.add(mnGral);
 		
-		JMenuItem mntmCliente = new JMenuItem("Cliente");
+		JMenuItem mntmCliente = new JMenuItem("Clientes");
 		mntmCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				verFormCliente();
@@ -100,10 +88,28 @@ public class Principal extends JFrame  {
 		mntmMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0));
 		mnGral.add(mntmMoneda);
 		
-		JMenu mnEstada = new JMenu("Estad\u00EDa");
-		menuBar.add(mnEstada);
+		JMenuItem mntmRolesDelSistema = new JMenuItem("Roles del Sistema");
+		mntmRolesDelSistema.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
+		mntmRolesDelSistema.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				verFormRol();
+			}
+		});
+		mnGral.add(mntmRolesDelSistema);
 		
-		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3n");
+		JMenuItem mntmUsuarios = new JMenuItem("Usuarios");
+		mntmUsuarios.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
+		mntmUsuarios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				verFormUsuario();
+			}
+		});
+		mnGral.add(mntmUsuarios);
+		
+		JMenu mnEstada = new JMenu("Estad\u00EDa");
+		mbSistema.add(mnEstada);
+		
+		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3nes");
 		mntmHabitacin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				verFormHabitacion();	
@@ -126,9 +132,9 @@ public class Principal extends JFrame  {
 		mnEstada.add(mntmGenerarInformes);
 		
 		JMenu mnStock = new JMenu("Stock");
-		menuBar.add(mnStock);
+		mbSistema.add(mnStock);
 		
-		JMenuItem mntmProductos = new JMenuItem("Producto");
+		JMenuItem mntmProductos = new JMenuItem("Productos");
 		mnStock.add(mntmProductos);
 		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
 		mntmProductos.addActionListener(new ActionListener() {
@@ -155,12 +161,12 @@ public class Principal extends JFrame  {
 		mntmRegistrarSalida.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0));
 		mnStock.add(mntmRegistrarSalida);
 		
-		JMenuItem mntmImprimirInforme = new JMenuItem("Imprimir Informe");
+		JMenuItem mntmImprimirInforme = new JMenuItem("Imprimir listado de Productos");
 		mntmImprimirInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
 		mnStock.add(mntmImprimirInforme);
 		
-		JMenu mnCompras = new JMenu("Compras");
-		menuBar.add(mnCompras);
+		JMenu mnCompras = new JMenu("Compra");
+		mbSistema.add(mnCompras);
 		
 		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar Compra");
 		mntmRegistrar_1.addActionListener(new ActionListener() {
@@ -171,19 +177,26 @@ public class Principal extends JFrame  {
 		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
 		mnCompras.add(mntmRegistrar_1);
 		
-		JMenuItem mntmGenerarInforme = new JMenuItem("Generar Informe");
-		mntmGenerarInforme.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
-		mnCompras.add(mntmGenerarInforme);
+		JMenuItem mntmProveedores = new JMenuItem("Proveedores");
+		mntmProveedores.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				verFormProveedor();
+			}
+		});
+		mntmProveedores.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0));
+		mnCompras.add(mntmProveedores);
 		
 		JMenu mnSalir = new JMenu("Salir");
 		mnSalir.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent arg0) {
 				HibernateUtil.cerrar();
 				System.exit(0);
 			}
 		});
-		menuBar.add(mnSalir);
+		
+		
+		mbSistema.add(mnSalir);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
@@ -228,7 +241,33 @@ public class Principal extends JFrame  {
 					.addContainerGap())
 		);
 		fondoPrincipal.setLayout(gl_fondoPrincipal);
+		
+		
+		OpcionesDeUsuario.agregarMenuAOpcionesDeUsuario(mbSistema);
+		OpcionesDeUsuario.recuperarOpcionesDeUsuario(mbSistema);
+		Util.cotizacionDelDia();
 	}
+
+	private void verFormUsuario() {
+		FormUsuario fu = new FormUsuario(this);
+		fu.setVisible(true);
+	}
+
+
+
+	private void verFormProveedor() {
+		FormProveedor fp = new FormProveedor(this);
+		fp.setVisible(true);
+	}
+
+
+
+	private void verFormRol() {
+		FormRol fr = new FormRol(this);
+		fr.setVisible(true);
+	}
+
+
 
 	private void mostrarEntradas() {
 		PantallaEntrada pe = new PantallaEntrada(this);

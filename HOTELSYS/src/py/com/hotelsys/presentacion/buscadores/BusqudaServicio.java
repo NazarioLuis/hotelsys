@@ -14,15 +14,12 @@ import javax.swing.JScrollPane;
 
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
-import py.com.hotelsys.dao.ClienteDao;
 import py.com.hotelsys.dao.ServicioDao;
-import py.com.hotelsys.interfaces.InterfaceBusquedaCliente;
 import py.com.hotelsys.interfaces.InterfaceBusquedaServicio;
-import py.com.hotelsys.modelo.Cliente;
 import py.com.hotelsys.modelo.Servicio;
-import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 
 
+@SuppressWarnings("serial")
 public class BusqudaServicio extends JDialog {
 
 
@@ -76,7 +73,7 @@ public class BusqudaServicio extends JDialog {
 		getContentPane().add(tBuscar);
 		
 		servicioDao = new ServicioDao();
-		listaServicio = servicioDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		listaServicio = servicioDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -90,7 +87,7 @@ public class BusqudaServicio extends JDialog {
 				@Override
 				public void run() {
 					servicioDao = new ServicioDao();
-					listaServicio = servicioDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaServicio = servicioDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

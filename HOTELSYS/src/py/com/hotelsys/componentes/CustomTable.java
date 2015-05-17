@@ -1,5 +1,6 @@
 package py.com.hotelsys.componentes;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -10,6 +11,14 @@ import javax.swing.table.DefaultTableModel;
 public class CustomTable extends JTable {
 	private DefaultTableModel modelo;
 	private boolean esEditable=false;
+	
+	public CustomTable(String[] modelo,int[] anchos,int[] columnaEditable) {
+		configurarModelo2(modelo,columnaEditable);
+		if (anchos != null) {
+			ajusrtarAnchoColumnas(anchos);
+		}
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
 	
 	public CustomTable(String[] modelo,int[] anchos) {
 		configurarModelo(modelo);
@@ -28,6 +37,21 @@ public class CustomTable extends JTable {
 		this.modelo = new DefaultTableModel(null,modelo){
 			@Override
 			public boolean isCellEditable(int row, int column) {
+				return esEditable;
+			}
+		};
+		setModel(this.modelo);
+		
+	}
+	
+	private void configurarModelo2(final String[] modelo,int[] columna) {
+		this.modelo = new DefaultTableModel(null,modelo){
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				for (int i = 0; i < modelo.length; i++) {
+					if(Arrays.asList(column).contains(i))
+						return true;
+				}
 				return esEditable;
 			}
 		};
@@ -81,5 +105,9 @@ public class CustomTable extends JTable {
 		getColumnModel().getColumn(i).setMaxWidth(0);
 		getColumnModel().getColumn(i).setMinWidth(0);
 		getColumnModel().getColumn(i).setPreferredWidth(0);
+	}
+
+	public Object campo(int f, int c) {
+		return getModelo().getValueAt(f, c);
 	}
 }

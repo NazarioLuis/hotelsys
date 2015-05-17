@@ -1,10 +1,11 @@
 package py.com.hotelsys.presentacion.transacciones;
 
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,18 +13,26 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup2;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.FormatoTablaCompra;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
+import py.com.hotelsys.componentes.NumberTextField;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.CompraDao;
+import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.interfaces.TranBotonInterface;
 import py.com.hotelsys.modelo.Compra;
+import py.com.hotelsys.modelo.CompraItem;
+import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.Util;
 
@@ -41,6 +50,10 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	private String accion;
 	private JFormattedTextField tFecha2;
 	private JFormattedTextField tFecha1;
+	private Compra compra;
+	private BotonGrup2 botonGrup2;
+	private Producto producto;
+	private ProductoDao productoDao;
 
 	
 	
@@ -57,12 +70,17 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		getContentPane().add(scrollPane);
 		
 		table = new CustomTable(new String[] {"#", "Factura", "Timbrado", "Proveedor", "Fecha", "Monto", "Estado"}, new int[] {20, 100, 100, 100, 50, 50, 50});
-		table.addMouseListener(new MouseAdapter() {
+		
+		table.setDefaultRenderer(Object.class, new FormatoTablaCompra());
+		
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				
+			public void valueChanged(ListSelectionEvent arg0) {
+				activarEliminar();
 			}
 		});
+		
 		scrollPane.setViewportView(table);
 		
 		JPanel panel = new JCustomPanel1();
@@ -102,7 +120,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
-		BotonGrup2 botonGrup2 = new BotonGrup2();
+		botonGrup2 = new BotonGrup2();
 		botonGrup2.setBounds(10, 13, 111, 193);
 		panel_1.add(botonGrup2);
 		botonGrup2.setTbi(this);
@@ -121,7 +139,23 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	}
 	
 	
-	
+	private void activarEliminar() {
+		if (table.getSelectedRow()>=0) {
+			compraDao = new CompraDao();
+			compra = compraDao.recuperarPorId((int) table.campo(0));
+			if (compra.isEstado()==true){
+				botonGrup2.btnConfirmar.setEnabled(false);
+				botonGrup2.btnEliminar.setEnabled(false);
+			}else{
+				botonGrup2.btnConfirmar.setEnabled(true);
+				botonGrup2.btnEliminar.setEnabled(true);
+			}
+		}
+		
+			
+	}
+
+
 	public void buscar() {
 		String fecha1;
 		String fecha2;
@@ -136,7 +170,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 						fecha2 = tFecha2.getText();
 					}
 					compraDao = new CompraDao();
-					listaCompra = compraDao.cosultarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
+					listaCompra = compraDao.recuperarPorFiltros(new String[]{tBuscar.getText(),fecha1,fecha2});
 					System.out.println(listaCompra.size());
 					cargarGrilla();
 					
@@ -146,20 +180,23 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	private void cargarGrilla() {
 		table.vaciar();
 		
-		
+		int i = 0;
 		fila = new Object[table.getColumnCount()];
 		for (Compra c:listaCompra) {
-			fila[0] = c.getId();
-			fila[1] = c.getFactura();
-			fila[2] = c.getTimbrado();
-			fila[3] = c.getProveedor().getNombre();
-			fila[4] = FormatoFecha.dateAString(c.getFecha());
-			fila[5] = c.getTotal();
-			if (c.isEstado())
-				fila[6] = "Activo";
-			else
-				fila[6] = "Anulado";
-			table.agregar(fila);
+			if (i != c.getId()) {
+				i = c.getId();
+				fila[0] = c.getId();
+				fila[1] = c.getFactura();
+				fila[2] = c.getTimbrado();
+				fila[3] = c.getProveedor().getNombre();
+				fila[4] = FormatoFecha.dateAString(c.getFecha());
+				fila[5] = Util.formatoDecimal(c.getTotal())+" Gs.";
+				if (c.isEstado())
+					fila[6] = "Confirmado";
+				else
+					fila[6] = "Pendiente";
+				table.agregar(fila);
+			}
  		}
 		
 		
@@ -214,7 +251,8 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	public void ver() {
 		if (table.getSelectedRow() >= 0) {
 			accion = "VER";
-			transCompra = new TransCompra(this,listaCompra.get(table.getSelectedRow()),accion);
+			compraDao = new CompraDao();
+			transCompra = new TransCompra(this,compraDao.recuperarPorId((int) table.campo(0)),accion);
 			transCompra.setTbi(this);
 			transCompra.setVisible(true);
 		}
@@ -225,7 +263,8 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	public void anular() {
 		if (table.getSelectedRow() >= 0) {
 			accion = "ANULAR";
-			transCompra = new TransCompra(this,listaCompra.get(table.getSelectedRow()),accion);
+			compraDao = new CompraDao();
+			transCompra = new TransCompra(this,compraDao.recuperarPorId((int) table.campo(0)),accion);
 			transCompra.setTbi(this);
 			transCompra.setVisible(true);
 		}
@@ -250,5 +289,63 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	public void cargarAtributosProductos() {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public void confimar() {
+		compra.setEstado(true);
+		
+		try {
+			for (CompraItem ci: compra.getCompraItems()) {
+				producto = ci.getProducto();
+				if (ci.getCosto()!=producto.getStock().getCosto()) {
+					
+					Double pormedio = ((ci.getCantidad()*ci.getCosto())
+							+(producto.getStock().getCantidad()
+									*producto.getStock().getCosto()))
+									/(ci.getCantidad()+producto.getStock().getCantidad());
+					
+					actualizarPrecio("El costo del producto "+producto.getDescripcion()+" es ahora de "+Util.formatoDecimal(pormedio)
+							+"gs. desea actualizar el precio actual ("+Util.formatoDecimal(producto.getStock().getPrecio())+"gs.)",pormedio);
+				}
+				producto.getStock().setCantidad(producto.getStock().getCantidad()+ci.getCantidad());
+				
+				productoDao = new ProductoDao();
+				productoDao.actualizar(producto);
+			}
+			compraDao = new CompraDao();
+			compraDao.actualizar(compra);
+			
+			buscar();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	private void actualizarPrecio(String string, Double pro) {
+		JFrame frame = new JFrame();
+		JLabel lbl = new JLabel();
+		lbl.setText(string);
+		NumberTextField test = new NumberTextField();
+		test.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
+		});
+		JPanel panel = new JPanel(new GridLayout(0, 1, 2, 1));
+		panel.add(lbl);
+		panel.add(test);
+		
+
+	    // prompt the user to enter their name
+		JOptionPane.showConfirmDialog(
+	            frame, panel, "Valor", JOptionPane.OK_CANCEL_OPTION);
+		if(test != null&&!test.getText().isEmpty())
+			producto.getStock().setPrecio(Util.stringADouble(test.getText()));
+		producto.getStock().setCosto(pro);
 	}
 }

@@ -5,4 +5,5 @@ public interface TranBotonInterface extends VentanaGenerica{
 	public void ver();
 	public void anular();
 	public void salir();
+	public void confimar();
 }

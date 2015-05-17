@@ -15,16 +15,11 @@ import javax.swing.JScrollPane;
 import py.com.hotelsys.componentes.CustomTable;
 import py.com.hotelsys.componentes.PlaceholderTextField;
 import py.com.hotelsys.dao.HabitacionDao;
-import py.com.hotelsys.dao.ProductoDao;
-import py.com.hotelsys.dao.ProveedorDao;
 import py.com.hotelsys.interfaces.InterfaceBusquedaHabitacion;
-import py.com.hotelsys.interfaces.InterfaceBusquedaProducto;
-import py.com.hotelsys.interfaces.InterfaceBusquedaProveedor;
 import py.com.hotelsys.modelo.Habitacion;
-import py.com.hotelsys.modelo.Producto;
-import py.com.hotelsys.modelo.Proveedor;
 import py.com.hotelsys.util.Util;
 
+@SuppressWarnings("serial")
 public class BusqudaHabitacion extends JDialog {
 
 
@@ -79,7 +74,7 @@ public class BusqudaHabitacion extends JDialog {
 		getContentPane().add(tBuscar);
 		
 		habitacionDao = new HabitacionDao();
-		listaHabitacions = habitacionDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+		listaHabitacions = habitacionDao.recuperarLibres(new String[]{tBuscar.getText()});
 		cargarGrilla();
 
 	}
@@ -93,7 +88,7 @@ public class BusqudaHabitacion extends JDialog {
 				@Override
 				public void run() {
 					habitacionDao = new HabitacionDao();
-					listaHabitacions = habitacionDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaHabitacions = habitacionDao.recuperarLibres(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

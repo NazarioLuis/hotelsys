@@ -139,7 +139,7 @@ public class FormServicio extends JDialog implements AbmBotonInterface {
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		serviciodao = new ServicioDao();
-		lisServicios = serviciodao.recuperaTodo();
+		lisServicios = serviciodao.recuperarTodo();
 		
 		cargarGrilla();
 		if (lisServicios.size()>0)
@@ -322,7 +322,7 @@ public class FormServicio extends JDialog implements AbmBotonInterface {
 				@Override
 				public void run() {
 					serviciodao = new ServicioDao();
-					lisServicios = serviciodao.cosultarPorFiltros(new String[]{tfBuscar.getText()});
+					lisServicios = serviciodao.recuperarPorFiltros(new String[]{tfBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;

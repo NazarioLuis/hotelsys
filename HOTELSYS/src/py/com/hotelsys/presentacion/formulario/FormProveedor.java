@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -67,42 +68,89 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		
 		setLocationRelativeTo(null);
 		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+		
 		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 388, 302);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		tNombre = new PlaceholderTextField();
+		tNombre.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tDocumento.requestFocus();
+				}
+			}
+		});
 		tNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tNombre.setPlaceholder("Nombre del Proveedor");
 		tNombre.setBounds(25, 24, 301, 20);
 		panel.add(tNombre);
 		
 		tDocumento = new PlaceholderTextField();
+		tDocumento.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tTelefono.requestFocus();
+				}
+			}
+		});
 		tDocumento.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDocumento.setPlaceholder("Nro de Documento");
 		tDocumento.setBounds(25, 55, 173, 20);
 		panel.add(tDocumento);
 		
 		tTelefono = new PlaceholderTextField();
+		tTelefono.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tEmail.requestFocus();
+				}
+			}
+		});
 		tTelefono.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tTelefono.setPlaceholder("Nro de Tel\u00E9fono");
 		tTelefono.setBounds(25, 86, 173, 20);
 		panel.add(tTelefono);
 		
 		tDireccion = new PlaceholderTextField();
+		tDireccion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tObservacin.requestFocus();
+				}
+			}
+		});
 		tDireccion.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDireccion.setPlaceholder("Direcci\u00F3n");
 		tDireccion.setBounds(25, 148, 334, 20);
 		panel.add(tDireccion);
 		
 		tEmail = new PlaceholderTextField();
+		tEmail.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tDireccion.requestFocus();
+				}
+			}
+		});
 		tEmail.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tEmail.setPlaceholder("Correo Electr\u00F3nico");
 		tEmail.setBounds(25, 117, 301, 20);
 		panel.add(tEmail);
 		
 		tObservacin = new JTextArea("Observaci\u00F3n:");
+		tObservacin.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					abmBoton.btnGuardar.requestFocus();
+				}
+			}
+		});
 		tObservacin.setFont(new Font("Monospaced", Font.BOLD, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		tObservacin.setBorder(BorderFactory.createCompoundBorder(border, 
@@ -161,7 +209,7 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		proveedorDao = new ProveedorDao();
-		listaProveedor = proveedorDao.recuperaTodo();
+		listaProveedor = proveedorDao.recuperarTodo();
 		
 		cargarGrilla();
 		if (listaProveedor.size()>0)
@@ -230,28 +278,29 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void guardar() {
-		cargarAtributos();
-		proveedorDao = new ProveedorDao();
-		
-		
-		if(accion.equals("AGREGAR"))
-			try {
-				proveedorDao.insertar(proveedor);
-				inicializar();
-			} catch (Exception e) {
-				proveedorDao.rollback();
-				advertencia("No se puede guardar el Proveedor. Los campos con * son obligatorios",2);
-			}
-		if (accion.equals("MODIFICAR"))
-			try {
-				proveedorDao.actualizar(proveedor);
-				inicializar();
-			} catch (Exception e) {
-				proveedorDao.rollback();
-				advertencia("No se puede actualizar el Proveedor. Los campos con * son obligatorios",2);
-			}
-		
-		
+		if (comprobarVacio()) {
+			cargarAtributos();
+			proveedorDao = new ProveedorDao();
+			
+			
+			if(accion.equals("AGREGAR"))
+				try {
+					proveedorDao.insertar(proveedor);
+					inicializar();
+				} catch (Exception e) {
+					proveedorDao.rollback();
+					advertencia("Ya existe proveedor con nro. documento "+tDocumento.getText(),2);
+				}
+			if (accion.equals("MODIFICAR"))
+				try {
+					proveedorDao.actualizar(proveedor);
+					inicializar();
+				} catch (Exception e) {
+					proveedorDao.rollback();
+					advertencia("Ya existe proveedor con nro. documento "+tDocumento.getText(),2);
+				}
+			
+		}
 		
 		
 	}
@@ -287,14 +336,10 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 			proveedor.setId(proveedorDao.recuperMaxId()+1);
 		}else
 			proveedor.setId((int) tabla.campo(0));	
-		if (!tNombre.getText().equals(""))
-			proveedor.setNombre(tNombre.getText());
-		if (!tDocumento.getText().equals(""))
-			proveedor.setDocumento(tDocumento.getText());
-		if (!tTelefono.getText().equals(""))
-			proveedor.setTelefono(tTelefono.getText());
-		if (!tDireccion.getText().equals(""))
-			proveedor.setDireccion(tDireccion.getText());
+		proveedor.setNombre(tNombre.getText());
+		proveedor.setDocumento(tDocumento.getText());
+		proveedor.setTelefono(tTelefono.getText());
+		proveedor.setDireccion(tDireccion.getText());
 		proveedor.setEmail(tEmail.getText());
 		proveedor.setObservacion(tObservacin.getText());
 	}
@@ -358,7 +403,7 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 				@Override
 				public void run() {
 					proveedorDao = new ProveedorDao();
-					listaProveedor = proveedorDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaProveedor = proveedorDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;
@@ -382,6 +427,29 @@ public class FormProveedor extends JDialog implements AbmBotonInterface {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	private boolean comprobarVacio() {
+		if (tNombre.getText().isEmpty()) {
+			advertencia("Debe ingresar un nombre", 2);
+			tNombre.requestFocus();
+			return false;
+		}
+		if (tDocumento.getText().isEmpty()) {
+			advertencia("Debe ingresar un nro. de documeto", 2);
+			tDocumento.requestFocus();
+			return false;
+		}
+		if (tTelefono.getText().isEmpty()) {
+			advertencia("Debe ingresar un nro. de teléfono", 2);
+			tTelefono.requestFocus();
+			return false;
+		}
+		if (tDireccion.getText().isEmpty()) {
+			advertencia("Debe ingresar una dirección", 2);
+			tDireccion.requestFocus();
+			return false;
+		}
+		
+		return true;
+	}
 	
 }

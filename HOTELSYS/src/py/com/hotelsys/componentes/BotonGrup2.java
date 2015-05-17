@@ -17,8 +17,9 @@ public class BotonGrup2 extends JPanel {
 	private JButton btnGuardar;
 	private JButton btnNuevo;
 	private JButton btnCancelar;
-	private JButton btnAnular;
+	public JButton btnEliminar;
 	private JButton btnSalir;
+	public JButton btnConfirmar;
 
 	
 
@@ -31,7 +32,7 @@ public class BotonGrup2 extends JPanel {
 	}
 
 	public BotonGrup2() {
-		setLayout(new GridLayout(4, 0, 0, 5));
+		setLayout(new GridLayout(5, 0, 0, 5));
 		
 		
 		
@@ -45,9 +46,9 @@ public class BotonGrup2 extends JPanel {
 		add(btnNuevo);
 
 		
-		btnAnular = new JButton("Anular");
-		btnAnular.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnAnular.addActionListener(new ActionListener() {
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tbi.anular();
 			}
@@ -62,8 +63,17 @@ public class BotonGrup2 extends JPanel {
 				tbi.ver();
 			}
 		});
+		
+		btnConfirmar = new JButton("Confirmar");
+		btnConfirmar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tbi.confimar();
+			}
+		});
+		btnConfirmar.setFont(new Font("Tahoma", Font.BOLD, 11));
+		add(btnConfirmar);
 		add(btnVer);
-		add(btnAnular);
+		add(btnEliminar);
 		
 		btnSalir = new JButton("Salir");
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -82,10 +92,10 @@ public class BotonGrup2 extends JPanel {
 		btnCancelar.setEnabled(b);
 		if(accion.equals("DATOS")){
 			btnVer.setEnabled(true);
-			btnAnular.setEnabled(true);
+			btnEliminar.setEnabled(true);
 		}else{
 			btnVer.setEnabled(false);
-			btnAnular.setEnabled(false);
+			btnEliminar.setEnabled(false);
 		}
 	}
 

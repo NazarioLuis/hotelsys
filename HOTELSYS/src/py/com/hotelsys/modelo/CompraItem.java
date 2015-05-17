@@ -1,9 +1,7 @@
 package py.com.hotelsys.modelo;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,16 +9,13 @@ import javax.persistence.ManyToOne;
 @Entity
 public class CompraItem {
 	@Id
-	@GeneratedValue
 	@Column(name="cit_numero")
 	private int id;
 	@Column(name="cit_cantidad",nullable=false)
 	private int cantidad;
 	@Column(name="cit_costo",nullable=false)
 	private double costo;
-	@Column(name="cit_costo_promedio",nullable=false)
-	private double costoPromedio;
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="cit_producto_fk")
 	private Producto producto;
 	@ManyToOne
@@ -57,12 +52,6 @@ public class CompraItem {
 	public void setCompra(Compra compra) {
 		this.compra = compra;
 	}
-	public double getCostoPromedio() {
-		return costoPromedio;
-	}
-	public void setCostoPromedio(double costoPromedio) {
-		this.costoPromedio = costoPromedio;
-	}
-	
+		
 	
 }

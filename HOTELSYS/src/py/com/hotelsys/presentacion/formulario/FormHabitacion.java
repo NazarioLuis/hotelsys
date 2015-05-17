@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -67,12 +68,20 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		panel = new JCustomPanel1();
 		panel.setBounds(10, 11, 388, 302);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		tDescripcion = new PlaceholderTextField();
+		tDescripcion.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tPrecio.requestFocus();
+				}
+			}
+		});
 		tDescripcion.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDescripcion.setPlaceholder("Descripcion Habitacion");
 		tDescripcion.setBounds(25, 40, 301, 20);
@@ -84,12 +93,24 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 			public void keyTyped(KeyEvent e) {
 				Util.validarNumero(e);
 			}
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tObservacion.requestFocus();
+				}
+			}
 		});
 		tPrecio.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tPrecio.setBounds(25, 71, 100, 20);
 		panel.add(tPrecio);
 		
 		tObservacion = new JTextArea("");
+		tObservacion.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					abmBoton.btnGuardar.requestFocus();
+				}
+			}
+		});
 		tObservacion.setFont(new Font("Monospaced", Font.BOLD, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		tObservacion.setBorder(BorderFactory.createCompoundBorder(border, 
@@ -151,7 +172,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 	//Metodo que recupera todos los registros de cliente para cargarlos a la tabla
 	private void recuperaDatos() {
 		habitacionDao = new HabitacionDao();
-		listaHabitacion = habitacionDao.recuperaTodo();
+		listaHabitacion = habitacionDao.recuperarTodo();
 		
 		cargarGrilla();
 		if (listaHabitacion.size()>0)
@@ -222,28 +243,28 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void guardar() {
-		cargarAtributos();
-		habitacionDao = new HabitacionDao();
-		
-		if(accion.equals("AGREGAR"))
-			try {
-				habitacionDao.insertar(habitacion);
-				inicializar();
-			} catch (Exception e) {
-				habitacionDao.rollback();
-				advertencia("No se puede guardar el Habitacion. Los campos con * son obligatorios",2);
-			}
-		if (accion.equals("MODIFICAR"))
-			try {
-				habitacionDao.actualizar(habitacion);
-				inicializar();
-			} catch (Exception e) {
-				habitacionDao.rollback();
-				advertencia("No se puede actualizar el Habitacion. Los campos con * son obligatorios",2);
-			}
-		
-		
-		
+		if (comprobarVacio()) {
+			cargarAtributos();
+			habitacionDao = new HabitacionDao();
+			
+			if(accion.equals("AGREGAR"))
+				try {
+					habitacionDao.insertar(habitacion);
+					inicializar();
+				} catch (Exception e) {
+					habitacionDao.rollback();
+					advertencia("Ya existe habitacion con este nombre",2);
+				}
+			if (accion.equals("MODIFICAR"))
+				try {
+					habitacionDao.actualizar(habitacion);
+					inicializar();
+				} catch (Exception e) {
+					habitacionDao.rollback();
+					advertencia("Ya existe habitacion con este nombre",2);
+				}
+		}
+				
 		
 	}
 
@@ -275,9 +296,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 			habitacion.setId(habitacionDao.recuperMaxId()+1);
 		}else
 			habitacion.setId((int) tabla.campo(0));
-		if(!tDescripcion.getText().equals(""))
-			habitacion.setDescripcion(tDescripcion.getText());
-		if(!tPrecio.getText().equals(""))
+		habitacion.setDescripcion(tDescripcion.getText());
 		habitacion.setPrecio(((Number)tPrecio.getValue()).doubleValue());
 		habitacion.setObservacion(tObservacion.getText());
 	}
@@ -333,7 +352,7 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 				@Override
 				public void run() {
 					habitacionDao = new HabitacionDao();
-					listaHabitacion = habitacionDao.cosultarPorFiltros(new String[]{tBuscar.getText()});
+					listaHabitacion = habitacionDao.recuperarPorFiltros(new String[]{tBuscar.getText()});
 					cargarGrilla();
 					timer.cancel();
 					timer=null;
@@ -358,6 +377,21 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		
 	}
 		
+	
+	private boolean comprobarVacio() {
+		if (tDescripcion.getText().isEmpty()) {
+			advertencia("Debe ingresar un monto", 2);
+			tDescripcion.requestFocus();
+			return false;
+		}
+		if (tPrecio.getText().isEmpty()) {
+			advertencia("Debe ingresar un fecha", 2);
+			tPrecio.requestFocus();
+			return false;
+		}
+		
+		return true;
+	}
 	
 	
 	

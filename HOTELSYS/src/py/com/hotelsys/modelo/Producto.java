@@ -6,7 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"pro_descripcion"}))
 public class Producto{
 	@Id
 	@Column(name="pro_codigo")

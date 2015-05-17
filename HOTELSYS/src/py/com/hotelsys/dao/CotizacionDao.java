@@ -9,7 +9,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
-import py.com.hotelsys.modelo.CompraItem;
 import py.com.hotelsys.modelo.Cotizacion;
 
 public class CotizacionDao extends GenericDao<Cotizacion>{
@@ -35,15 +34,16 @@ public class CotizacionDao extends GenericDao<Cotizacion>{
 		cerrar();
 		return cot;
 	}
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Cotizacion> recuperaTodo() {
+	public List<Cotizacion> recuperarTodo() {
 		list = session.createCriteria(entity).addOrder(Order.asc("fecha")).list();
 		cerrar();
 		return list;
 	}
 	
 	@Override
-	public List<Cotizacion> cosultarPorFiltros(String [] filtro) {
+	public List<Cotizacion> recuperarPorFiltros(String [] filtro) {
 		return list;
 	}
 

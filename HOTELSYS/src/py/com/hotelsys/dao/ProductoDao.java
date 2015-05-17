@@ -14,7 +14,7 @@ public class ProductoDao extends GenericDao<Producto>{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Producto> cosultarPorFiltros(String [] filtro) {
+	public List<Producto> recuperarPorFiltros(String [] filtro) {
 		criteria = session.createCriteria(entity);
 		criteria.add(
 						Restrictions.like("descripcion", "%"+filtro[0]+"%").ignoreCase()

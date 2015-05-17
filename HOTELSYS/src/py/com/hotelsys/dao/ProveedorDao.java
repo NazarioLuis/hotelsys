@@ -13,7 +13,7 @@ public class ProveedorDao extends GenericDao<Proveedor>{
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Proveedor> cosultarPorFiltros(String [] filtro) {
+	public List<Proveedor> recuperarPorFiltros(String [] filtro) {
 		criteria = session.createCriteria(entity);
 		criteria.add(
 					Restrictions.or(

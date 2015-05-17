@@ -14,7 +14,7 @@ public class ClienteDao extends GenericDao<Cliente>{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Cliente> cosultarPorFiltros(String [] filtro) {
+	public List<Cliente> recuperarPorFiltros(String [] filtro) {
 		criteria = session.createCriteria(entity);
 		criteria.add(
 					Restrictions.or(

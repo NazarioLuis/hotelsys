@@ -463,7 +463,8 @@ public class FormUsuario extends JDialog implements AbmBotonInterface,InterfaceR
 	public void limpiarCampos() {
 		tNombre.setText("");
 		tAlias.setText("");
-		cbRol.setSelectedIndex(0);
+		if (lisRol.size()>0) 
+			cbRol.setSelectedIndex(0);
 		tPass.setText("");
 	}
 

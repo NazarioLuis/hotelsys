@@ -158,9 +158,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		tStock.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if ((e.getKeyChar()<'0' || e.getKeyChar()>'9') && e.getKeyCode() != KeyEvent.VK_BACK_SPACE && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
-					e.consume();
-				}
+				Util.validarNumero(e);
 			}
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
@@ -202,7 +200,14 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		tCosto.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				tObservacin.requestFocus();
+				if (e.getKeyCode()==KeyEvent.VK_ENTER || e.getKeyCode()==KeyEvent.VK_TAB) {
+					tObservacin.requestFocus();
+				}
+				
+			}
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
 			}
 		});
 		tCosto.setVisible(false);

@@ -52,7 +52,7 @@
 		<mapping class="py.com.hotelsys.modelo.MenuItem"/>
 		<mapping class="py.com.hotelsys.modelo.Rol"/>
 		<mapping class="py.com.hotelsys.modelo.Usuario"/>
-	
+		<mapping class="py.com.hotelsys.modelo.Licencia"/>
     </session-factory>
     
    

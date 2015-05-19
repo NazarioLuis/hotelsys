@@ -192,4 +192,17 @@ public class Util {
 		}
 		return str;
 	}
+
+	public static String alterar(String motherboardWindows, int n) {
+		char[] cs = MotherboardSN.getMotherboardWindows().toCharArray();
+		String str = "";
+		for (int i = 0; i < cs.length; i++) {
+			if(Character.isLetterOrDigit(cs[i]))
+				str=str+ Character.toChars((cs[i]+n))[0];
+			else {
+				str=str+cs[i];
+			}
+		}
+		return str;
+	}
 }

@@ -197,11 +197,16 @@ public class Util {
 		char[] cs = HardDiskSN.getHardDisk("C").toCharArray();
 		String str = "";
 		for (int i = 0; i < cs.length; i++) {
-			if(Character.isLetterOrDigit(cs[i]))
+			if(Character.isLetterOrDigit(cs[i]+n))
 				str=str+ Character.toChars((cs[i]+n))[0];
 			else {
-				str=str+cs[i];
+				if(Character.isLetterOrDigit(cs[i]-n))
+					str=str+ Character.toChars((cs[i]-n))[0];
+				else
+					str=str+cs[i];
 			}
+			
+			
 		}
 		return str;
 	}

@@ -194,7 +194,7 @@ public class Util {
 	}
 
 	public static String alterar(String motherboardWindows, int n) {
-		char[] cs = MotherboardSN.getMotherboardWindows().toCharArray();
+		char[] cs = HardDiskSN.getHardDisk("C").toCharArray();
 		String str = "";
 		for (int i = 0; i < cs.length; i++) {
 			if(Character.isLetterOrDigit(cs[i]))

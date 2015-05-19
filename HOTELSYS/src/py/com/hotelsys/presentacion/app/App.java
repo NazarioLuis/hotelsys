@@ -14,7 +14,7 @@ import py.com.hotelsys.modelo.Licencia;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.HibernateUtil;
 import py.com.hotelsys.util.JPass;
-import py.com.hotelsys.util.MotherboardSN;
+import py.com.hotelsys.util.HardDiskSN;
 import py.com.hotelsys.util.Util;
 
 public class App {
@@ -22,7 +22,7 @@ public class App {
 	private static LicenciaDao licenciaDao;
 
 	public static void main(String[] args) throws Exception {
-		String id = MotherboardSN.getMotherboardWindows();
+		String id = HardDiskSN.getHardDisk("C");
 		JPass.setKey("HoSys");
 		HibernateUtil.buildIfNeeded();
 		licenciaDao = new LicenciaDao(); 

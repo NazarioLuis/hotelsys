@@ -2,7 +2,7 @@ package py.com.hotelsys.test;
 
 import java.io.IOException;
 
-import py.com.hotelsys.util.MotherboardSN;
+import py.com.hotelsys.util.HardDiskSN;
 
 
 public class Test {
@@ -12,8 +12,8 @@ public class Test {
 	public static void main(String[] args) throws IOException {
 		
 		
-			char[] cs = MotherboardSN.getMotherboardWindows().toCharArray();
-			System.out.println( MotherboardSN.getMotherboardWindows().toCharArray());
+			char[] cs = HardDiskSN.getHardDisk("C").toCharArray();
+			System.out.println( HardDiskSN.getHardDisk("C").toCharArray());
 			for (int i = 0; i < cs.length; i++) {
 				str=str+ Character.toChars((cs[i]+3))[0];
 			}

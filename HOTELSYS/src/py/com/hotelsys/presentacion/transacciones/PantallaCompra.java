@@ -4,8 +4,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -22,7 +20,7 @@ import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup2;
 import py.com.hotelsys.componentes.CustomTable;
-import py.com.hotelsys.componentes.FormatoTablaCompra;
+import py.com.hotelsys.componentes.FormatoTabla;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.NumberTextField;
@@ -71,7 +69,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		
 		table = new CustomTable(new String[] {"#", "Factura", "Timbrado", "Proveedor", "Fecha", "Monto", "Estado"}, new int[] {20, 100, 100, 100, 50, 50, 50});
 		
-		table.setDefaultRenderer(Object.class, new FormatoTablaCompra());
+		table.setDefaultRenderer(Object.class, new FormatoTabla(6,"Confirmado"));
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -223,8 +221,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 
 	@Override
 	public void advertencia(String texto, int t) {
-		
-		
+		JOptionPane.showMessageDialog(null, texto, "Atención", t);
 	}
 
 	@Override
@@ -267,7 +264,8 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 			transCompra = new TransCompra(this,compraDao.recuperarPorId((int) table.campo(0)),accion);
 			transCompra.setTbi(this);
 			transCompra.setVisible(true);
-		}
+		}else
+			advertencia("Debe seleccionar un registro", 2);
 	}
 
 	@Override
@@ -330,12 +328,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 		JLabel lbl = new JLabel();
 		lbl.setText(string);
 		NumberTextField test = new NumberTextField();
-		test.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validarNumero(e);
-			}
-		});
+		
 		JPanel panel = new JPanel(new GridLayout(0, 1, 2, 1));
 		panel.add(lbl);
 		panel.add(test);

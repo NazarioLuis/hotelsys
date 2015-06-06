@@ -231,6 +231,10 @@ public class TransCompra extends JDialog
 		tfTimbrado = new JTextField();
 		tfTimbrado.addKeyListener(new KeyAdapter() {
 			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER||e.getKeyCode()==KeyEvent.VK_TAB) {
 					tfVencimientoTimbrado.requestFocus();
@@ -330,10 +334,7 @@ public class TransCompra extends JDialog
 		tCosto.setBounds(362, 16, 86, 20);
 		panelProducto.add(tCosto);
 		tCosto.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validarNumero(e);
-			}
+			
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {

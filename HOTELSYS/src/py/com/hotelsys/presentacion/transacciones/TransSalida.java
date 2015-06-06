@@ -37,6 +37,7 @@ import py.com.hotelsys.modelo.SalidaStock;
 import py.com.hotelsys.modelo.SalidaStockItem;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
 import py.com.hotelsys.util.FormatoFecha;
+import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class TransSalida extends JDialog 
@@ -220,6 +221,10 @@ public class TransSalida extends JDialog
 		panelProducto.add(tfCantidad);
 		tfCantidad.addKeyListener(new KeyAdapter() {
 			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if(verificarRepetidos())
@@ -307,14 +312,14 @@ public class TransSalida extends JDialog
 			salidaStockItem.setProducto(producto);
 			salidaStockItem.setCantidad(Integer.parseInt((String)table.getModelo().getValueAt(i, 2)));
 			salidaStockItem.setSalida(salida);
-			actualizarStock(Integer.parseInt(table.getModelo().getValueAt(i, 2)+""));
+			
 			salidaStockItems.add(salidaStockItem);
 			
 			itemId++;
 		}
 		
 		salida.setSalidaItems(salidaStockItems);
-		salida.setEstado(true);
+		salida.setEstado(false);
 		
 		
 	}
@@ -337,19 +342,13 @@ public class TransSalida extends JDialog
 		}else {
 			if (accion == "ANULAR") {
 				
-				salida.setEstado(false);
+				
 				try {
 					salidaDao = new SalidaStockDao();
-					try {
-						salidaDao.actualizar(salida);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					for (SalidaStockItem ei:salida.getSalidaItems()) {
-						productoDao = new ProductoDao();
-						ei.getProducto().getStock().setCantidad(ei.getProducto().getStock().getCantidad()+ei.getCantidad());
-						productoDao.actualizar(ei.getProducto());
-					}
+					
+					salidaDao.eliminar(salida.getId());
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -375,12 +374,7 @@ public class TransSalida extends JDialog
 		return false;
 	}
 
-	private void actualizarStock(int cantidad) {
-		
-		
-		producto.getStock().setCantidad(producto.getStock().getCantidad()-cantidad);
-		
-	}
+	
 
 	private void agregarProducto() {
 		if(comprobarProductoVacio()){

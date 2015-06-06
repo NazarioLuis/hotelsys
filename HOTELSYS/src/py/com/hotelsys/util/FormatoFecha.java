@@ -51,4 +51,13 @@ public class FormatoFecha {
 			return "";
 		}
 	}
+
+	public static String DateFull(Date date) {
+		fecha = dfFull.format(date);
+		return fecha;
+	}
+	public static String hora(Date date) {
+		fecha = dh.format(date);
+		return fecha;
+	}
 }

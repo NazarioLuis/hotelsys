@@ -22,9 +22,12 @@ public class Detalle{
 	
 	@Column(name="det_cantPro")
 	private int cantidadProducto;
+	
+	@Column(name="det_precPro")
+	private Double precioProducto;
 
-	@Column(name="det_total")
-	private Double total;
+	@Column(name="det_costPro")
+	private Double costoProducto;
 
 	public Estadia getEstadia() {
 		return estadia;
@@ -66,14 +69,27 @@ public class Detalle{
 	}
 
 
-	public Double getTotal() {
-		return total;
+	public Double getPrecioProducto() {
+		return precioProducto;
 	}
 
 
-	public void setTotal(Double total) {
-		this.total = total;
+	public void setPrecioProducto(Double precioProducto) {
+		this.precioProducto = precioProducto;
 	}
+
+
+	public Double getCostoProducto() {
+		return costoProducto;
+	}
+
+
+	public void setCostoProducto(Double costoProducto) {
+		this.costoProducto = costoProducto;
+	}
+
+
+	
 	
 	
 	

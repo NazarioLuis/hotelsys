@@ -36,6 +36,7 @@ import py.com.hotelsys.modelo.EntradaStockItem;
 import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.presentacion.buscadores.BusqudaProducto;
 import py.com.hotelsys.util.FormatoFecha;
+import py.com.hotelsys.util.Util;
 
 @SuppressWarnings("serial")
 public class TransEntrada extends JDialog 
@@ -215,6 +216,10 @@ public class TransEntrada extends JDialog
 		tfCantidad.setBounds(306, 16, 46, 20);
 		panelProducto.add(tfCantidad);
 		tfCantidad.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {

@@ -3,8 +3,6 @@ package py.com.hotelsys.presentacion.transacciones;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,18 +10,25 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import py.com.hotelsys.componentes.BotonGrup4;
+import py.com.hotelsys.componentes.BotonGrup2;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.FormatoTabla;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.dao.ProductoDao;
 import py.com.hotelsys.dao.SalidaStockDao;
 import py.com.hotelsys.interfaces.TranBotonInterface;
+import py.com.hotelsys.modelo.Producto;
 import py.com.hotelsys.modelo.SalidaStock;
+import py.com.hotelsys.modelo.SalidaStockItem;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.Util;
 
@@ -37,17 +42,22 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	private List<SalidaStock> listaSalida;
 	private CustomTable table;
 	private Object[] fila;
-	private TransSalida transSalid;
+	private TransSalida transSal;
 	private String accion;
 	private JFormattedTextField tFecha2;
 	private JFormattedTextField tFecha1;
+	
+	private BotonGrup2 botonGrup2;
+	private Producto producto;
+	private ProductoDao productoDao;
+	private SalidaStock salida;
 
 	
 	
 	
 	public PantallaSalida(JFrame dialog) {
 		super(dialog,false);
-		setTitle("Salidas de Productos del Stock");
+		setTitle("Salidas de Productos al Stock");
 		setBounds(100, 100, 703, 431);
 		getContentPane().setLayout(null);
 		
@@ -57,10 +67,13 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		getContentPane().add(scrollPane);
 		
 		table = new CustomTable(new String[] {"#", "Descripcion", "Fecha" , "Estado"}, new int[] {30, 300,80, 50});
-		table.addMouseListener(new MouseAdapter() {
+		table.setDefaultRenderer(Object.class, new FormatoTabla(6,"Confirmado"));
+		
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				
+			public void valueChanged(ListSelectionEvent arg0) {
+				activarEliminar();
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -106,18 +119,15 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
-		BotonGrup4 botonGrup4 = new BotonGrup4();
-		botonGrup4.setBounds(10, 11, 111, 193);
-		panel_1.add(botonGrup4);
-		botonGrup4.setTbi(this);
-		
-		
+		botonGrup2 = new BotonGrup2();
+		botonGrup2.setBounds(10, 11, 111, 193);
+		panel_1.add(botonGrup2);
+		botonGrup2.setTbi(this);
 		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				buscar();
 			}
 		});
-		
 		
 		buscar();
 
@@ -149,21 +159,22 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		table.vaciar();
 		
 		int i = 0;
+		
+			
 		fila = new Object[table.getColumnCount()];
 		for (SalidaStock s:listaSalida) {
 			if (i != s.getId()) {
 				i = s.getId();
 				fila[0] = s.getId();
-				fila[1] = s.getDescripcion();
+				fila[1] =s.getDescripcion();
 				fila[2] = FormatoFecha.dateAString(s.getFecha());
 				
 				if (s.isEstado())
-					fila[3] = "Activo";
+					fila[3] = "Confirmado";
 				else
-					fila[3] = "Anulado";
+					fila[3] = "Pendiente";
 				table.agregar(fila);
 			}
-			
 			
  		}
 		
@@ -191,8 +202,7 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 
 	@Override
 	public void advertencia(String texto, int t) {
-		
-		
+		JOptionPane.showMessageDialog(null, texto, "Atención", t);
 	}
 
 	@Override
@@ -210,9 +220,9 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	@Override
 	public void nuevo() {
 		accion = "AGREGAR";
-		transSalid = new TransSalida(this,null,accion);
-		transSalid.setTbi(this);
-		transSalid.setVisible(true);
+		transSal = new TransSalida(this,null,accion);
+		transSal.setTbi(this);
+		transSal.setVisible(true);
 	}
 
 	@Override
@@ -220,9 +230,9 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		if (table.getSelectedRow() >= 0) {
 			accion = "VER";
 			salidaDao = new SalidaStockDao();
-			transSalid = new TransSalida(this,salidaDao.recuperarPorId((int) table.campo(0)),accion);
-			transSalid.setTbi(this);
-			transSalid.setVisible(true);
+			transSal = new TransSalida(this,salidaDao.recuperarPorId((int) table.campo(0)),accion);
+			transSal.setTbi(this);
+			transSal.setVisible(true);
 		}
 		
 	}
@@ -232,10 +242,11 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		if (table.getSelectedRow() >= 0) {
 			accion = "ANULAR";
 			salidaDao = new SalidaStockDao();
-			transSalid = new TransSalida(this,salidaDao.recuperarPorId((int) table.campo(0)),accion);
-			transSalid.setTbi(this);
-			transSalid.setVisible(true);
-		}
+			transSal = new TransSalida(this,salidaDao.recuperarPorId((int) table.campo(0)),accion);
+			transSal.setTbi(this);
+			transSal.setVisible(true);
+		}else
+			advertencia("Debe seleccionar un registro", 2);
 	}
 
 	@Override
@@ -251,6 +262,8 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		
 	}
 
+	
+	
 
 
 	@Override
@@ -258,12 +271,64 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void activarEliminar() {
+		if (table.getSelectedRow()>=0) {
+			salidaDao = new SalidaStockDao();
+			salida = salidaDao.recuperarPorId((int) table.campo(0));
+			if (salida.isEstado()==true){
+				botonGrup2.btnConfirmar.setEnabled(false);
+				botonGrup2.btnEliminar.setEnabled(false);
+			}else{
+				botonGrup2.btnConfirmar.setEnabled(true);
+				botonGrup2.btnEliminar.setEnabled(true);
+			}
+		}
+		
+			
+	}
+
 
 
 
 	@Override
 	public void confimar() {
-		// TODO Auto-generated method stub
-		
+		if (comprobarStock()) {
+			salida.setEstado(true);
+			
+			try {
+				for (SalidaStockItem si: salida.getSalidaItems()) {
+					producto = si.getProducto();					
+					
+					producto.getStock().setCantidad(producto.getStock().getCantidad()-si.getCantidad());
+					
+					productoDao = new ProductoDao();
+					productoDao.actualizar(producto);
+				}
+				salidaDao = new SalidaStockDao();
+				salidaDao.actualizar(salida);
+				
+				buscar();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else
+			advertencia("No se puede registrar la salidad por que dejaria productos con stock negativo", 0);
+	
 	}
+
+
+
+	private boolean comprobarStock() {
+		for (SalidaStockItem si: salida.getSalidaItems()) {
+			producto = si.getProducto();					
+			if (producto.getStock().getCantidad()<si.getCantidad()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
 }

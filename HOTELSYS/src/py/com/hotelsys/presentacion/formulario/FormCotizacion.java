@@ -87,10 +87,7 @@ public class FormCotizacion extends JDialog implements AbmBotonInterface {
 		
 		tMonto = new NumberTextField();
 		tMonto.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validarNumero(e);
-			}
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
 					tFecha.requestFocus();

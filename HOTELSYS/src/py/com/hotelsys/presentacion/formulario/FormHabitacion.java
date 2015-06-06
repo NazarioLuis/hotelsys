@@ -89,10 +89,6 @@ public class FormHabitacion extends JDialog implements AbmBotonInterface {
 		
 		tPrecio = new NumberTextField();
 		tPrecio.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validarNumero(e);
-			}
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
 					tObservacion.requestFocus();

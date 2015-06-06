@@ -19,7 +19,7 @@ import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup2;
 import py.com.hotelsys.componentes.CustomTable;
-import py.com.hotelsys.componentes.FormatoTablaEntrada;
+import py.com.hotelsys.componentes.FormatoTabla;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.PlaceholderTextField;
@@ -66,7 +66,7 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 		getContentPane().add(scrollPane);
 		
 		table = new CustomTable(new String[] {"#", "Descripcion", "Fecha" , "Estado"}, new int[] {30, 300,80, 50});
-		table.setDefaultRenderer(Object.class, new FormatoTablaEntrada());
+		table.setDefaultRenderer(Object.class, new FormatoTabla(3,"Confirmado"));
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -83,6 +83,7 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 		panel.setLayout(null);
 		
 		tBuscar = new PlaceholderTextField();
+		
 		tBuscar.setBounds(60, 11, 408, 24);
 		panel.add(tBuscar);
 		
@@ -244,7 +245,8 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 			transEntrad = new TransEntrada(this,entradaDao.recuperarPorId((int) table.campo(0)),accion);
 			transEntrad.setTbi(this);
 			transEntrad.setVisible(true);
-		}
+		}else
+			advertencia("Debe seleccionar un registro", 2);
 	}
 
 	@Override

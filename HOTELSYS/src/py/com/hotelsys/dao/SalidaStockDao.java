@@ -19,7 +19,7 @@ public class SalidaStockDao extends GenericDao<SalidaStock>{
 		criteria = session.createCriteria(entity);
 		criteria.add(Restrictions.like("descripcion", "%"+filtro[0]+"%"));
 		criteria.add(Restrictions.between("fecha", FormatoFecha.stringToDate(filtro[1]),FormatoFecha.stringToDate(filtro[2])));
-		criteria.add(Restrictions.eq("estado", true));
+		
 		list = criteria.list();
 		session.close();
 		return list;

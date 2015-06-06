@@ -7,6 +7,7 @@ import org.hibernate.cfg.Configuration;
 public class HibernateUtil {
 	
 	private static final SessionFactory sessionFactory = buildIfNeeded();
+
 	
 	//crear la fabrica de conecciones si aun no existe
 	public static SessionFactory buildIfNeeded(){
@@ -21,7 +22,7 @@ public class HibernateUtil {
 		try {
 			
 			Configuration conf = new Configuration();
-			conf.configure();					
+			conf.configure();
 			return conf.buildSessionFactory(
 					new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build());
 		} catch (Throwable e) {

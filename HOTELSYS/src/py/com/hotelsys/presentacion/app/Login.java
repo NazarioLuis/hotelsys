@@ -27,6 +27,7 @@ import javax.swing.text.AbstractDocument;
 
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.PlaceholderTextField;
+import py.com.hotelsys.dao.CajaDao;
 import py.com.hotelsys.dao.UsuarioDao;
 import py.com.hotelsys.util.HibernateUtil;
 import py.com.hotelsys.util.UppercaseDocumentFilter;
@@ -181,6 +182,8 @@ public class Login extends JFrame {
 					advertencia("Usuario o Contraseña incorecta", 0);
 				}else{
 					entrar();
+					CajaDao cajaDao = new CajaDao();
+					VariableSys.caja = cajaDao.cajaPorUsuario(VariableSys.user);
 				}
 			}
 		}

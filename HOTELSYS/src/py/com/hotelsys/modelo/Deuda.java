@@ -15,8 +15,8 @@ public class Deuda {
 	@Column(name="deu_monto")
 	private Double monto;
 	
-	@Column(name="deu_cobrado")
-	private Double cobrado;
+	@Column(name="deu_estado")
+	private boolean estado;
 	
 	@Column(name="deu_tipo")
 	private int tipo;
@@ -39,12 +39,7 @@ public class Deuda {
 	public void setMonto(Double monto) {
 		this.monto = monto;
 	}
-	public Double getCobrado() {
-		return cobrado;
-	}
-	public void setCobrado(Double cobrado) {
-		this.cobrado = cobrado;
-	}
+	
 	public int getTipo() {
 		return tipo;
 	}
@@ -62,6 +57,12 @@ public class Deuda {
 	}
 	public void setEstadia(Estadia estadia) {
 		this.estadia = estadia;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 	
 	

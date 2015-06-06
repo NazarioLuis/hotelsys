@@ -18,11 +18,15 @@ public class EstadiaDao extends GenericDao<Estadia>{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Estadia> recuperarPorFiltros(String [] filtro) {
-		criteria.add(
-				Restrictions.like("descripcion", "%"+filtro[0]+"%").ignoreCase()
-			);
+		criteria = session.createCriteria(entity).createAlias("cliente", "c");
+		criteria.add(Restrictions.like("c.nombre", "%"+filtro[1]+"%").ignoreCase());
+		if(filtro[0].equals("Abiertos"))
+			criteria.add(Restrictions.isNull("fechaSal"));
+		if(filtro[0].equals("Cerrados"))
+			criteria.add(Restrictions.isNotNull("fechaSal"));
 
 		list = criteria.list();
+		cerrar();
 		return list;
 		
 	}

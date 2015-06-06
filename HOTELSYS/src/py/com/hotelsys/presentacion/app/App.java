@@ -22,9 +22,11 @@ public class App {
 	private static LicenciaDao licenciaDao;
 
 	public static void main(String[] args) throws Exception {
+		
+		
 		String id = HardDiskSN.getHardDisk("C");
 		JPass.setKey("HoSys");
-		HibernateUtil.buildIfNeeded();
+		
 		licenciaDao = new LicenciaDao(); 
 		Licencia l = licenciaDao.recuperarValides(Util.alterar(id.toUpperCase(),3));
 		if (l == null) {

@@ -14,18 +14,23 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import py.com.hotelsys.componentes.ButtonTool;
 import py.com.hotelsys.componentes.FondoPrincipal;
 import py.com.hotelsys.componentes.VisorFechaHora;
 import py.com.hotelsys.presentacion.formulario.FormCliente;
@@ -38,10 +43,14 @@ import py.com.hotelsys.presentacion.formulario.FormUsuario;
 import py.com.hotelsys.presentacion.transacciones.PantallaCompra;
 import py.com.hotelsys.presentacion.transacciones.PantallaEntrada;
 import py.com.hotelsys.presentacion.transacciones.PantallaSalida;
+import py.com.hotelsys.presentacion.transacciones.TransAbertura;
+import py.com.hotelsys.presentacion.transacciones.TransCierre;
+import py.com.hotelsys.presentacion.transacciones.TransCobranza;
 import py.com.hotelsys.presentacion.transacciones.TransEstadia;
 import py.com.hotelsys.util.HibernateUtil;
 import py.com.hotelsys.util.OpcionesDeUsuario;
 import py.com.hotelsys.util.Util;
+import py.com.hotelsys.util.VariableSys;
 
 @SuppressWarnings("serial")
 public class Principal extends JFrame  {
@@ -63,6 +72,7 @@ public class Principal extends JFrame  {
 		
 		
 		mbSistema = new JMenuBar();
+		mbSistema.setBorder(new LineBorder(new Color(0, 0, 0)));
 		setJMenuBar(mbSistema);
 		
 		JMenu mnGral = new JMenu("General");
@@ -71,7 +81,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmCliente = new JMenuItem("Clientes");
 		mntmCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verFormCliente();
+				mostrarFormulario(new FormCliente(Principal.this));
 			}
 		});
 		mntmCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0));
@@ -80,7 +90,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmMoneda = new JMenuItem("Cotizaci\u00F3n de Monedas");
 		mntmMoneda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verFormCotizacion();
+				mostrarFormulario(new FormCotizacion(Principal.this));
 			}
 
 			
@@ -92,7 +102,7 @@ public class Principal extends JFrame  {
 		mntmRolesDelSistema.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
 		mntmRolesDelSistema.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verFormRol();
+				mostrarFormulario(new FormRol(Principal.this));
 			}
 		});
 		mnGral.add(mntmRolesDelSistema);
@@ -101,7 +111,7 @@ public class Principal extends JFrame  {
 		mntmUsuarios.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0));
 		mntmUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verFormUsuario();
+				mostrarFormulario(new FormUsuario(Principal.this));
 			}
 		});
 		mnGral.add(mntmUsuarios);
@@ -112,7 +122,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmHabitacin = new JMenuItem("Habitaci\u00F3nes");
 		mntmHabitacin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				verFormHabitacion();	
+				mostrarFormulario(new FormHabitacion(Principal.this));	
 			}
 		});
 		mnEstada.add(mntmHabitacin);
@@ -121,7 +131,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmRegistrar = new JMenuItem("Hospedar");
 		mntmRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mostrarEstadia();
+				mostrarFormulario(new TransEstadia(Principal.this));
 			}
 		});
 		mntmRegistrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
@@ -139,14 +149,14 @@ public class Principal extends JFrame  {
 		mntmProductos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
 		mntmProductos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verFormProducto();
+				mostrarFormulario(new FormProducto(Principal.this));
 			}
 		});
 		
 		JMenuItem mntmRegistrarEntrada = new JMenuItem("Registrar Alta");
 		mntmRegistrarEntrada.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mostrarEntradas();
+				mostrarFormulario(new PantallaEntrada(Principal.this));;
 			}
 		});
 		mntmRegistrarEntrada.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0));
@@ -155,7 +165,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmRegistrarSalida = new JMenuItem("Registrar Baja");
 		mntmRegistrarSalida.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mostrarSalidas();
+				mostrarFormulario(new PantallaSalida(Principal.this));
 			}
 		});
 		mntmRegistrarSalida.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0));
@@ -171,7 +181,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmRegistrar_1 = new JMenuItem("Registrar Compra");
 		mntmRegistrar_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mostrarCompras();
+				mostrarFormulario(new PantallaCompra(Principal.this));
 			}
 		});
 		mntmRegistrar_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
@@ -180,7 +190,7 @@ public class Principal extends JFrame  {
 		JMenuItem mntmProveedores = new JMenuItem("Proveedores");
 		mntmProveedores.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verFormProveedor();
+				mostrarFormulario(new FormProveedor(Principal.this));
 			}
 		});
 		mntmProveedores.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0));
@@ -190,10 +200,55 @@ public class Principal extends JFrame  {
 		mnSalir.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				HibernateUtil.cerrar();
-				System.exit(0);
+				cerrar();
 			}
 		});
+		
+		JMenu mnAdministrativo = new JMenu("Administrativo");
+		mbSistema.add(mnAdministrativo);
+		
+		JMenuItem mntmCobranza = new JMenuItem("Cobranza");
+		mntmCobranza.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0));
+		mntmCobranza.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(comprobarCaja())
+					mostrarFormulario(new TransCobranza(Principal.this));
+				else
+					JOptionPane.showMessageDialog(null, "Debe abrir una caja","Error",0);
+			}
+		});
+		
+		JMenu mnCaja = new JMenu("Caja");
+		mnAdministrativo.add(mnCaja);
+		
+		JMenuItem mntmAbrir = new JMenuItem("Abrir");
+		mntmAbrir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (VariableSys.user.getId()!=9999) {
+					if(!comprobarCaja())
+						mostrarFormulario(new TransAbertura(Principal.this));
+					else
+						JOptionPane.showMessageDialog(null, "Ya se ha abierto una caja","Error",0);
+				}
+				else
+					JOptionPane.showMessageDialog(null, "El usuario ROOT no puede ser cajero","Error",0);
+			}
+		});
+		mntmAbrir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_MASK));
+		mnCaja.add(mntmAbrir);
+		
+		JMenuItem mntmCerrar = new JMenuItem("Cerrar");
+		mntmCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(comprobarCaja())
+					mostrarFormulario(new TransCierre(Principal.this));
+				else
+					JOptionPane.showMessageDialog(null, "No hay ninguna caja abierta","Error",0);
+			}
+		});
+		mntmCerrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
+		mnCaja.add(mntmCerrar);
+		mnAdministrativo.add(mntmCobranza);
 		
 		
 		mbSistema.add(mnSalir);
@@ -201,6 +256,58 @@ public class Principal extends JFrame  {
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		JToolBar tbSistema = new JToolBar();
+		contentPane.add(tbSistema, BorderLayout.NORTH);
+		
+		ButtonTool btntlCliente = new ButtonTool((String) null);
+		btntlCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrarFormulario(new FormCliente(Principal.this));
+			}
+		});
+		btntlCliente.setIcon(new ImageIcon(Principal.class.getResource("/img/cliente.png")));
+		btntlCliente.setText("Clientes");
+		tbSistema.add(btntlCliente);
+		tbSistema.addSeparator();
+		
+		ButtonTool btntlHospedar = new ButtonTool((String) null);
+		btntlHospedar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mostrarFormulario(new TransEstadia(Principal.this));
+			}
+		});
+		btntlHospedar.setIcon(new ImageIcon(Principal.class.getResource("/img/huesped.png")));
+		btntlHospedar.setText("Hospedar");
+		tbSistema.add(btntlHospedar);
+		tbSistema.addSeparator();
+		
+		
+		ButtonTool btntlCobranza = new ButtonTool((String) null);
+		btntlCobranza.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(comprobarCaja())
+					mostrarFormulario(new TransCobranza(Principal.this));
+				else
+					JOptionPane.showMessageDialog(null, "Debe abrir una caja","Error",0);
+			}
+		});
+		btntlCobranza.setIcon(new ImageIcon(Principal.class.getResource("/img/cobrar.png")));
+		btntlCobranza.setText("Cobranza");
+		tbSistema.add(btntlCobranza);
+		tbSistema.addSeparator();
+		
+		ButtonTool btntlSalir = new ButtonTool((String) null);
+		btntlSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cerrar();
+			}
+		});
+		btntlSalir.setIcon(new ImageIcon(Principal.class.getResource("/img/Close_window.png")));
+		btntlSalir.setText("Salir");
+		tbSistema.add(btntlSalir);
+		
+		
 		
 		FondoPrincipal fondoPrincipal = new FondoPrincipal();
 		fondoPrincipal.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -246,64 +353,31 @@ public class Principal extends JFrame  {
 		OpcionesDeUsuario.agregarMenuAOpcionesDeUsuario(mbSistema);
 		OpcionesDeUsuario.recuperarOpcionesDeUsuario(mbSistema);
 		Util.cotizacionDelDia();
-	}
-
-	private void verFormUsuario() {
-		FormUsuario fu = new FormUsuario(this);
-		fu.setVisible(true);
-	}
-
-
-
-	private void verFormProveedor() {
-		FormProveedor fp = new FormProveedor(this);
-		fp.setVisible(true);
-	}
-
-
-
-	private void verFormRol() {
-		FormRol fr = new FormRol(this);
-		fr.setVisible(true);
-	}
-
-
-
-	private void mostrarEntradas() {
-		PantallaEntrada pe = new PantallaEntrada(this);
-		pe.setVisible(true);
-	}
-
-	private void mostrarSalidas() {
-		PantallaSalida ps = new PantallaSalida(this);
-		ps.setVisible(true);
-	}
-
-	private void verFormCliente() {
-		FormCliente fc = new FormCliente(this);
-		fc.setVisible(true);
-	}
-	private void verFormProducto() {
-		FormProducto fp = new FormProducto(this);
-		fp.setVisible(true);
-	}
-	private void verFormHabitacion() {
-		FormHabitacion fh = new FormHabitacion(this);
-		fh.setVisible(true);
-	}
-	
-	private void verFormCotizacion() {
-		FormCotizacion fc = new FormCotizacion(this);
-		fc.setVisible(true);
-	}
-	private void mostrarEstadia() {
-		TransEstadia te= new TransEstadia(this);
-		te.setVisible(true);
+		
+		
+		btntlCliente.setEnabled(mntmCliente.isVisible());
+		
+		btntlHospedar.setEnabled(mntmHabitacin.isVisible());
+		
+		btntlCobranza.setEnabled(mntmCobranza.isVisible());
 		
 	}
-	private void mostrarCompras() {
-		PantallaCompra pc = new PantallaCompra(this);
-		pc.setVisible(true);
 
+	
+	protected boolean comprobarCaja() {
+		if(VariableSys.caja == null)
+			return false;
+		return true;
+	}
+
+
+	protected void cerrar() {
+		HibernateUtil.cerrar();
+		System.exit(0);
+	}
+
+
+	private void mostrarFormulario(JDialog d){
+		d.setVisible(true);
 	}
 }

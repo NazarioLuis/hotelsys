@@ -53,6 +53,9 @@
 		<mapping class="py.com.hotelsys.modelo.Rol"/>
 		<mapping class="py.com.hotelsys.modelo.Usuario"/>
 		<mapping class="py.com.hotelsys.modelo.Licencia"/>
+		<mapping class="py.com.hotelsys.modelo.Caja"/>
+		<mapping class="py.com.hotelsys.modelo.Cobranza"/>
+		
     </session-factory>
     
    

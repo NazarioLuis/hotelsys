@@ -41,6 +41,7 @@ public class TransCierre extends JDialog {
 	 */
 	public TransCierre(JFrame f) {
 		super(f);
+		setTitle("Cerrar Caja");
 		setBounds(100, 100, 369, 235);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

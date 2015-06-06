@@ -39,6 +39,7 @@ public class TransAbertura extends JDialog {
 	 */
 	public TransAbertura(JFrame f) {
 		super(f);
+		setTitle("Abrir Caja");
 		setBounds(100, 100, 305, 180);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -75,6 +76,11 @@ public class TransAbertura extends JDialog {
 			lblHora.setBounds(222, 11, 57, 30);
 			contentPanel.add(lblHora);
 		}
+		
+		JLabel lblGs = new JLabel("Gs.");
+		lblGs.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblGs.setBounds(256, 67, 23, 14);
+		contentPanel.add(lblGs);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));

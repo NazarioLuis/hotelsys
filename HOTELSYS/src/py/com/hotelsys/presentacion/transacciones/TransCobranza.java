@@ -60,7 +60,7 @@ public class TransCobranza extends JDialog implements AbmBotonInterface {
 	private PlaceholderTextField2 tDolar;
 	private JButton btnCobrar;
 	private JCheckBox cbFactura;
-	private Cobranza cobraza;
+	private Cobranza cobranza;
 	private CobranzaDao cobDao;
 	private List<Deuda> listDeuda;
 	private PlaceholderTextField tNombreFactura;
@@ -245,7 +245,7 @@ public class TransCobranza extends JDialog implements AbmBotonInterface {
 		try {
 			actualizarDeuda();
 			cobDao = new CobranzaDao();
-			cobDao.insertar(cobraza);
+			cobDao.insertar(cobranza);
 		} catch (Exception e) {
 			e.printStackTrace();
 			cobDao.rollback();
@@ -293,6 +293,7 @@ public class TransCobranza extends JDialog implements AbmBotonInterface {
 		listDeuda = deuDao.recuperarDeudasPorCliente(cliente.getId());
 		for(Deuda d : listDeuda){
 			deuDao = new DeudaDao();
+			d.setCobranza(cobranza);
 			d.setEstado(false);
 			deuDao.actualizar(d);
 		}
@@ -300,11 +301,11 @@ public class TransCobranza extends JDialog implements AbmBotonInterface {
 
 	public void cargarAtributos() {
 		cobDao = new CobranzaDao();
-		cobraza = new Cobranza();
-		cobraza.setId(cobDao.recuperMaxId()+1);
-		cobraza.setCliente(cliente);
-		cobraza.setMonto(Util.stringADouble(tGuarani.getText()));
-		cobraza.setFecha(FormatoFecha.stringToDate(tFechaCobro.getText()));
+		cobranza = new Cobranza();
+		cobranza.setId(cobDao.recuperMaxId()+1);
+		cobranza.setCliente(cliente);
+		cobranza.setMonto(Util.stringADouble(tGuarani.getText()));
+		cobranza.setFecha(FormatoFecha.stringToDate(tFechaCobro.getText()));
 	}
 
 	//deja la pantallaen su estado inicial

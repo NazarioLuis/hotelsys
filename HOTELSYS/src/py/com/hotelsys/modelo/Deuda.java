@@ -15,12 +15,16 @@ public class Deuda {
 	@Column(name="deu_monto")
 	private Double monto;
 	
+	
 	@Column(name="deu_estado")
 	private boolean estado;
 	
 	@Column(name="deu_tipo")
 	private int tipo;
 
+	@ManyToOne
+	@JoinColumn(name="deu_cobranza_fk",referencedColumnName="cob_codigo")
+	private Cobranza cobranza;
 	@ManyToOne
 	@JoinColumn(name="deu_cliente_fk",referencedColumnName="cli_codigo")
 	private Cliente cliente;
@@ -63,6 +67,12 @@ public class Deuda {
 	}
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	public Cobranza getCobranza() {
+		return cobranza;
+	}
+	public void setCobranza(Cobranza cobranza) {
+		this.cobranza = cobranza;
 	}
 	
 	

@@ -50,7 +50,7 @@ public class FormReporteCoja extends JDialog {
 		setTitle("Resumen de Caja");
 		setBounds(100, 100, 569, 476);
 		getContentPane().setLayout(null);
-		
+		setLocationRelativeTo(null);
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 10, 533, 170);
 		getContentPane().add(scrollPane);
@@ -88,6 +88,7 @@ public class FormReporteCoja extends JDialog {
 		getContentPane().add(btnSiguiente);
 		
 		tEstadia = new PlaceholderTextField2();
+		tEstadia.setEnabled(false);
 		tEstadia.setPlaceholder("Total Estadia");
 		tEstadia.setBounds(144, 244, 201, 38);
 		getContentPane().add(tEstadia);
@@ -105,6 +106,7 @@ public class FormReporteCoja extends JDialog {
 		getContentPane().add(lblProductos);
 		
 		tProductos = new PlaceholderTextField2();
+		tProductos.setEnabled(false);
 		tProductos.setPlaceholder("Total Productos");
 		tProductos.setBounds(144, 290, 201, 38);
 		getContentPane().add(tProductos);
@@ -116,6 +118,7 @@ public class FormReporteCoja extends JDialog {
 		getContentPane().add(lblTotal);
 		
 		tTotal = new PlaceholderTextField2();
+		tTotal.setEnabled(false);
 		tTotal.setPlaceholder("Total Cobrado");
 		tTotal.setBounds(144, 339, 201, 38);
 		getContentPane().add(tTotal);

@@ -259,7 +259,7 @@ public class Principal extends JFrame  {
 				mostrarFormulario(new FormReporteCoja(Principal.this));
 			}
 		});
-		mntmResumenDeCobranzas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
+		mntmResumenDeCobranzas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
 		mnAdministrativo.add(mntmResumenDeCobranzas);
 		
 		

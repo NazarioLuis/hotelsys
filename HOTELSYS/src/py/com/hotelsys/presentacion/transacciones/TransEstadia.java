@@ -38,6 +38,7 @@ import javax.swing.event.ListSelectionListener;
 
 import py.com.hotelsys.componentes.BotonGrup3;
 import py.com.hotelsys.componentes.CustomTable;
+import py.com.hotelsys.componentes.FormatoTabla;
 import py.com.hotelsys.componentes.JCustomPanel1;
 import py.com.hotelsys.componentes.JCustomPanel2;
 import py.com.hotelsys.componentes.NumberTextField;
@@ -297,6 +298,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		tablaEstadia = new CustomTable(new String[] {"#", "Cliente", "Habitaci\u00F3n", "Precio", "salida"}, new int[] {75, 220, 270,90});
 		scrollPane.setViewportView(tablaEstadia);
 		tablaEstadia.ocultarColumna(4);
+		tablaEstadia.setDefaultRenderer(Object.class, new FormatoTabla(4,"null"));
 		
 		JTabbedPane tpServicios = new JTabbedPane(JTabbedPane.TOP);
 		tpServicios.setBounds(424, 266, 610, 283);

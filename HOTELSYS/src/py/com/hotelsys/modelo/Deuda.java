@@ -22,15 +22,16 @@ public class Deuda {
 	@Column(name="deu_tipo")
 	private int tipo;
 
-	@ManyToOne
-	@JoinColumn(name="deu_cobranza_fk",referencedColumnName="cob_codigo")
-	private Cobranza cobranza;
+	
 	@ManyToOne
 	@JoinColumn(name="deu_cliente_fk",referencedColumnName="cli_codigo")
 	private Cliente cliente;
 	@ManyToOne
 	@JoinColumn(name="deu_estadia_fk",referencedColumnName="est_numero")
 	private Estadia estadia;
+	@ManyToOne(optional=true)
+	@JoinColumn(name="deu_cobranza_fk",referencedColumnName="cob_numero")
+	private Cobranza cobranza;
 	public int getId() {
 		return id;
 	}

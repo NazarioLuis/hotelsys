@@ -243,9 +243,9 @@ public class TransCobranza extends JDialog implements AbmBotonInterface {
 	public void guardar() {
 		cargarAtributos();
 		try {
-			actualizarDeuda();
 			cobDao = new CobranzaDao();
 			cobDao.insertar(cobranza);
+			actualizarDeuda();
 		} catch (Exception e) {
 			e.printStackTrace();
 			cobDao.rollback();
@@ -293,8 +293,8 @@ public class TransCobranza extends JDialog implements AbmBotonInterface {
 		listDeuda = deuDao.recuperarDeudasPorCliente(cliente.getId());
 		for(Deuda d : listDeuda){
 			deuDao = new DeudaDao();
-			d.setCobranza(cobranza);
 			d.setEstado(false);
+			d.setCobranza(cobranza);
 			deuDao.actualizar(d);
 		}
 	}

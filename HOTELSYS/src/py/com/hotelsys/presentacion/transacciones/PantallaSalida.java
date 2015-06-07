@@ -57,7 +57,7 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	
 	
 	public PantallaSalida(JFrame dialog) {
-		super(dialog,false);
+		super(dialog);
 		setTitle("Salidas de Productos al Stock");
 		setBounds(100, 100, 703, 431);
 		getContentPane().setLayout(null);

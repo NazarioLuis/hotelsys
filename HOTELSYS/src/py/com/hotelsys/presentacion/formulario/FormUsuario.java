@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -40,8 +42,6 @@ import py.com.hotelsys.modelo.Usuario;
 import py.com.hotelsys.util.JPass;
 import py.com.hotelsys.util.UppercaseDocumentFilter;
 import py.com.hotelsys.util.Util;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 
 

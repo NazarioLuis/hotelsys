@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -22,9 +24,6 @@ import py.com.hotelsys.modelo.Caja;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.Util;
 import py.com.hotelsys.util.VariableSys;
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class TransAbertura extends JDialog {

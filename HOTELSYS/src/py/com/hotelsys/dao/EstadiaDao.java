@@ -5,6 +5,8 @@ import java.util.List;
 
 
 
+
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import py.com.hotelsys.modelo.Estadia;
@@ -24,6 +26,7 @@ public class EstadiaDao extends GenericDao<Estadia>{
 			criteria.add(Restrictions.isNull("fechaSal"));
 		if(filtro[0].equals("Cerrados"))
 			criteria.add(Restrictions.isNotNull("fechaSal"));
+		criteria.addOrder(Order.asc("id"));
 
 		list = criteria.list();
 		cerrar();

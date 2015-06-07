@@ -55,7 +55,7 @@ public class PantallaEntrada extends JDialog implements TranBotonInterface{
 	
 	
 	public PantallaEntrada(JFrame dialog) {
-		super(dialog,false);
+		super(dialog);
 		setTitle("Entradas de Productos al Stock");
 		setBounds(100, 100, 703, 431);
 		getContentPane().setLayout(null);

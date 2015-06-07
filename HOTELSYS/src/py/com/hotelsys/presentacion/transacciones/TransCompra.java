@@ -94,7 +94,7 @@ public class TransCompra extends JDialog
 	 * @param  
 	 */
 	public TransCompra(JDialog d, Compra c, String accion) {
-		super(d,false);
+		super(d);
 		setTitle("Compra");
 		this.accion = accion;
 		this.compra = c;

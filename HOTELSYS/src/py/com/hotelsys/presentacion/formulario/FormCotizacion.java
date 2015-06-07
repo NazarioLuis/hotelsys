@@ -1,6 +1,7 @@
 package py.com.hotelsys.presentacion.formulario;
 
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,10 +30,6 @@ import py.com.hotelsys.interfaces.AbmBotonInterface;
 import py.com.hotelsys.modelo.Cotizacion;
 import py.com.hotelsys.util.FormatoFecha;
 import py.com.hotelsys.util.Util;
-
-import javax.swing.JLabel;
-
-import java.awt.event.KeyAdapter;
 
 
 

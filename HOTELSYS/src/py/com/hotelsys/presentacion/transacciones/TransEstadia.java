@@ -859,6 +859,7 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 			fila[1] = e.getCliente().getNombre();
 			fila[2] = e.getHabitacion().getDescripcion();
 			fila[3] = Util.formatoDecimal(e.getHabitacion().getPrecio()) + " Gs.";
+			fila[4] = e.getFechaSal();
 			tablaEstadia.agregar(fila);
  		}
 		//mantiene el foco en el ultimo registro cargado

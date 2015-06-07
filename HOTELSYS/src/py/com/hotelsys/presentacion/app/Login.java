@@ -3,6 +3,7 @@ package py.com.hotelsys.presentacion.app;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -36,7 +37,7 @@ import py.com.hotelsys.util.VariableSys;
 
 @SuppressWarnings("serial")
 public class Login extends JFrame {
-
+	
 	private final JPanel contentPanel = new JCustomPanel1();
 	private JPasswordField tPass;
 	private py.com.hotelsys.dao.UsuarioDao usuarioDao;
@@ -64,7 +65,7 @@ public class Login extends JFrame {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
-		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/logo.gif")));
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
 		tAlias = new PlaceholderTextField();

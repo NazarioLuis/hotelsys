@@ -80,7 +80,7 @@ public class TransEntrada extends JDialog
 	 * @param  
 	 */
 	public TransEntrada(JDialog d, EntradaStock c, String accion) {
-		super(d,false);
+		super(d);
 		setTitle("Entrada Stock");
 		this.accion = accion;
 		this.entrada = c;

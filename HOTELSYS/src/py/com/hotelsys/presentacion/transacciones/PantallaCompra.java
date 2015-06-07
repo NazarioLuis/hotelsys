@@ -57,7 +57,7 @@ public class PantallaCompra extends JDialog implements TranBotonInterface{
 	
 	
 	public PantallaCompra(JFrame dialog) {
-		super(dialog,false);
+		super(dialog);
 		setTitle("Compras Realizadas");
 		setBounds(100, 100, 934, 410);
 		getContentPane().setLayout(null);

@@ -41,6 +41,7 @@ import py.com.hotelsys.presentacion.formulario.FormProducto;
 import py.com.hotelsys.presentacion.formulario.FormProveedor;
 import py.com.hotelsys.presentacion.formulario.FormRol;
 import py.com.hotelsys.presentacion.formulario.FormUsuario;
+import py.com.hotelsys.presentacion.reportes.FormReporteCoja;
 import py.com.hotelsys.presentacion.transacciones.PantallaCompra;
 import py.com.hotelsys.presentacion.transacciones.PantallaEntrada;
 import py.com.hotelsys.presentacion.transacciones.PantallaSalida;
@@ -251,6 +252,15 @@ public class Principal extends JFrame  {
 		mntmCerrar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK));
 		mnCaja.add(mntmCerrar);
 		mnAdministrativo.add(mntmCobranza);
+		
+		JMenuItem mntmResumenDeCobranzas = new JMenuItem("Resumen de Caja");
+		mntmResumenDeCobranzas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrarFormulario(new FormReporteCoja(Principal.this));
+			}
+		});
+		mntmResumenDeCobranzas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
+		mnAdministrativo.add(mntmResumenDeCobranzas);
 		
 		
 		mbSistema.add(mnSalir);

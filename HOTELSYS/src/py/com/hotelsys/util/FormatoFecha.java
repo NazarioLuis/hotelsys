@@ -27,6 +27,11 @@ public class FormatoFecha {
 		return date;
 	}
 	
+	public static String dateADateHora(Date fecha) {
+		
+		return dfh.format(fecha);
+	}
+	
 	public static Date stringToDate(String fecha) {
 		try {
 			date = df .parse(fecha);

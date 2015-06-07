@@ -41,4 +41,6 @@ public class DeudaDao extends GenericDao<Deuda>{
 		return list;
 	}
 	
+	
+	
 }

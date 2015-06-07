@@ -3,6 +3,7 @@ package py.com.hotelsys.presentacion.transacciones;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -67,7 +68,7 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 		getContentPane().add(scrollPane);
 		
 		table = new CustomTable(new String[] {"#", "Descripcion", "Fecha" , "Estado"}, new int[] {30, 300,80, 50});
-		table.setDefaultRenderer(Object.class, new FormatoTabla(6,"Confirmado"));
+		table.setDefaultRenderer(Object.class, new FormatoTabla(3,"Confirmado"));
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -295,16 +296,18 @@ public class PantallaSalida extends JDialog implements TranBotonInterface{
 	public void confimar() {
 		if (comprobarStock()) {
 			salida.setEstado(true);
-			
+			List<SalidaStockItem> salidaItem = new ArrayList<>();
 			try {
 				for (SalidaStockItem si: salida.getSalidaItems()) {
 					producto = si.getProducto();					
-					
 					producto.getStock().setCantidad(producto.getStock().getCantidad()-si.getCantidad());
-					
 					productoDao = new ProductoDao();
 					productoDao.actualizar(producto);
+					
+					si.setCosto(producto.getStock().getCosto());
+					salidaItem.add(si);
 				}
+				salida.setSalidaItems(salidaItem);
 				salidaDao = new SalidaStockDao();
 				salidaDao.actualizar(salida);
 				

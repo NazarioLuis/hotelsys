@@ -14,11 +14,13 @@ public class SalidaStockItem {
 	private int id;
 	@Column(name="sit_cantidad",nullable=false)
 	private int cantidad;
+	@Column(name="sit_costo")
+	private Double costo;
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="sit_producto_fk")
 	private Producto producto;
 	@ManyToOne
-	@JoinColumn(name="sit_entrada_fk",referencedColumnName="sal_numero")
+	@JoinColumn(name="sit_salida_fk",referencedColumnName="sal_numero")
 	private SalidaStock salida;
 	public int getId() {
 		return id;
@@ -45,5 +47,12 @@ public class SalidaStockItem {
 	public void setSalida(SalidaStock salida) {
 		this.salida = salida;
 	}
+	public Double getCosto() {
+		return costo;
+	}
+	public void setCosto(Double costo) {
+		this.costo = costo;
+	}
+	
 	
 }

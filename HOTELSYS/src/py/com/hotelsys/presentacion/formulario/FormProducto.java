@@ -66,6 +66,8 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	private JLabel lblCostoDelProducto;
 	private JLabel lblGs2;
 	private JLabel lblPrecioVenta;
+	private PlaceholderTextField tStockMnimo;
+	private JLabel lblStockMnimo;
 
 
 	/**
@@ -82,7 +84,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		
 		panel = new JCustomPanel1();
-		panel.setBounds(10, 11, 388, 280);
+		panel.setBounds(10, 11, 388, 286);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -90,13 +92,13 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		tDescri.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
-					tPrecio.requestFocus();
+					tStockMnimo.requestFocus();
 				}
 			}
 		});
 		tDescri.setFont(new Font("Tahoma", Font.BOLD, 11));
 		tDescri.setPlaceholder("Descripci\u00F3n del Producto");
-		tDescri.setBounds(25, 11, 301, 20);
+		tDescri.setBounds(25, 7, 301, 20);
 		panel.add(tDescri);
 		
 		tObservacin = new JTextArea("");
@@ -113,12 +115,12 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		tObservacin.setRows(10);
 		tObservacin.setLineWrap(true);
-		tObservacin.setBounds(25, 171, 334, 77);
+		tObservacin.setBounds(25, 198, 334, 77);
 		panel.add(tObservacin);
 		
 		JLabel lblObservacin = new JLabel("Observaci\u00F3n:");
 		lblObservacin.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		lblObservacin.setBounds(26, 155, 107, 14);
+		lblObservacin.setBounds(26, 182, 107, 14);
 		panel.add(lblObservacin);
 		
 		rdbtnTieneStockAnterior = new JRadioButton("Tiene Stock anterior");
@@ -150,7 +152,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 					
 			}
 		});
-		rdbtnTieneStockAnterior.setBounds(25, 69, 190, 23);
+		rdbtnTieneStockAnterior.setBounds(25, 96, 190, 23);
 		panel.add(rdbtnTieneStockAnterior);
 		
 		tStock = new PlaceholderTextField();
@@ -169,7 +171,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		
 		tStock.setPlaceholder("Stock anterior");
 		tStock.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tStock.setBounds(25, 99, 147, 20);
+		tStock.setBounds(25, 126, 91, 20);
 		panel.add(tStock);
 		
 		tPrecio = new NumberTextField();
@@ -186,11 +188,11 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		});
 		
 		tPrecio.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tPrecio.setBounds(25, 42, 107, 20);
+		tPrecio.setBounds(25, 69, 107, 20);
 		panel.add(tPrecio);
 		
 		lblGs = new JLabel("Gs.");
-		lblGs.setBounds(142, 42, 40, 20);
+		lblGs.setBounds(142, 69, 40, 20);
 		panel.add(lblGs);
 		
 		tCosto = new NumberTextField();
@@ -206,22 +208,46 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		});
 		tCosto.setVisible(false);
 		tCosto.setFont(new Font("Tahoma", Font.BOLD, 11));
-		tCosto.setBounds(26, 133, 107, 20);
+		tCosto.setBounds(26, 160, 107, 20);
 		panel.add(tCosto);
 		
 		lblGs2 = new JLabel("Gs.");
 		lblGs2.setVisible(false);
-		lblGs2.setBounds(142, 133, 40, 20);
+		lblGs2.setBounds(142, 160, 40, 20);
 		panel.add(lblGs2);
 		
 		lblCostoDelProducto = new JLabel("Costo de compra");
 		lblCostoDelProducto.setVisible(false);
-		lblCostoDelProducto.setBounds(25, 119, 108, 14);
+		lblCostoDelProducto.setBounds(25, 146, 108, 14);
 		panel.add(lblCostoDelProducto);
 		
 		lblPrecioVenta = new JLabel("Precio Venta");
-		lblPrecioVenta.setBounds(25, 29, 91, 14);
+		lblPrecioVenta.setBounds(25, 56, 91, 14);
 		panel.add(lblPrecioVenta);
+		
+		tStockMnimo = new PlaceholderTextField();
+		tStockMnimo.setEnabled(false);
+		tStockMnimo.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tStockMnimo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validarNumero(e);
+			}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER||e.getKeyCode() == KeyEvent.VK_TAB) {
+					tPrecio.requestFocus();
+				}
+			}
+			
+		});
+		tStockMnimo.setPlaceholder("Stock M\u00EDnimo");
+		tStockMnimo.setBounds(25, 38, 94, 20);
+		panel.add(tStockMnimo);
+		
+		lblStockMnimo = new JLabel("Stock M\u00EDnimo");
+		lblStockMnimo.setBounds(25, 22, 91, 20);
+		panel.add(lblStockMnimo);
 		
 		abmBoton = new BotonGrup();
 		abmBoton.setBounds(10, 302, 647, 33);
@@ -377,7 +403,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 	public void habilitarCampos(boolean b) {
 		tDescri.setEnabled(b);
 		tObservacin.setEnabled(b);
-		
+		tStockMnimo.setEnabled(b);
 		
 		tPrecio.setEnabled(b);
 		
@@ -414,7 +440,10 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 		if (!tDescri.getText().equals(""))
 			producto.setDescripcion(tDescri.getText());
 		producto.setObservacion(tObservacin.getText());
-		
+		if (!tStockMnimo.getText().equals(""))
+			producto.setStockMinimo(Integer.parseInt(tStockMnimo.getText()));
+		else
+			producto.setStockMinimo(0);
 		if (!tPrecio.getText().equals(""))
 			stock.setPrecio(((Number) tPrecio.getValue()).doubleValue());
 		else
@@ -456,6 +485,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 			producto = productoDao.recuperarPorId((int) tabla.campo(0));
 			if (producto!=null) {
 				tDescri.setText(producto.getDescripcion());
+				tStockMnimo.setText(producto.getStockMinimo()+"");
 				tObservacin.setText(producto.getObservacion());
 				tPrecio.setValue(producto.getStock().getPrecio());
 				stock = producto.getStock();
@@ -468,6 +498,7 @@ public class FormProducto extends JDialog implements AbmBotonInterface {
 
 	@Override
 	public void limpiarCampos() {
+		tStockMnimo.setText("");
 		tDescri.setText("");
 		tObservacin.setText("");
 		tPrecio.setValue(null);

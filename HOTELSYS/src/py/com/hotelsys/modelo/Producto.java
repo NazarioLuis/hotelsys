@@ -18,6 +18,8 @@ public class Producto{
 	private String descripcion;
 	@Column(name="pro_observacion")
 	private String observacion;
+	@Column(name="pro_stock_minimo")
+	private int stockMinimo;
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="pro_stock_fk",unique=true)
 	private Stock stock;
@@ -45,5 +47,11 @@ public class Producto{
 	}
 	public void setStock(Stock stock) {
 		this.stock = stock;
+	}
+	public int getStockMinimo() {
+		return stockMinimo;
+	}
+	public void setStockMinimo(int stockMinimo) {
+		this.stockMinimo = stockMinimo;
 	}
 }

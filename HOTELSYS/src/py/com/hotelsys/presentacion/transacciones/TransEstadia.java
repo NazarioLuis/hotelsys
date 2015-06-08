@@ -693,8 +693,9 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		
 		cbAbiertos = new JCheckBox("Abiertos");
 		cbAbiertos.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
-				recuperaDatos();
+			public void stateChanged(ChangeEvent e) {
+				if(cbAbiertos.isSelected());
+					recuperaDatos();
 			}
 		});	
 		cbAbiertos.setBounds(736, 199, 78, 23);
@@ -704,7 +705,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		cbCerrados = new JCheckBox("Cerrados");
 		cbCerrados.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				recuperaDatos();
+				if(cbCerrados.isSelected());
+					recuperaDatos();
 			}
 		});		
 		cbCerrados.setBounds(816, 199, 84, 23);
@@ -714,7 +716,8 @@ public class TransEstadia extends JDialog implements TranBotonInterface2, Interf
 		cbTodos = new JCheckBox("Todos");
 		cbTodos.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				recuperaDatos();
+				if(cbTodos.isSelected());
+					recuperaDatos();
 			}
 		});
 		cbTodos.setBounds(915, 199, 84, 23);

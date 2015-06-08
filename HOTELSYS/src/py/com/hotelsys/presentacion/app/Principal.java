@@ -374,7 +374,7 @@ public class Principal extends JFrame  {
 		btntlCobranza.setEnabled(mntmCobranza.isVisible());
 		
 		
-		setTitle("Bienbenidio "+VariableSys.user.getNombre());
+		setTitle("Bienvenido "+VariableSys.user.getNombre());
 	}
 
 	
